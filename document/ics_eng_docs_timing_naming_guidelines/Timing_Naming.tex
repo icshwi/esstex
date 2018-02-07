@@ -1,0 +1,185 @@
+\documentclass[11pt
+  , a4paper
+  , article
+  , oneside
+  %  , twoside
+  , showtrims
+ % , draft
+]{memoir}
+
+\usepackage{essdocs}
+\usepackage[numbers]{natbib}
+\usepackage[autostyle]{csquotes}
+
+%% \usepackage{epstopdf}
+%% \usepackage[pdf]{pstricks}
+%% \usepackage{graphicx}
+
+\setsecnumdepth{subsection}
+
+\begin{document}
+%\frontmatter
+%% ESS Document Description
+%%
+\essdocdesc{XXXXXXXXX}
+
+%% ESS Document Number
+%%
+\essdocnum{ESS-XXXXXXXX}
+
+%% Date
+%%
+\date{\today}
+
+%% ESS Document Revision Number
+%%
+\essdocrev{0.1}
+
+%% ESS Document State
+%%
+\essdocstate{Early Draft}
+
+%% ESS Document Classification
+%%
+\essdocclass{ESS Use Only}
+
+%% Document Title
+%%
+\title{ESS Timing System Naming Guidelines}
+\subtitle{ }%Guidelines for naming the timing devices}
+%% Document Author(s), if more than one author,
+%% use \newline instead of \\ or \linebreak in order to seperate them
+\author{Javier Cereijo Garcia \newline Jeong Han Lee \newline William Ledda }
+
+%% Document Reviewer(s) if more than one reviewer,
+%% use \newline instead of \\ or \linebreak in order to seperate them
+%\reviewer{Timo Korhonen (Chief Engineer) \newline Timo Korhonen (Chief Engineer)}
+\reviewer{TBD}
+%% Document Owner(s) if more than one owner,
+%% use \newline instead of \\ or \linebreak in order to seperate them
+\owner{ICS}
+
+%% Document Approver(s) if more than one approver,
+%% use \newline instead of \\ or \linebreak in order to seperate them
+\approver{ICS}
+
+\showtrimson
+
+\esstitle
+\newpage
+\tableofcontents
+\newpage
+
+%\mainmatter
+
+
+%%% Actual Document Start at below
+\chapter{Overview}
+The ESS Naming Convention{\footnote{CHESS document ESS-0000757\cite{bib:naming}}} was agreed upon and approved at an early stage of the ESS project to ensure meaningful, short and structured names of signals and devices. Given the millions of signals to control and thousands of devices to operate, clear communication is essential among operators, physicists and engineers. The ESS timing system should follow the Naming Convention for these reasons.
+
+\section{Scope}
+This document includes some guidelines on defining the element names of the ESS timing system to fulfill the requirements of the ESS naming convention in a unified way.\\
+
+\textbf{Note that this is a very early draft document and should be updated as development progresses.}
+
+\section{Target Audience}
+This document is targeted to ICS integrators of the ESS timing system. It is assumed that the reader has a good understanding of the ESS timing system.
+
+
+\clearpage
+
+\chapter{Naming Guidelines}
+The ESS naming convention especifies how signals and devices at ESS should be named to ensure meaningful, short and structured names. For more information on the ESS naming convention see \cite{bib:naming}.
+
+The ESS naming convention names are composed by acronyms and abbreviations referred to as name elements with the following structure:
+\begin{lstlisting}[style=termstyle]
+Section-Subsection:Discipline-DeviceType-Instance:Property.FIELD
+\end{lstlisting}
+These elements are sorted under area (Section and Subsection), device (Section to Instance) and configuration structures. An extra element, the Super Section, is not part of the device and signal names but it is used for sorting and filtering purposes in the Naming Service as well as in other systems where the names are used.\\
+
+In this document only the guidelines for the area and device structures are given.\\
+
+There are two different kinds of timing devices when it comes to naming: timing devices belonging to a subsystems of ESS, such as EVRs dedicated to a specific instance of beam instrumentation, and timing devices that are an intrinsic part of the timing generation and distribution. These two kinds of devices have different naming guidelines.
+
+\section{Timing generation and distribution devices}
+This includes the EVG, fan-out modules, low jitter 1 pps generators, GPS synchronization platforms and other devices used for generating the timing events, beam-related data broadcasted by the timing system, timestamps and synchronous clocks, and their distribution along the ESS facility. The different name elements should be set as follows:
+\begin{itemize}
+\item Super Section: \texttt{Central Services} for all the devices in this category.
+\item Section: \texttt{Timing} for all the devices in this category.
+\item Subsection: consists of 5 characters. The first two characters are \texttt{TD} for the timing distribution devices (basically fan-out modules), and  \texttt{TM} for the timing master devices (EVG, GPS, signal generators, etc). The last 3 characters are numeric and correspond to the rack where the device is installed. Following this, the subsection element can have the values \texttt{TD010} to \texttt{TD180} and \texttt{TM070}. All devices related to the EVG will be installed in the MBL-070 rack and thus be in the \texttt{TM070} subsection.
+\item Discipline: \texttt{TS} (timing system) for all the devices in this category.
+\item Device Type: see Table~\ref{tab:devices}.
+\item Instance: numerated as needed.
+\end{itemize}
+
+\begin{table}[!htb]
+  \centering
+  \begin{tabular}{l l l}
+    \toprule
+    Device                          &  Mnemonic  &  Description                      \\\midrule
+    Frequency Standard	            &  FRS   	   &  Rubidium Frequency Standard 725  \\\midrule
+    MRF Event Fan out	              &  FOUT	     &  Fan out                          \\\midrule
+    MRF Event Generator	            &  EVG       &                                   \\\midrule
+    MRF Event Master	              &  EVM       &                                   \\\midrule
+    MRF Event Receiver	            &  EVR       &                                   \\\midrule
+    MRF Event Receiver Stand alone  &  STEVR     &                                   \\\midrule
+    Oscilloscopes	                  &  OScope    &                                   \\\midrule
+    Signal Generator	              &  SiGen	   &  Signal Generator                 \\\midrule
+    Synchronization Platform (GPS)  &  GPS       &                                   \\\bottomrule
+  \end{tabular}
+  \caption[]{Device Types for the timing system devices.}
+  \label{tab:devices}
+\end{table}
+
+\section{Timing devices belonging to a specific subsystem}
+Usually this case only covers EVRs, although in some special cases it might also include a fan-out. The Section, Subsection and Discipline of the parent ESS subsystem is used. The Device Type is the same as in Table~\ref{tab:devices}. The Instance is a number, but if needed, a prefix that specifies a device type if the EVR is related to such part of the subsystem or discipline might be used.
+
+
+%Device structure:
+%Timing System                       (TS)      Timing discipline
+%  Hardware                                    TS Hardare
+%    Frequency Standard	             (FRS)	   Rubidium Frequency Standard 725
+%    MRF Event Fan out	             (FOUT)	   Fan out device
+%    MRF Event Generator	           (EVG)
+%    MRF Event Master	               (EVM)
+%    MRF Event Receiver	             (EVR)
+%    MRF Event Receiver Stand alone  (STEVR)
+%    Oscilloscopes	                 (OScope)
+%    Signal Generator	               (SiGen)	 Signal Generator
+%    Synchronization Platform (GPS)	 (GPS)
+%
+%Area structure:
+%Central Services
+%  Timing System           (Timing)
+%    Timing Distribution   (TD010)   Timing distribution on RACK 010
+%    Timing Distribution   (TD020)
+%    Timing Distribution   (TD030)
+%    ...                   ...
+%    Timing Distribution   (TD180)
+%    Timing Master         (TM070)   Event master located in MBL-070 Rack
+%
+%Super Section      Section   Subsection    Discipline    Device Group          Device Type   Device Name
+%Accelerator	      LEBT	    010	          PBI	          Control electronics   EVR	          LEBT-010:PBI-EVR-Emu01
+%LEBT-010:PBI-EVR-Emu01
+%SYS = LEBT-010:PBI
+%D = EVR-Emu01
+%
+%Central Services   Timing    TM070 etc     TS                                  EVG etc       Timing-TM070:TS-EVM-01
+%Timing-TM070:TS-EVM-01
+%SYS = Timing-TM070:TS
+%D = EVM-01
+
+\clearpage
+
+\backmatter
+%\bibliographystyle{unsrt}
+%\bibliographystyle{plainnat}
+%\bibliographystyle{abbrvnat}
+\bibliographystyle{unsrtnat}
+%\bibliographystyle{chicago}
+%\bibliography{./ess_refs}
+\bibliography{Timing_Naming}
+
+\end{document}
+
+

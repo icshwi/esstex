@@ -32,7 +32,7 @@
 
 %% ESS Document Revision Number
 %%
-\essdocrev{0.1}
+\essdocrev{0.2}
 
 %% ESS Document State
 %%
@@ -74,14 +74,14 @@
 
 %%% Actual Document Start at below
 \chapter{Overview}
-At European Spallation Source (ESS), Integrated Control System (ICS) does use the Micro Research Finland (MRF) Timing System{\footnote{\url{http://www.mrf.fi/}}} as its timing system of the ESS site. The consistent and up-to-date engineering manual is essential for the ESS Timing system.
+At European Spallation Source (ESS), Integrated Control System (ICS) uses the Micro Research Finland (MRF) Timing System{\footnote{\url{http://www.mrf.fi/}}} as its timing system of the ESS site. The consistent and up-to-date engineering manual is essential for the ESS Timing system.
 
 \section{Scope}
 \begin{itemize}
 \item This document identifies one of the MRF Timing Event Generators (EVG) that needs to be configured for an ESS subsystem that needs synchronous frequencies, trigger signals and sequences of events \cite{MRFEVENTGENERATOR}.
-\item This document provides the generic description of the MRF cPCI-EVG-230. In addition, it affords the minimal, essential, and generic information for the system configuration.  
-\item The purpose of this document is to describe the engineering procedure and troubleshooting about how the MRF cPCI-EVG-230 board will be integrated in cooperation with the ESS EPICS Environment (EEE).
-\item This document attempts to maintain consistency with existing ESS Timing system hardware as far as possible. 
+\item This document provides the generic description of the MRF cPCI-EVG-230. In addition, it affords the minimal, essential, and generic information for the system configuration.
+\item The purpose of this document is to describe the engineering procedure and troubleshooting about how the MRF cPCI-EVG-230 board will be integrated in cooperation with the new ESS EPICS environment (E3).
+\item This document attempts to maintain consistency with existing ESS Timing system hardware as far as possible.
 \end{itemize}
 \textbf{Note that this is a very early draft document and should be updated as development progresses.}
 
@@ -96,10 +96,10 @@ Events are sent out by the event generator as event frames (words) which consist
 There are several sources of events: trigger events, sequence events, software events and events received from an upstream Event Generator. Events from different sources have different priority which is resolved in a priority encoder.
 In addition to events the Event Generator enables the distribution of eight simultaneous signals sampled with the event clock rate, the distributed bus. Distributed bus signals may be provided externally or generated on-board by programmable multiplexed counters.}}
 
-In the phase of operation ESS will use a VME-EVM-300 as a master event generator, but at the moment several EVG architectures are being used for different purposes:
+In the phase of operation ESS will use a MTCA-EVM-300 as a master event generator, but at the moment several EVG architectures are being used for different purposes:
 \begin{itemize}
 \item VME-EVG-230
-\item VME-EVM-300
+\item MTCA-EVM-300
 \item cPCI-EVG-230
 \end{itemize}
 % I don't know if this list is complete.
@@ -116,7 +116,7 @@ Figure~\ref{fig:cpci-evg230} shows the cPCI-EVG-230 card with rough physical dim
   \caption{
     MRF cPCI-EVG-230.
   }
-  \label{fig:cpci-evg230}   
+  \label{fig:cpci-evg230}
 \end{figure}
 
 
@@ -126,7 +126,7 @@ The cPCI-EVG-230  has a SFP transceiver as an output to EVR/fan-out, one trigger
 \clearpage
 
 \chapter{System Environment}
-Before describing the engineering procedure for an EEE integration of the MRF cPCI-EVG-230 board, it is mandatory to have proper system environment that consists of specific hardware and software lists. Here we will show the hardware and software lists, their block diagrams, and their setup in the ICS lab at ESS. The information shown in this chapter is used in the ICS Lab at ESS.
+Before describing the engineering procedure for an E3 integration of the MRF cPCI-EVG-230 board, it is mandatory to have proper system environment that consists of specific hardware and software lists. Here we will show the hardware and software lists, their block diagrams, and their setup in the ICS lab at ESS. The information shown in this chapter is used in the ICS Lab at ESS.
 
 
 \section{Hardware}
@@ -135,17 +135,17 @@ Table~\ref{table:hwlist} shows the hardware list and its environment. The form f
   \centering
   \begin{tabular}{l|l|l}
     \toprule
-    Hardware                  & Info                        & Serial Number \\\midrule
-    MRF cPCI-EVG-230          & \texttt{ICS TAG-49}         & E283008       \\\midrule
-    Universal I/O             &                             &               \\\midrule
-    cPCI crate                &                             &               \\\midrule
-    CPU                       & Hostname : ics-cpci2-cpu1   &               \\\midrule
-    MRF cPCI-EVR-230          & \texttt{ICS TAG-48}         & E322039       \\\midrule
-    CPU                       & Hostname : ics-cpci4-cpu1   &               \\\midrule
-    cPCI crate                &                             &               \\\midrule
-    Optical cables            & LC, Optical 850 nm          &               \\\bottomrule
+    Hardware                 & Info                                         & Serial Number \\\midrule
+    MRF cPCI-EVG-230         & \texttt{ICS TAG-805}                         & E283016       \\\midrule
+    cPCI crate               & \texttt{ICS TAG-362}                         &               \\\midrule
+    CPU                      & \texttt{ICS TAG-363}, hostname: icslab-ts01  & 43040574      \\\midrule
+    MRF PCIe-EVR-300DC       & \texttt{ICS TAG-473}                         & M263057       \\\midrule
+    MRF IFB-300              & \texttt{ICS TAG-352}                         & K472044       \\\midrule
+    MRF Universal I/O module &                                              &               \\\midrule
+    Adlink IPC               & \texttt{ICS TAG-837}, hostname: icslab-ipc01 & 93-41036-G10E \\\midrule
+    Optical cables           & LC, Optical 850 nm                           &               \\\bottomrule
   \end{tabular}
-  \caption[]{Hardware List and Its Environment.}
+  \caption[]{Hardware List.}
   \label{table:hwlist}
 \end{table}
 
@@ -155,25 +155,25 @@ Figure~\ref{fig:hw-setup} shows the cPCI-EVG-230 in the crate, next to the CPU.
   \centering
   \includegraphics[width=0.8\textwidth]{./pictures/evgoncrate}
   \caption{Hardware Setup in the ICS lab.}
-  \label{fig:hw-setup}   
+  \label{fig:hw-setup}
 \end{figure}
 
 
 \clearpage
 \section{Software}
-Table~\ref{table:swlist} shows the Software list and its environment. It is mandatory to check the kernel version, and the mrf kernel module version. Since the mrfioc2 is dependent upon devLibs2 EEE internally, an end-user is unnecessary to check its version explicitly. 
+Table~\ref{table:swlist} shows the Software list and its environment. It is mandatory to check the kernel version, and the mrf kernel module version. Since the mrfioc2 is dependent upon devlib2 E3 internally, an end-user is unnecessary to check its version explicitly.
 \begin{table}[!htb]
   \centering
   \begin{tabular}{l|l}
     \toprule
-    Item               & Version Info.                                            \\\midrule
-    CentOS Linux       & \texttt{7.1.1503}                                        \\\midrule
-    Kernel             & \texttt{3.10.0-229.7.2.rt56.141.6.el7.centos.x86\_64}    \\\midrule
-    mrf kernel module  & version : \texttt{1} / srcversion \texttt{124F2C1F3D5E2080AE1B755} \\\midrule
-    EEE                & \texttt{1.8.0}                                  \\\midrule
-    EPICS Base         & \texttt{3.14.12.5}                              \\\midrule
-    mrfioc2            & EEE module ver. \texttt{2.1.0}                  \\\midrule
-    devLib2            & EEE module ver. \texttt{2.6+}                   \\\bottomrule
+    Item               & Version Info.                                                      \\\midrule
+    CentOS Linux       & \texttt{7.4.1708}                                                  \\\midrule
+    Kernel             & \texttt{3.10.0-693.17.1.el7.x86\_64}                               \\\midrule
+    mrf kernel module  & version : \texttt{1} / srcversion \texttt{A998B22F1425D7388F5F7A7} \\\midrule
+    E3                 & \texttt{2.5.4}                                                     \\\midrule
+    EPICS Base         & \texttt{3.15.5}                                                    \\\midrule
+    mrfioc2            & E3 module ver. \texttt{2.2.0}                                      \\\midrule
+    devLib2            & E3 module ver. \texttt{2.9.0}                                      \\\bottomrule
   \end{tabular}
   \caption[]{Software and its version information.}
   \label{table:swlist}
@@ -198,70 +198,78 @@ Table~\ref{table:fwinfo} shows EVG FPGA Firmware Version Register.
 
 \clearpage
 \chapter{Engineering Procedure}
-This chapter provides the minimal information to configure the EVG board properly. 
+This chapter provides the minimal information to configure the EVG board properly.
 
 \section{System Installation}
 Figure~\ref{fig:hw-setup} shows the glimpse of what system might be like in a Lab. The optical cable to EVR/fan-out is not shown.
-  
+
 \section{cPCI-EVG-230 Board Identification}
-         
+
 \subsection{Kernel Module}
 It is essential to load the mrf kernel module and to check its information as follows:
 \begin{lstlisting}[style=termstyle]
-[root@ics-cpci2-cpu1 tests_cPCI-EVG-230]# modprobe mrf
-
-[root@ics-cpci2-cpu1 tests_cPCI-EVG-230]# modinfo mrf
-filename:       /lib/modules/3.10.0-229.7.2.rt56.141.6.el7.centos.x86_64/extra/mrf.ko
-author:         Michael Davidsaver <mdavidsaver@bnl.gov>
+timinguser@icslab-ts01: ~$ modinfo mrf
+filename:       /lib/modules/3.10.0-693.17.1.el7.x86_64/weak-updates/mrf.ko
+author:         Michael Davidsaver <mdavidsaver@gmail.com>
 version:        1
 license:        GPL v2
-rhelversion:    7.1
-srcversion:     124F2C1F3D5E2080AE1B755
+rhelversion:    7.4
+srcversion:     A998B22F1425D7388F5F7A7
+alias:          pci:v000010EEd00007011sv00001A3Esd0000132Cbc*sc*i*
+alias:          pci:v00001A3Ed0000152Csv00001A3Esd0000152Cbc*sc*i*
+alias:          pci:v00001A3Ed0000252Csv00001A3Esd0000252Cbc*sc*i*
+alias:          pci:v000010EEd00007011sv00001A3Esd0000172Cbc*sc*i*
+alias:          pci:v00001204d0000EC30sv00001A3Esd0000172Cbc*sc*i*
+alias:          pci:v000010B5d00009056sv00001A3Esd0000192Cbc*sc*i*
+alias:          pci:v000010B5d00009030sv00001A3Esd000011E6bc*sc*i*
+alias:          pci:v000010B5d00009030sv00001A3Esd000020E6bc*sc*i*
+alias:          pci:v000010B5d00009030sv00001A3Esd000020DCbc*sc*i*
+alias:          pci:v000010B5d00009030sv00001A3Esd000010E6bc*sc*i*
 depends:        parport,uio
-vermagic:       3.10.0-229.7.2.rt56.141.6.el7.centos.x86_64 SMP preempt mod_unload modversions 
+vermagic:       3.10.0-693.5.2.el7.x86_64 SMP mod_unload modversions
 parm:           cable:Name of JTAG parallel port cable to emulate (charp)
 parm:           interfaceversion:User space interface version (int)
+parm:           use_msi:Use MSI if present (default 1, yes) (uint)
 \end{lstlisting}
 
-It is mandatory to check the access permission of an IOC user for the device file, e.g., \path{/dev/uio0} to allow the IOC process to open it. In case ones target system is NOT running \texttt{UDEV}, please consult the EVR user guide~\cite{EVR-USER-GUIDE}\footnote{Although this guide is intended for the EVR, the kernel module is the same for EVR and EVG}. And for building and loading the MRF kernel module and for changing the device file permission, please see Reference~\citep[see][p12,13]{EVR-USER-GUIDE}. It is inadvisable to change the file permission by using \texttt{chmod}. 
+It is mandatory to check the access permission of an IOC user for the device file, e.g., \path{/dev/uio0} to allow the IOC process to open it. In case ones target system is NOT running \texttt{UDEV}, please consult the EVR user guide~\cite{EVR-USER-GUIDE}\footnote{Although this guide is intended for the EVR, the kernel module is the same for EVR and EVG}. And for building and loading the MRF kernel module and for changing the device file permission, please see Reference~\citep[see][p12,13]{EVR-USER-GUIDE}. It is inadvisable to change the file permission by using \texttt{chmod}.
 
 \subsection{PCI Addressing}
-Each PCI device is identified by a domain, a bus, a device, and a function number in Linux. Therefore, in order to initialize the MRF cPCI-EVG-230 board in EEE, one needs the following information: a bus number, a device number, and a function number. These numbers are the parameters of a \texttt{mrmEvgSetupPCI} function.
+Each PCI device is identified by a domain, a bus, a device, and a function number in Linux. Therefore, in order to initialize the MRF cPCI-EVG-230 board in E3, one needs the following information: a bus number, a device number, and a function number. These numbers are the parameters of a \texttt{mrmEvgSetupPCI} function.
 
 One can use \texttt{lspci} to find them as follows:
 \begin{lstlisting}[style=termstyle]
-[root@ics-cpci2-cpu1 tests_cPCI-EVG-230]# lspci
-10:0c.0 Signal processing controller: PLX Technology, Inc. PCI9030 32-bit 33MHz PCI <-> IOBus Bridge (rev 01)
-[root@ics-cpci2-cpu1 tests_cPCI-EVG-230]# lspci -s 10:0c -vv
-10:0c.0 Signal processing controller: PLX Technology, Inc. PCI9030 32-bit 33MHz PCI <-> IOBus Bridge (rev 01)
-	Subsystem: Device 1a3e:20e6
+timinguser@icslab-ts01: ~$ lspci
+...
+16:0e.0 Signal processing controller: PLX Technology, Inc. PCI9030 32-bit 33MHz PCI <-> IOBus Bridge (rev 01)
+...
+timinguser@icslab-ts01: ~$ lspci -s 16:0e -vv
+16:0e.0 Signal processing controller: PLX Technology, Inc. PCI9030 32-bit 33MHz PCI <-> IOBus Bridge (rev 01)
+	Subsystem: Micro-Research Finland Oy CPCI Event Generator 230
 	Control: I/O+ Mem+ BusMaster- SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR+ FastB2B- DisINTx-
 	Status: Cap+ 66MHz- UDF- FastB2B+ ParErr- DEVSEL=medium >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
-	Interrupt: pin A routed to IRQ 16
-	Region 0: Memory at f0910000 (32-bit, non-prefetchable) [size=128]
-	Region 2: Memory at f0900000 (32-bit, non-prefetchable) [size=64K]
-	Capabilities: [40] Power Management version 1
-		Flags: PMEClk- DSI- D1- D2- AuxCurrent=0mA PME(D0+,D1-,D2-,D3hot+,D3cold-)
-		Status: D0 NoSoftRst- PME-Enable- DSel=0 DScale=0 PME-
-	Capabilities: [48] CompactPCI hot-swap <?>
-	Capabilities: [4c] Vital Product Data
-		Unknown large resource type 35, will not decode more.
+	Interrupt: pin A routed to IRQ 18
+	Region 0: Memory at f0921000 (32-bit, non-prefetchable) [size=128]
+	Region 2: Memory at f0910000 (32-bit, non-prefetchable) [size=64K]
+	Capabilities: <access denied>
 	Kernel driver in use: mrf-pci
+	Kernel modules: mrf
 
 \end{lstlisting}
 
 And one should identify four number as follows:
 \begin{lstlisting}[style=termstyle]
-[root@ics-cpci2-cpu1 tests_cPCI-EVG-230]# lspci -s 10:0c -t
--+-[0000:10]---0c.0
+timinguser@icslab-ts01: ~$ lspci -s 16:0e -t
+-+-[0000:16]---0e.0
  \-[0000:00]-
+
 \end{lstlisting}
-, where \texttt{-+-[0000:10]---0c.0} can be translated to \texttt{-+-}[domain:bus]\texttt{---}device.function. Thus in the above case, three numbers are shown in Table~\ref{table:pciidnumber}.\begin{table}[!htb]
+, where \texttt{-+-[0000:16]---0e.0} can be translated to \texttt{-+-}[domain:bus]\texttt{---}device.function. Thus in the above case, three numbers are shown in Table~\ref{table:pciidnumber}.\begin{table}[!htb]
   \centering
   \begin{tabular}{l|l}
     \toprule
-    bus      & 0x10 \\\midrule
-    device   & 0x0c \\\midrule
+    bus      & 0x16 \\\midrule
+    device   & 0x0e \\\midrule
     function & 0x0 \\\bottomrule
   \end{tabular}
   \caption[]{MRF cPCI-EVG-230 Identification Numbers}
@@ -270,443 +278,535 @@ And one should identify four number as follows:
 
 
 \clearpage
-\section{EPICS IOC Setup under EEE}
-In this section, in order to start the EPICS IOC for the MRF cPCI-EVG-230 under EEE, one should consider the following things: 1) the EPICS database file, and 2) the EPICS start-up script. All files are located in a directory, where an user can create, e.g., in the ICS Lab, 
+\section{EPICS IOC Setup under E3}
+In order to start the EPICS IOC for the MRF cPCI-EVG-230 under E3, one should consider the following things: 1) the EPICS database file, and 2) the EPICS start-up script. The working directory, where an user can create, e.g., in the ICS Lab,
 \begin{lstlisting}[style=termstyle, label={list:pwd}, caption={Working Directory in the ICS lab.} ]
-  /home/javiercereijogarcia/tests_cPCI-EVG-230
+/home/timinguser/ics_gitsrc/e3/e3-mrfioc2/cmds
 \end{lstlisting}
 
 \subsection{EPICS Database File}
-One could use the existent database file in the EEE as a template for the EPICS IOC, the file is located in the following location : 
+The database file in E3 is located in the following location:
 \begin{lstlisting}[style=termstyle]
-/opt/epics/modules/mrfioc2/2.1.0/db/evg-cpci.db
+/epics/modules/mrfioc2/2.2.0/R3.15.5/db/cpci-evg230-ess.db
 \end{lstlisting}
 
 
 \subsection{Start-Up Script}
-Listing~\ref{list:cPCI-evg-230_0.cmd} shows the IOC start-up script which has the MRF cPCI-EVG-230 Identification Numbers, shown in Table~\ref{table:pciidnumber}. Note that the start-up script is located in the directory in Listing~\ref{list:pwd}.
-
+Listing~\ref{list:emcpcievg230.cmd} shows the IOC start-up script which has the MRF cPCI-EVG-230 Identification Numbers, shown in Table~\ref{table:pciidnumber}. Note that the start-up script is located in the directory in Listing~\ref{list:pwd}.
 
 \begin{lstlisting}[
     style=termstylenumber,
-    label={list:cPCI-evg-230_0.cmd},
-    caption={Start-up script \texttt{cPCI-evg-230\_0.cmd}. Line \ref{pciid0}-\ref{pciid2} should be matched to Table~\ref{table:pciidnumber}. }
+    label={list:emcpcievg230.cmd},
+    caption={Start-up script \texttt{emcpcievg230.cmd}. Line \ref{pciid0} should be matched to Table~\ref{table:pciidnumber} as \texttt{mrmEvgSetupPCI(\$(DEV1), "bus:device.function")}.}
   ]
-epicsEnvSet("SYS"             "testcPCI-EVG-230")
-epicsEnvSet("EVG"             "EVG0")
-epicsEnvSet("EVG_PCIBUS"      "0x10") (*@\label{pciid0}@*)
-epicsEnvSet("EVG_PCIDEVICE"   "0x0c") (*@\label{pciid1}@*)
-epicsEnvSet("EVG_PCIFUNCTION" "0x0") (*@\label{pciid2}@*)
+require mrfioc2, 2.2.0
 
-require mrfioc2,2.1.0
+epicsEnvSet("EPICS_CA_MAX_ARRAY_BYTES","10000000")
 
-mrmEvgSetupPCI($(EVG), $(EVG_PCIBUS), $(EVG_PCIDEVICE), $(EVG_PCIFUNCTION))
+epicsEnvSet("IOC", "EMCPCIEVG230")
+epicsEnvSet("DEV1", "EVG0")
 
-dbLoadRecords("evg-cpci.db", "EVG=$(EVG), SYS=$(SYS)")
-  
+epicsEnvSet("ESSEvtClockRate"  "88.0525") (*@\label{essfreq}@*)
+
+mrmEvgSetupPCI($(DEV1), "16:0e.0") (*@\label{pciid0}@*)
+dbLoadRecords("cpci-evg230-ess.db",  "SYS=$(IOC), D=$(DEV1), EVG=$(DEV1), FEVT=$(ESSEvtClockRate), FRF=$(ESSEvtClockRate), FDIV=1")
+
+iocInit()
 \end{lstlisting}
 
 \subsection{EPICS IOC}
-Under EEE, the EPICS IOC can be started via the command \texttt{iocsh cPCI-evg-230\_0.cmd}. The output should look like as follows:
+All the EPICS parameters should be run from an E3 session. To start E3, type:
+\begin{lstlisting}[style=termstyle]
+[timinguser@icslab-ts01 ~]$ source source /home/timinguser/ics_gitsrc/e3/e3-env/setE3Env.bash
+\end{lstlisting}
+All the IOCs and related EPICS commands (caget, caput, camonitor, etc.) should be run from an E3 session.
+
+Under E3, the EPICS IOC can be started via the command \texttt{iocsh.bash emcpcievg230.cmd}. The output should look like as follows:
 
 \begin{lstlisting}[style=termstyle]
-[root@ics-cpci2-cpu1 tests_cPCI-EVG-230]# iocsh cPCI-evg-230_0.cmd 
-/opt/epics/bases/base-3.14.12.5/bin/centos7-x86_64/softIoc -D /opt/epics/bases/base-3.14.12.5/dbd/softIoc.dbd /tmp/iocsh.startup.24876
-#date="Thu  8 Sep 14:34:32 UTC 2016"
-#user="javiercereijogarcia"
-#PWD="/home/javiercereijogarcia/tests_cPCI-EVG-230"
-#EPICSVERSION="3.14.12.5"
-#EPICS_HOST_ARCH="centos7-x86_64"
-#SHELLBOX=""
-#EPICS_CA_ADDR_LIST=""
-#EPICS_MODULE_INCLUDE_PATH=".:/usr/lib64:/usr/lib:/lib64:/lib"
-dlload         /opt/epics/modules/environment/1.8.0/3.14.12.5/lib/centos7-x86_64/libenvironment.so
-dbLoadDatabase /opt/epics/modules/environment/1.8.0/3.14.12.5/dbd/environment.dbd
-environment_registerRecordDeviceDriver
-< "cPCI-evg-230_0.cmd"
-epicsEnvSet("SYS"             "testcPCI-EVG-230")
-epicsEnvSet("EVG"             "EVG0")
-epicsEnvSet("EVG_PCIBUS"      "0x10")
-epicsEnvSet("EVG_PCIDEVICE"   "0x0c")
-epicsEnvSet("EVG_PCIFUNCTION" "0x0")
-require mrfioc2,2.1.0
-require: mrfioc2 depends on devlib2 (2.6+).
-require: Loading library /opt/epics/modules/devlib2/2.6.0/3.14.12.5/lib/centos7-x86_64/libdevlib2.so.
-require: Loading /opt/epics/modules/devlib2/2.6.0/3.14.12.5/dbd/devlib2.dbd.
-require: Calling devlib2_registerRecordDeviceDriver function.
-require: Loading library /opt/epics/modules/mrfioc2/2.1.0/3.14.12.5/lib/centos7-x86_64/libmrfioc2.so.
-require: Adding /opt/epics/modules/mrfioc2/2.1.0/db.
-require: Adding /opt/epics/modules/mrfioc2/2.1.0/startup.
-require: Loading /opt/epics/modules/mrfioc2/2.1.0/3.14.12.5/dbd/mrfioc2.dbd.
-require: Calling mrfioc2_registerRecordDeviceDriver function.
-mrmEvgSetupPCI(EVG0, 0x10, 0x0c, 0x0)
-Device EVG0  16:12.0
-Using IRQ 16
+[timinguser@icslab-ts01 cmds]$ iocsh.bash emcpcievg230.cmd
+#
+# Start at "2018-W29-Jul19-1556-18-CEST"
+#
+# Version information:
+# European Spallation Source ERIC : iocsh.bash (v0.2-9d66ded.PID-1051)
+## can you see this?
+#
+# HOSTDISPLAY=""
+# WINDOWID=""
+# PWD="/home/timinguser/ics_gitsrc/e3/e3-mrfioc2/cmds"
+# USER="timinguser"
+# LOGNAME="timinguser"
+# EPICS_HOST_ARCH="linux-x86_64"
+# EPICS_BASE="/epics/bases/base-3.15.5"
+# EPICS_LOCATION="/epics/bases"
+# EPICS="/epics/bases"
+# EPICS_MODULES="/epics/modules"
+# REQUIRE="require"
+# REQUIRE_VERSION="2.5.4"
+# REQUIRE_BIN="/epics/modules/require/2.5.4/bin"
+# REQUIRE_LIB="/epics/modules/require/2.5.4/R3.15.5/lib"
+# REQUIRE_DBD="/epics/modules/require/2.5.4/R3.15.5/dbd"
+# EPICS_CA_AUTO_ADDR_LIST="yes"
+# EPICS_CA_ADDR_LIST=""
+# PATH="/epics/modules/require/2.5.4/bin:/epics/bases/base-3.15.5/bin/linux-x86_64:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/sbin:/home/timinguser/bin:/opt/etherlab/bin:/opt/etherlab/sbin"
+# LD_LIBRARY_PATH="/epics/bases/base-3.15.5/lib/linux-x86_64:/epics/modules/require/2.5.4/R3.15.5/lib/linux-x86_64:/usr/local/lib:/home/timinguser/lib:/opt/etherlab/lib"
+#
+# Please Use Version and other environment variables
+# in order to report or debug this shell
+#
+# Loading the mandatory require module ...
+#
+dlload /epics/modules/require/2.5.4/R3.15.5/lib/linux-x86_64/librequire.so
+dbLoadDatabase /epics/modules/require/2.5.4/R3.15.5/dbd/require.dbd
+require_registerRecordDeviceDriver
+Loading module info records for require
+#
+#
+< "emcpcievg230.cmd"
+require mrfioc2, 2.2.0
+Module mrfioc2 version 2.2.0 found in /epics/modules/mrfioc2/2.2.0/
+Module mrfioc2 depends on devlib2 2.9+
+Module devlib2 version 2.9.0 found in /epics/modules/devlib2/2.9.0/
+Loading library /epics/modules/devlib2/2.9.0/R3.15.5/lib/linux-x86_64/libdevlib2.so
+Loaded devlib2 version 2.9.0
+Loading dbd file /epics/modules/devlib2/2.9.0/R3.15.5/dbd/devlib2.dbd
+Calling function devlib2_registerRecordDeviceDriver
+Loading module info records for devlib2
+Loading library /epics/modules/mrfioc2/2.2.0/R3.15.5/lib/linux-x86_64/libmrfioc2.so
+Loaded mrfioc2 version 2.2.0
+Loading dbd file /epics/modules/mrfioc2/2.2.0/R3.15.5/dbd/mrfioc2.dbd
+Calling function mrfioc2_registerRecordDeviceDriver
+Loading module info records for mrfioc2
+epicsEnvSet("EPICS_CA_MAX_ARRAY_BYTES","10000000")
+epicsEnvSet("IOC", "EMCPCIEVG230")
+epicsEnvSet("DEV1", "EVG0")
+epicsEnvSet("ESSEvtClockRate"  "88.0525")
+mrmEvgSetupPCI(EVG0, "16:0e.0")
+Notice: devPCIFindSpec() expect B:D.F in hex
+Device EVG0  22:14.0
+Using IRQ 18
 FPGA version: 20000005
-Firmware version: 00000005
-Sub-units:
- FrontInp: 2, FrontOut: 6
- UnivInp: 4, UnivOut: 4
- RearInp: 16
- Mxc: 8, Event triggers: 8, DBus bits: 8
-Found EVG0:SFP0 EEPROM
+Firmware version >= 3 is recommended, please consider upgrading
 PCI interrupt connected!
-dbLoadRecords("evg-cpci.db", "EVG=EVG0, SYS=testcPCI-EVG-230")
-iocInit
+dbLoadRecords("cpci-evg230-ess.db",  "SYS=EMCPCIEVG230, D=EVG0, EVG=EVG0, FEVT=88.0525, FRF=88.0525, FDIV=1")
+macLib: macro PINITSEQ is undefined (expanding string # $(PINITSEQ,undefined)Cont-FOut_
+)
+Warning: 'cpci-evg230-ess.db' line 3602 has undefined macros
+macLib: macro PINITSEQ is undefined (expanding string # $(PINITSEQ,undefined)Cont-FOut_
+)
+Warning: 'cpci-evg230-ess.db' line 3706 has undefined macros
+macLib: macro PINITSEQ is undefined (expanding string # $(PINITSEQ,undefined)Cont-FOut_
+)
+Warning: 'cpci-evg230-ess.db' line 3810 has undefined macros
+iocInit()
 Starting iocInit
 ############################################################################
-## EPICS R3.14.12.5-2015-08 $Date: Tue 2015-03-24 09:57:35 -0500$
-## EPICS Base built Oct  9 2015
+## EPICS R3.15.5-EEE-3.15.5-patch
+## EPICS Base built Jan  5 2018
 ############################################################################
+require: record EMCPCIEVG230:MODULES not found
+require: record EMCPCIEVG230:VERSIONS not found
+require: record EMCPCIEVG230:MOD_VER not found
 iocRun: All initialization complete
-epicsEnvSet IOCSH_PS1,"ics-cpci2-cpu1> "
-ics-cpci2-cpu1>
+epicsEnvSet IOCSH_PS1 "9d66ded.icslab-ts01.1067 > "
+epicsEnvShow T_A
+T_A=linux-x86_64
+epicsEnvShow EPICS_HOST_ARCH
+EPICS_HOST_ARCH=linux-x86_64
+9d66ded.icslab-ts01.1067 >
 \end{lstlisting}
 
 In addition, the PCI information is available within the running IOC via \texttt{devPCIShow} as follows:
 \begin{lstlisting}
-  ics-cpci2-cpu1> devPCIShow
-  Look for the line with your configuration information, in our case is:
-  PCI 0000:10:0c.0 IRQ 16
+9d66ded.icslab-ts01.2759 > devPCIShow
+\end{lstlisting}
+Look for the line with your configuration information, in our case is:
+\begin{lstlisting}
+PCI 0000:16:0e.0 IRQ 18
   vendor:device 10b5:9030 rev 00
-  Where the vendor id 10b5 is PLX Technology INC.
-  And show the PCI information with (the second parameter is the verbosity level):
-
-ics-cpci2-cpu1> devPCIShow 9 0x10b5
+\end{lstlisting}
+Where the vendor id 10b5 is PLX Technology INC.
+And show the PCI information with (the second parameter is the verbosity level):
+\begin{lstlisting}
+9d66ded.icslab-ts01.2759 > devPCIShow 9 0x10b5
 ...
-PCI 0000:10:0c.0 IRQ 16
+PCI 0000:16:0e.0 IRQ 18
   vendor:device 10b5:9030 rev 00
   subved:subdev 1a3e:20e6
   class 118000 generic signal processing controller
   driver mrf-pci
   BAR 0 32-bit MMIO    128 B
   BAR 2 32-bit MMIO     64 kB
-Matched 10 devices
-ics-cpci2-cpu1>
+...
 \end{lstlisting}
 
 \newpage
-\chapter{System In-Situ Verification Procedure}
-This chapter provides the minimal system verification procedure.
+\chapter{System In-Situ Configuration}
+This chapter how to configure the EVG according to one's needs.
 \begin{table}[!htb]
   \centering
   \begin{tabular}{c|p{0.4\linewidth}|p{0.42\linewidth}}
     \toprule
-    Step & Goal                                             & Info.                                                  \\\midrule
-    0    & Check the event frequency                        & Link clock                                             \\\midrule
-    1    & Emit a software triggered event                 & Event emision                                         \\\midrule
-    2    & Emit a sequence                                 & Create a sequence, commit and emit it                 \\\midrule
-    3    & Emit an event triggered from an external source & Trigger the event emission from an external device     \\\bottomrule
+    Step & Goal                                            & Info.                                                 \\\midrule
+    0    & Select the event frequency                      & Link clock                                            \\\midrule
+    1    & Emit a software triggered event                 & SW event emission                                     \\\midrule
+    2    & Emit a periodic event                           & Multiplexed counters                                  \\\midrule
+    3    & Emit a sequence                                 & Create a sequence, commit and emit it                 \\\midrule
+    4    & Emit an event triggered from an external source & Trigger the event emission from an external device    \\\bottomrule
   \end{tabular}
   \caption[]{System In-Situ Verification Procedure}
   \label{table:checklist}
 \end{table}
 
 
-\section{Step 0 : Check the event frequency}
-Short comments on each command or a series of commands are shown before the corresponding command.
+\section{Step 0 : Select the event frequency}
+One can check and select the event frequency with these commands after loading the E3 environment. Short comments on each command or a series of commands are shown before the corresponding command.
 \begin{lstlisting}[style=termstyle]
 #
-# Check the event frequency; here the default is shown
+# Check the event frequency; here the ESS frequency is shown
 #
-[user@host ~]$ caget testcPCI-EVG-230-EVG0:EvtClk-Frequency-RB
-testcPCI-EVG-230-EVG0:EvtClk-Frequency-RB 124.916
+timinguser@icslab-ts01: ~$ caget EMCPCIEVG230-EVG0:EvtClk-Frequency-RB
+EMCPCIEVG230-EVG0:EvtClk-Frequency-RB 88.0519
+\end{lstlisting}
+The ESS frequency (88.0525 MHz) was selected in line \ref{essfreq} of the startup script in Listing~\ref{list:emcpcievg230.cmd}. A slightly different frequency is shown because of the capabilities of the internal frequency synthesizer. In operations the EVG will get the event frequency from the master RF oscillator.
+\begin{lstlisting}[style=termstyle]
+#
+# Change the event frequency to 100 MHz
+#
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:EvtClk-FracSynFreq-SP 100
+Old : EMCPCIEVG230-EVG0:EvtClk-FracSynFreq-SP 88.0525
+New : EMCPCIEVG230-EVG0:EvtClk-FracSynFreq-SP 100
+#
+# Check the new event frequency
+#
+timinguser@icslab-ts01: ~$ caget EMCPCIEVG230-EVG0:EvtClk-Frequency-RB
+EMCPCIEVG230-EVG0:EvtClk-Frequency-RB 100
+#
+# Revert back to the ESS event frequency and check it
+#
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:EvtClk-FracSynFreq-SP 88.0525
+Old : EMCPCIEVG230-EVG0:EvtClk-FracSynFreq-SP 100
+New : EMCPCIEVG230-EVG0:EvtClk-FracSynFreq-SP 88.0525
+timinguser@icslab-ts01: ~$ caget EMCPCIEVG230-EVG0:EvtClk-Frequency-RB
+EMCPCIEVG230-EVG0:EvtClk-Frequency-RB 88.0519
 \end{lstlisting}
 
 \section{Step 1 : Emit a software triggered event}
-In this step the connection to an EVR will be checked. In addition to the EVG, the EVR (correctly installed) and an optical cable between both are needed. In this example the EVR is installed in a different crate than the EVG. The start-up script file for the EVG is the same as shown in Listing~\ref{list:cPCI-evg-230_0.cmd}, while the start-up script file for the EVR is shown in Listing~\ref{list:cPCI-evr-230_1.cmd}.
+In this step the connection to an EVR will be checked. In addition to the EVG, the EVR (correctly installed) and an optical cable between both are needed. In this example the EVR is installed in a different crate than the EVG. The start-up script file for the EVG is the same as shown in Listing~\ref{list:emcpcievg230.cmd}.
 
-\begin{lstlisting}[
-    style=termstyle,
-    label={list:cPCI-evr-230_1.cmd},
-    caption={Start-up script \texttt{cPCI-evr-230\_1.cmd}. }
-  ]
-epicsEnvSet("SYS"             "testcPCI-EVG-230")
-epicsEnvSet("EVR"             "EVR0")
-epicsEnvSet("EVR_PCIDOMAIN"   "0x0")
-epicsEnvSet("EVR_PCIBUS"      "0x10")
-epicsEnvSet("EVR_PCIDEVICE"   "0xe")
-epicsEnvSet("EVR_PCIFUNCTION" "0x0")
-
-require mrfioc2,2.1.0
-
-mrmEvrSetupPCI($(EVR), $(EVR_PCIDOMAIN), $(EVR_PCIBUS), $(EVR_PCIDEVICE), $(EVR_PCIFUNCTION))
-
-dbLoadRecords("evr-cpci-230.db", "EVR=$(EVR), SYS=$(SYS)")
-
-dbLoadRecords("evr-softEvent.template", "EVR=$(EVR), SYS=$(SYS), EVT=1, CODE=1")
-\end{lstlisting}
-
-Following are the steps necessary to emit the event and check that it is received in the EVR. To check that the EVR has received the event, it is necessary to work on the \path{ioc shell}\footnote{Actually only the EVR commands must be run on the \path{ioc shell}, but also the EVG commands are shown on it}. Short comments on each command or a series of commands are shown before the corresponding command.
+Following are the steps necessary to emit the event and check that it is received in the EVR. Short comments on each command or a series of commands are shown before the corresponding command.
 
 \begin{lstlisting}[style=termstyle]
 #
-# Start the EVG IOC
+# Monitor the arrival of event 10 on the EVR
 #
-[root@ics-cpci2-cpu1 tests_cPCI-EVG-230]# iocsh cPCI-evg-230_1.cmd
-
+iocuser@icslab-ipc01: ~$ camonitor EMCPCIEVG230-EVR0:EvtACnt-I
+EMCPCIEVG230-EVR0:EvtACnt-I    <undefined> 0 UDF INVALID
 #
-# Enable the software event
+# Send the software event 10 from the EVG
 #
-ics-cpci2-cpu1> dbpf testcPCI-EVG-230-EVG0:SoftEvt-Enable-Sel "Enabled"
-DBR_STRING:          "Enabled"
-  
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+Old : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 0
+New : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
 #
-# Open a terminal to the EVR's CPU and start the IOC
+# Check that the EVR has received the event
 #
-[root@ics-cpci2-cpu1 tests_cPCI-EVG-230]# iocsh cPCI-evr-230_1.cmd
-
+iocuser@icslab-ipc01: ~$ camonitor EMCPCIEVG230-EVR0:EvtACnt-I
+EMCPCIEVG230-EVR0:EvtACnt-I    <undefined> 0 UDF INVALID
+EMCPCIEVG230-EVR0:EvtACnt-I    <undefined> 1
 #
-# And change the following variable so we can see if the event is received
+# One can repeat this process several times
 #
-ics-cpci2-cpu1> var evrEventDebug 2
-
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+Old : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+New : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+Old : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+New : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+Old : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+New : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
 #
-#Send the event from the EVG (first terminal)
+# Which can be seen on the EVR
 #
-ics-cpci2-cpu1> dbpf testcPCI-EVG-230-EVG0:SoftEvt-EvtCode-SP 1
-DBR_LONG:           1         0x1
-
-#
-# The EVR should receive the event:
-#
-0.173715212: EVR0 received event: 1
+EMCPCIEVG230-EVR0:EvtACnt-I    <undefined> 2
+EMCPCIEVG230-EVR0:EvtACnt-I    <undefined> 3
+EMCPCIEVG230-EVR0:EvtACnt-I    <undefined> 4
 \end{lstlisting}
 
-
-\section{Step 2 : Emit a sequence}
-For this step, an additional template file is needed to be added to the end line of the \path{cPCI-evg-230_0.cmd} file. This additional database file is located in \path{/opt/epics/modules/mrfioc2/2.1.0/db/evgSoftSeq.template}. The new start-up script file, \path{cPCI-evg-230\_2.cmd}, is shown in Listing~\ref{list:cPCI-evg-230_2.cmd}. 
-\begin{lstlisting}[ 
-    style=termstyle,
-    label={list:cPCI-evg-230_2.cmd},
-    caption={Start-up script \texttt{cPCI-evg-230\_2.cmd}.}
-  ]
-epicsEnvSet("SYS"             "testcPCI-EVG-230")
-epicsEnvSet("EVG"             "EVG0")
-epicsEnvSet("EVG_PCIBUS"      "0x10")
-epicsEnvSet("EVG_PCIDEVICE"   "0xc")
-epicsEnvSet("EVG_PCIFUNCTION" "0x0")
-
-require mrfioc2,2.1.0
-
-mrmEvgSetupPCI($(EVG), $(EVG_PCIBUS), $(EVG_PCIDEVICE), $(EVG_PCIFUNCTION))
-
-dbLoadRecords("evg-cpci.db", "EVG=$(EVG), SYS=$(SYS)")
-
-dbLoadRecords("evgSoftSeq.template", "EVG=$(EVG), SYS=$(SYS), SEQNUM=1, NELM=3")
-  
+\subsection{Step 1.1 : Configure the EVG to send the timestamp}
+Only one more line is needed in the EVG startup script to send the timestamp from the EVG to the EVRs. One must add the following line after \path{iocInit()} in Listing~\ref{list:emcpcievg230.cmd}:
+\begin{lstlisting}[style=termstyle]
+dbpf "$(IOC)-$(DEV1):1ppsInp-Sel" "Sys Clk"
 \end{lstlisting}
 
-
-The start-up script for the EVR is shown in Listing~\ref{list:cPCI-evr-230_2.cmd}.
-\begin{lstlisting}[ 
-    style=termstyle,
-    label={list:cPCI-evr-230_2.cmd},
-    caption={Start-up script \texttt{cPCI-evr-230\_2.cmd}.}
-  ]
-epicsEnvSet("SYS"             "testcPCI-EVG-230")
-epicsEnvSet("EVR"             "EVR0")
-epicsEnvSet("EVR_PCIDOMAIN"   "0x0")
-epicsEnvSet("EVR_PCIBUS"      "0x10")
-epicsEnvSet("EVR_PCIDEVICE"   "0xe")
-epicsEnvSet("EVR_PCIFUNCTION" "0x0")
-
-require mrfioc2,2.1.0
-
-mrmEvrSetupPCI($(EVR), $(EVR_PCIDOMAIN), $(EVR_PCIBUS), $(EVR_PCIDEVICE), $(EVR_PCIFUNCTION))
-
-dbLoadRecords("evr-cpci-230.db", "EVR=$(EVR), SYS=$(SYS)")
-
-dbLoadRecords("evr-softEvent.template", "EVR=$(EVR), SYS=$(SYS), EVT=1, CODE=1")
-dbLoadRecords("evr-softEvent.template", "EVR=$(EVR), SYS=$(SYS), EVT=2, CODE=2")
-dbLoadRecords("evr-softEvent.template", "EVR=$(EVR), SYS=$(SYS), EVT=3, CODE=3")
-  
-\end{lstlisting}
-
-
-Short comments on each command or a series of commands are shown before the corresponding command.
+In this case the camonitor of the event will show its correct timestamp:
 \begin{lstlisting}[style=termstyle]
 #
-# In the EVG host, attach the soft sequence to a specific hardware sequence
+# Send the event from the EVG
 #
-[user@evghost ~]$ caput testcPCI-EVG-230-EVG0:SoftSeq-1-Unload-Cmd 1
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-Unload-Cmd 0
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-Unload-Cmd 1
-[user@evghost ~]$ caput testcPCI-EVG-230-EVG0:SoftSeq-1-Load-Cmd 1
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-Load-Cmd 1
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-Load-Cmd 1
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+Old : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 0
+New : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+Old : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+New : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+Old : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+New : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+Old : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
+New : EMCPCIEVG230-EVG0:SoftEvt-EvtCode-SP 10
 #
-# Set engineering units for the timestamping
+# Monitor the event in the EVR
 #
-[user@evghost ~]$ caput testcPCI-EVG-230-EVG0:SoftSeq-1-TsInpMode-Sel EGU
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-TsInpMode-Sel EGU
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-TsInpMode-Sel EGU
-[user@evghost ~]$ caput testcPCI-EVG-230-EVG0:SoftSeq-1-TsResolution-Sel mSec
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-TsResolution-Sel Sec
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-TsResolution-Sel mSec
+iocuser@icslab-ipc01: ~$ camonitor EMCPCIEVG230-EVR0:EvtACnt-I
+EMCPCIEVG230-EVR0:EvtACnt-I    <undefined> 0 UDF INVALID
+EMCPCIEVG230-EVR0:EvtACnt-I    2018-07-20 11:36:12.144397 1
+EMCPCIEVG230-EVR0:EvtACnt-I    2018-07-20 11:36:13.018189 2
+EMCPCIEVG230-EVR0:EvtACnt-I    2018-07-20 11:36:13.468005 3
+EMCPCIEVG230-EVR0:EvtACnt-I    2018-07-20 11:36:13.941891 4
+\end{lstlisting}
+
+
+\section{Step 2 : Emit a periodic event}
+The EVG can be set to emit periodically an event by using a multiplexed counter (Mxc). Short comments on each command or a series of commands are shown before the corresponding command. In this example the Mxc7 is used to create the heartbeat event (event number 122) at a frequency of 1 Hz.
+\begin{lstlisting}[style=termstyle]
+#
+# Set up the Mxc7 frequency to 1 Hz, by dividing the event clock (88.0525 MHz) by the integer number set in this record (88.0525MHz/88052500=1Hz)
+#
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:Mxc7-Prescaler-SP 88052500
+Old : EMCPCIEVG230-EVG0:Mxc7-Prescaler-SP 124920
+New : EMCPCIEVG230-EVG0:Mxc7-Prescaler-SP 88052500
+#
+# Set the trigger event source 7 event code to 122
+#
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:TrigEvt7-EvtCode-SP 122
+Old : EMCPCIEVG230-EVG0:TrigEvt7-EvtCode-SP 0
+New : EMCPCIEVG230-EVG0:TrigEvt7-EvtCode-SP 122
+#
+# Set the trigger event source 7 to trigger on the tick of Mxc7 (map the trigger event source to the Mxc7)
+#
+timinguser@icslab-ts01: ~$ caput EMCPCIEVG230-EVG0:TrigEvt7-TrigSrc-Sel "Mxc7"
+Old : EMCPCIEVG230-EVG0:TrigEvt7-TrigSrc-Sel Off
+New : EMCPCIEVG230-EVG0:TrigEvt7-TrigSrc-Sel Mxc7
+\end{lstlisting}
+One can check the arrival of event 122 (or heartbeat event) in the EVR by monitoring the link timeout record \path{$(SYS)-$(D):Cnt-LinkTimo-I}. Before the event is set, this record increases its value by 1 every 1.6 s approximately. When the heartbeat event is being received at 1 Hz (or actually at any rate faster than 1.6 s) this record does not increase.
+
+The heartbeat event, or any other event at any desired frequency, can be set automatically at startup by including in the startup script the same commands after \path{iocInit()} in Listing~\ref{list:emcpcievg230.cmd}, and replacing \path{caput} by \path{dbpf}.
+
+
+\section{Step 3 : Emit a sequence}
+In this section it is shown how to configure a sequencer to emit a sequence of events. Short comments on each command or a series of commands are shown before the corresponding command.
+\begin{lstlisting}[style=termstyle]
+#
+# Attach the soft sequence to a specific hardware sequence
+#
+timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:SoftSeq0-Unload-Cmd 1
+Old : EMCPCIEVG230-EVG0:SoftSeq0-Unload-Cmd 0
+New : EMCPCIEVG230-EVG0:SoftSeq0-Unload-Cmd 1
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:SoftSeq0-Load-Cmd 1
+Old : EMCPCIEVG230-EVG0:SoftSeq0-Load-Cmd 0
+New : EMCPCIEVG230-EVG0:SoftSeq0-Load-Cmd 1
+#
+# Set the engineering units (microseconds) for the delay of the events in the sequence (sequence timestamps)
+#
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:SoftSeq0-TsResolution-Sel "uSec"
+Old : EMCPCIEVG230-EVG0:SoftSeq0-TsResolution-Sel Ticks
+New : EMCPCIEVG230-EVG0:SoftSeq0-TsResolution-Sel uSec
 #
 # Set the trigger source for the sequence as software and enable it
 #
-[user@evghost ~]$ caput testcPCI-EVG-230-EVG0:SoftSeq-1-TrigSrc-Sel Software
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-TrigSrc-Sel None
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-TrigSrc-Sel Software
-[user@evghost ~]$ caput testcPCI-EVG-230-EVG0:SoftSeq-1-Enable-Cmd 1
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-Enable-Cmd 1
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-Enable-Cmd 1
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:SoftSeq0-TrigSrc-Sel "Software"
+Old : EMCPCIEVG230-EVG0:SoftSeq0-TrigSrc-Sel None
+New : EMCPCIEVG230-EVG0:SoftSeq0-TrigSrc-Sel Software
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:SoftSeq0-Enable-Cmd 1
+Old : EMCPCIEVG230-EVG0:SoftSeq0-Enable-Cmd 0
+New : EMCPCIEVG230-EVG0:SoftSeq0-Enable-Cmd 1
 #
-# Set up the sequence content, corresponding timestamps and masks
-# The timestamps are specified in milliseconds, as set before
+# Set the runmode to normal, so that the sequencer re-arms after it finishes running
 #
-[user@evghost ~]$ caput -a testcPCI-EVG-230-EVG0:SoftSeq-1-EvtCode-SP 3 1 2 3
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-EvtCode-SP 3 6 0 0
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-EvtCode-SP 3 1 2 3
-[user@evghost ~]$ caput -a testcPCI-EVG-230-EVG0:SoftSeq-1-Timestamp-SP 3 1000 2000 3000
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-Timestamp-SP 3 2.50321e-308 0 0
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-Timestamp-SP 3 1000 2000 3000
-[user@evghost ~]$ caput -a testcPCI-EVG-230-EVG0:SoftSeq-1-EvtMask-SP 3 0 0 0
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-EvtMask-SP 3 3 0 0
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-EvtMask-SP 3 0 0 0
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:SoftSeq0-RunMode-Sel "Normal"
+Old : EMCPCIEVG230-EVG0:SoftSeq0-RunMode-Sel Single
+New : EMCPCIEVG230-EVG0:SoftSeq0-RunMode-Sel Normal
+#
+# Set up the sequence content, events and timestamps
+# Event 127 is always needed at the end, it is the end-of-sequence event and stops the sequencer
+# The timestamps are specified in microseconds, as set before
+# In this example, events 10, 11 and 12 are issued 1 s, 2 s and 3 s after triggering the sequencer
+#
+[timinguser@icslab-ts01 ~]$ caput -a EMCPCIEVG230-EVG0:SoftSeq0-EvtCode-SP 4 10 11 12 127
+Old : EMCPCIEVG230-EVG0:SoftSeq0-EvtCode-SP 2047 3 0 0 0 [...]
+New : EMCPCIEVG230-EVG0:SoftSeq0-EvtCode-SP 2047 10 11 12 127 0 0 0 [...]
+[timinguser@icslab-ts01 ~]$ caput -a EMCPCIEVG230-EVG0:SoftSeq0-Timestamp-SP 4 1000000 2000000 3000000 3000001
+Old : EMCPCIEVG230-EVG0:SoftSeq0-Timestamp-SP 2047 0 0 0 [...]
+New : EMCPCIEVG230-EVG0:SoftSeq0-Timestamp-SP 2047 1e+06 2e+06 3e+06 3e+06 0 0 0 [...]
 #
 # Commit the sequence to hardware
 #
-[user@evghost ~]$ caput testcPCI-EVG-230-EVG0:SoftSeq-1-Commit-Cmd 1
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-Commit-Cmd 1
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-Commit-Cmd 1
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:SoftSeq0-Commit-Cmd 1
+Old : EMCPCIEVG230-EVG0:SoftSeq0-Commit-Cmd Commit
+New : EMCPCIEVG230-EVG0:SoftSeq0-Commit-Cmd Commit
 #
-# In the EVR host, set the record to get timestamp from system time (OS clock)
+# On the EVR, monitor the reception of the events
 #
-[user@evrhost ~]$ caput testcPCI-EVG-230-EVR0:Event-1-SP.TSE 0
-Old : testcPCI-EVG-230-EVR0:Event-1-SP.TSE -2
-New : testcPCI-EVG-230-EVR0:Event-1-SP.TSE 0
-[user@evrhost ~]$ caput testcPCI-EVG-230-EVR0:Event-2-SP.TSE 0
-Old : testcPCI-EVG-230-EVR0:Event-2-SP.TSE -2
-New : testcPCI-EVG-230-EVR0:Event-2-SP.TSE 0
-[user@evrhost ~]$ caput testcPCI-EVG-230-EVR0:Event-3-SP.TSE 0
-Old : testcPCI-EVG-230-EVR0:Event-3-SP.TSE -2
-New : testcPCI-EVG-230-EVR0:Event-3-SP.TSE 0
-#
-# Monitor the reception of the events
-#
-[user@evrhost ~]$ camonitor testcPCI-EVG-230-EVR0:Event-1-Cnt-I testcPCI-EVG-230-EVR0:Event-2-Cnt-I testcPCI-EVG-230-EVR0:Event-3-Cnt-I
-testcPCI-EVG-230-EVR0:Event-1-Cnt-I <undefined> 0 UDF INVALID
-testcPCI-EVG-230-EVR0:Event-2-Cnt-I <undefined> 0 UDF INVALID
-testcPCI-EVG-230-EVR0:Event-3-Cnt-I <undefined> 0 UDF INVALID
+[iocuser@icslab-ipc01 ~]$ camonitor EMCPCIEVG230-EVR0:EvtACnt-I EMCPCIEVG230-EVR0:EvtBCnt-I EMCPCIEVG230-EVR0:EvtCCnt-I
+EMCPCIEVG230-EVR0:EvtACnt-I    <undefined> 0 UDF INVALID
+EMCPCIEVG230-EVR0:EvtBCnt-I    <undefined> 0 UDF INVALID
+EMCPCIEVG230-EVR0:EvtCCnt-I    <undefined> 0 UDF INVALID
 #
 # On the EVG host, trigger the sequence
 #
-[user@evghost ~]$ caput testcPCI-EVG-230-EVG0:SoftSeq-1-SoftTrig-Cmd 1
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-SoftTrig-Cmd 0
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-SoftTrig-Cmd 1
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:SoftSeq0-SoftTrig-Cmd 1
+Old : EMCPCIEVG230-EVG0:SoftSeq0-SoftTrig-Cmd 0
+New : EMCPCIEVG230-EVG0:SoftSeq0-SoftTrig-Cmd 1
 #
 # The EVR will receive these events
 #
-testcPCI-EVG-230-EVR0:Event-1-Cnt-I 2016-09-06 09:10:16.646888 1  
-testcPCI-EVG-230-EVR0:Event-2-Cnt-I 2016-09-06 09:10:17.646818 1  
-testcPCI-EVG-230-EVR0:Event-3-Cnt-I 2016-09-06 09:10:18.646826 1
+EMCPCIEVG230-EVR0:EvtACnt-I    2018-07-23 10:26:19.089541 1
+EMCPCIEVG230-EVR0:EvtBCnt-I    2018-07-23 10:26:20.089570 1
+EMCPCIEVG230-EVR0:EvtCCnt-I    2018-07-23 10:26:21.089623 1
 #
 # This can be repeated
 #
-[user@evghost ~]$ caput testcPCI-EVG-230-EVG0:SoftSeq-1-SoftTrig-Cmd 1
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-SoftTrig-Cmd 1
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-SoftTrig-Cmd 1
-[user@evghost ~]$ caput testcPCI-EVG-230-EVG0:SoftSeq-1-SoftTrig-Cmd 1
-Old : testcPCI-EVG-230-EVG0:SoftSeq-1-SoftTrig-Cmd 1
-New : testcPCI-EVG-230-EVG0:SoftSeq-1-SoftTrig-Cmd 1
-[user@evghost ~]$ 
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:SoftSeq0-SoftTrig-Cmd 1
+Old : EMCPCIEVG230-EVG0:SoftSeq0-SoftTrig-Cmd 1
+New : EMCPCIEVG230-EVG0:SoftSeq0-SoftTrig-Cmd 1
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:SoftSeq0-SoftTrig-Cmd 1
+Old : EMCPCIEVG230-EVG0:SoftSeq0-SoftTrig-Cmd 1
+New : EMCPCIEVG230-EVG0:SoftSeq0-SoftTrig-Cmd 1
 #
 # EVR output
 #
-testcPCI-EVG-230-EVR0:Event-1-Cnt-I 2016-09-06 09:10:21.355915 2  
-testcPCI-EVG-230-EVR0:Event-2-Cnt-I 2016-09-06 09:10:22.355922 2  
-testcPCI-EVG-230-EVR0:Event-3-Cnt-I 2016-09-06 09:10:23.355994 2  
-testcPCI-EVG-230-EVR0:Event-1-Cnt-I 2016-09-06 09:10:30.414570 3  
-testcPCI-EVG-230-EVR0:Event-2-Cnt-I 2016-09-06 09:10:31.414600 3  
-testcPCI-EVG-230-EVR0:Event-3-Cnt-I 2016-09-06 09:10:32.414636 3
+EMCPCIEVG230-EVR0:EvtACnt-I    2018-07-23 10:26:44.068009 2
+EMCPCIEVG230-EVR0:EvtBCnt-I    2018-07-23 10:26:45.068040 2
+EMCPCIEVG230-EVR0:EvtCCnt-I    2018-07-23 10:26:46.068068 2
+EMCPCIEVG230-EVR0:EvtACnt-I    2018-07-23 10:26:50.579669 3
+EMCPCIEVG230-EVR0:EvtBCnt-I    2018-07-23 10:26:51.579688 3
+EMCPCIEVG230-EVR0:EvtCCnt-I    2018-07-23 10:26:52.579727 3
+\end{lstlisting}
+
+It is possible to run the sequencer automatically triggered by a Mxc; for example, for Mxc0:
+\begin{lstlisting}
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:SoftSeq0-TrigSrc-Sel "Mxc0"
+\end{lstlisting}
+
+All the previous commands, except the set up of the sequence content (the event and timestamp lists) and the commit command which has to be run at the end of the configuration including the sequence content, can be set automatically at startup by including in the startup script the same commands after \path{iocInit()} in Listing~\ref{list:emcpcievg230.cmd}, and replacing \path{caput} by \path{dbpf}.
+
+It is also possible to set up the sequence content automatically by creating a file with the commands to configure the sequence contents and the commit command (with \path{caput}, not \path{dbpf}). This file looks like Listing~\ref{list:configuresequence.sh} and should be in the same directory as the startup script.
+\begin{lstlisting}[
+    style=termstyle,
+    label={list:configuresequence.sh},
+    caption={Configure the sequence contents and commit commands file \texttt{configuresequence.sh}.}
+  ]
+caput -a EMCPCIEVG230-EVG0:SoftSeq0-EvtCode-SP 4 10 11 12 127
+
+caput -a EMCPCIEVG230-EVG0:SoftSeq0-Timestamp-SP 4 1000000 2000000 3000000 3000001
+
+caput EMCPCIEVG230-EVG0:SoftSeq0-Commit-Cmd 1
+\end{lstlisting}
+
+This file should be called from the IOC shell including the following line after \path{iocInit()} and all the sequencer configuration lines:
+\begin{lstlisting}
+system("/bin/sh ./configuresequence.sh")
 \end{lstlisting}
 
 
-
-\section{Step 3 : Emit an event triggered from an external source}
-In this step the event emission is triggered from an external input. It will be necessary to install an I/O module to the cPCI-EVG-230 board. The start-up script file for the EVG is the same one as shown in Listing~\ref{list:cPCI-evg-230_0.cmd}.
+\section{Step 4 : Emit an event triggered from an external source}
+In this step the event emission is triggered from an external input. It will be necessary to install an I/O module to the cPCI-EVG-230 board. The start-up script file for the EVG is the same one as shown in Listing~\ref{list:emcpcievg230.cmd}.
 
 Short comments on each command or a series of commands are shown before the corresponding command.
 
 \begin{lstlisting}[style=termstyle]
 #
-# Set event code 1 to be emitted when trigger source 0 is triggered
+# Set event code 10 to be emitted when trigger source 1 is triggered
 #
-[user@host ~]$ caput testcPCI-EVG-230-EVG0:TrigEvt0-EvtCode-SP 1
-Old : testcPCI-EVG-230-EVG0:TrigEvt0-EvtCode-SP 0
-New : testcPCI-EVG-230-EVG0:TrigEvt0-EvtCode-SP 1
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:TrigEvt1-EvtCode-SP 10
+Old : EMCPCIEVG230-EVG0:TrigEvt1-EvtCode-SP 0
+New : EMCPCIEVG230-EVG0:TrigEvt1-EvtCode-SP 10
 #
-# Map universal input 2 to trigger source 0
+# Map universal input 0 to trigger source 1
 #
-[user@host ~]$ caput testcPCI-EVG-230-EVG0:UnivInp2-TrigSrc0-SP 1
-Old : testcPCI-EVG-230-EVG0:UnivInp2-TrigSrc0-SP Clear
-New : testcPCI-EVG-230-EVG0:UnivInp2-TrigSrc0-SP Set
+[timinguser@icslab-ts01 ~]$ caput EMCPCIEVG230-EVG0:TrigEvt1-TrigSrc-Sel "Univ0"
+Old : EMCPCIEVG230-EVG0:TrigEvt1-TrigSrc-Sel Off
+New : EMCPCIEVG230-EVG0:TrigEvt1-TrigSrc-Sel Univ0
 #
 # Trigger the input with your external device
 # It is possible to check the reception of the event in an EVR, as shown before
 #
 \end{lstlisting}
+As always this can be included in the startup script.
 
 
 \newpage
-\chapter{Use case: generate 14 Hz}
-The start-up script file for the EVG is the same one as shown in Listing~\ref{list:cPCI-evg-230_0.cmd}. Short comments on each command or a series of commands are shown before the corresponding command.
-\begin{lstlisting}[style=termstyle]
+\chapter{Use case: generate 14 Hz with a sequencer}
+The startup script for an IOC that automatically generates a 14 Hz signal using a sequencer is shown in Listing~\ref{list:emcpcievg230_14Hz.cmd}. In the same directory the file shown in Listing~\ref{list:configuresequence_14Hz.sh} should be present.
+\begin{lstlisting}[
+    style=termstyle,
+    label={list:emcpcievg230_14Hz.cmd},
+    caption={Start-up script \texttt{emcpcievg230\_14Hz.cmd}.}
+  ]
 #
-# Set event code 14 to be emitted when trigger source 0 is triggered
+# This the full setup for the Timing System with E3.
 #
-[user@host ~]$ caput testcPCI-EVG-230-EVG0:TrigEvt0-EvtCode-SP 14
-Old : testcPCI-EVG-230-EVG0:TrigEvt0-EvtCode-SP 0
-New : testcPCI-EVG-230-EVG0:TrigEvt0-EvtCode-SP 14
-#
-# Set the multiplexer counter 0 to 14 Hz
-#
-[user@host ~]$ caput testcPCI-EVG-230-EVG0:Mxc0-Frequency-SP 14
-Old : testcPCI-EVG-230-EVG0:Mxc0-Frequency-SP 1
-New : testcPCI-EVG-230-EVG0:Mxc0-Frequency-SP 14
-#
-# Map multiplexed counter 0 to trigger source 0
-#
-[user@host ~]$ caput testcPCI-EVG-230-EVG0:Mxc0-TrigSrc0-SP 1
-Old : testcPCI-EVG-230-EVG0:Mxc0-TrigSrc0-SP Clear
-New : testcPCI-EVG-230-EVG0:Mxc0-TrigSrc0-SP Set
-#
-# Enable the software event
-#
-[user@host ~]$ caput testcPCI-EVG-230-EVG0:SoftEvt-Enable-Sel 1
-Old : testcPCI-EVG-230-EVG0:SoftEvt-Enable-Sel Enabled
-New : testcPCI-EVG-230-EVG0:SoftEvt-Enable-Sel Enabled
+
+require mrfioc2, 2.2.0
+
+epicsEnvSet("EPICS_CA_MAX_ARRAY_BYTES","10000000")
+
+epicsEnvSet("IOC", "EMCPCIEVG230")
+epicsEnvSet("DEV1", "EVG0")
+epicsEnvSet("PCIADDR", "16:0e.0")
+
+epicsEnvSet("MainEvtCODE" "14")
+epicsEnvSet("HeartBeatEvtCODE"   "122")
+epicsEnvSet("ESSEvtClockRate"  "88.0525")
+
+mrmEvgSetupPCI($(DEV1), $(PCIADDR))
+dbLoadRecords("cpci-evg230-ess.db",  "SYS=$(IOC), D=$(DEV1), EVG=$(DEV1), FEVT=$(ESSEvtClockRate), FRF=$(ESSEvtClockRate), FDIV=1")
+
+iocInit()
+
+dbpf "$(IOC)-$(DEV1):1ppsInp-Sel" "Sys Clk"
+
+# Master Event Rate 14 Hz
+dbpf $(IOC)-$(DEV1):Mxc0-Prescaler-SP 6289464
+
+# Setup of sequencer
+dbpf $(IOC)-$(DEV1):SoftSeq0-RunMode-Sel "Normal"
+dbpf $(IOC)-$(DEV1):SoftSeq0-TrigSrc-Sel "Mxc0"
+dbpf $(IOC)-$(DEV1):SoftSeq0-TsResolution-Sel "uSec"
+dbpf $(IOC)-$(DEV1):SoftSeq0-Load-Cmd 1
+dbpf $(IOC)-$(DEV1):SoftSeq0-Enable-Cmd 1
+
+# Load the sequence
+system("/bin/sh ./configure_sequence.sh $(IOC) $(DEV1)")
+
+# Heart Beat 1 Hz
+dbpf $(IOC)-$(DEV1):Mxc7-Prescaler-SP 88052500
+dbpf $(IOC)-$(DEV1):TrigEvt7-EvtCode-SP $(HeartBeatEvtCODE)
+dbpf $(IOC)-$(DEV1):TrigEvt7-TrigSrc-Sel "Mxc7"
+
+dbpf $(IOC)-$(DEV1):SyncTimestamp-Cmd 1
 \end{lstlisting}
 
-It is possible to automate this process by modifying the start-up script so that is starts emitting events as soon as it is initiated. This start-up script is shown in Listing~\ref{list:cPCI-evg-230_14Hz.cmd}.
-\begin{lstlisting}[ 
+\begin{lstlisting}[
     style=termstyle,
-    label={list:cPCI-evg-230_14Hz.cmd},
-    caption={Start-up script \texttt{cPCI-evr-230\_14Hz.cmd}.}
+    label={list:configuresequence_14Hz.sh},
+    caption={Sequencer content script \texttt{configuresequence\_14Hz.sh}.}
   ]
-epicsEnvSet("SYS"             "testcPCI-EVG-230")
-epicsEnvSet("EVR"             "EVR0")
-epicsEnvSet("EVR_PCIDOMAIN"   "0x0")
-epicsEnvSet("EVR_PCIBUS"      "0x10")
-epicsEnvSet("EVR_PCIDEVICE"   "0xe")
-epicsEnvSet("EVR_PCIFUNCTION" "0x0")
+# Bash script to configure the EVG/EVR sequencer
+# All values in us
 
-require mrfioc2,2.1.0
+# Event code 14 (14 Hz), 127 is the end of sequence
+caput -a $1-$2:SoftSeq0-EvtCode-SP 2 14 127
 
-mrmEvrSetupPCI($(EVR), $(EVR_PCIDOMAIN), $(EVR_PCIBUS), $(EVR_PCIDEVICE), $(EVR_PCIFUNCTION))
+# Defining time at which the event codes are sent in us
+caput -a $1-$2:SoftSeq0-Timestamp-SP 2 0 1
 
-dbLoadRecords("evr-cpci-230.db", "EVR=$(EVR), SYS=$(SYS)")
-
-
-dbpf $(SYS)-$(EVG):TrigEvt0-EvtCode-SP   14
-dbpf $(SYS)-$(EVG):Mxc0-Frequency-SP     14
-dbpf $(SYS)-$(EVG):Mxc0-TrigSrc0-SP      1
-
-dbpf $(SYS)-$(EVG):SoftEvt-Enable-Sel    1
-  
+# Commit the sequence to HW
+caput $1-$2:SoftSeq0-Commit-Cmd 1
 \end{lstlisting}
 
 \clearpage
@@ -742,1155 +842,3 @@ dbpf $(SYS)-$(EVG):SoftEvt-Enable-Sel    1
 %% -+-[0000:05]---00.0
 %%  \-[0000:00]-
 %% \end{lstlisting}
-
-
-
-
-%% \chapter{Requirements}
-
-%% \section{FAI Server}
-%% The most works will be done in so-called a faiserver, as a typical PC. We uses Debian 7 Wheezy up-to-date version as OS and its system information (\texttt{uname -a} is as follows:
-%% \begin{lstlisting}
-%% Linux faiserver 3.2.0-4-amd64 #1 SMP Debian 3.2.57-3+deb7u1 x86_64 GNU/Linux
-%% \end{lstlisting}
-
-%% \section{Media Access Control (MAC) addresses of Target Computers}
-%% We need to get MAC address of target PCs. Here we use two PCs : one is the real PC, and another is the virtual one by vmplayer. The real one is named as \textit{demohost} and the virtual one does \textit{gnomehost}. Two names are simply used by using the fai-example configuration. So the total computers are \textbf{faiserver}, \textbf{demohost}, and \textbf{gnomehost}. Figure~\ref{fig:vmplayer_network} shows the vmplayer screen-shot of the MAC address for a virtual PC.
-
-%% For the installation examples, two MAC addresses and the hostnames are used as follows :
-%% \begin{itemize}
-%% \item demohost  : \texttt{E8:03:9A:63:83:81}
-%% \item gnomehost : \texttt{00:50:56:39:D9:1E}
-%% \end{itemize}
-%% \begin{figure}[!htb]
-%%   \centering
-%%   \includegraphics[width=0.96\textwidth]{./images/vmplayer_network.eps}
-%%   \caption{
-%%             MAC address setup for a virtual PC by using vmplayer.
-%%           }
-%%   \label{fig:vmplayer_network}   
-%% \end{figure}
-
-%% %%  Get MAC address on target PC (demohost, gnomehost)
-%% %%   - VMWare Host : Network Bridget, Generate MAC address, use it in /etc/dhcp/dhcpd.conf
-%% %%   - real   Host : Get MAC address...
-
-%% \clearpage
-
-%% \section{Packages}
-%% We will use the up-to-date fai packages from fai-project site\footnote{\url{http://fai-project.org}} instead of the Debian Wheezy repository. The first thing is to modify the apt sources list to let the system know where the fai project is
-
-%% \begin{lstlisting}%[caption={Modify the apt source list}]
-
-%% root@faiserver:~# emacs /etc/apt/sources.list
-
-%%   deb http://ftp.lecl.net/debian/ wheezy main contrib non-free
-%%   deb http://fai-project.org/download wheezy koeln
-
-%% root@faiserver:~# aptitude update
-
-%% \end{lstlisting}
-
-%% The next step is to install the fai packages such as \texttt{fai-client}, \texttt{fai-server}, and \texttt{fai\-quickstart}. Debian will care the other package dependencies, so simply use the following command : 
-
-%% \begin{lstlisting}%[caption={Installation of \texttt{fai-client}, \texttt{fai-server}, and \texttt{fai-quickstart}}]
-
-%% root@faiserver:/etc# aptitude install fai-client fai-server fai-quickstart
-
-%% The following NEW packages will be installed:
-%%   debootstrap{a} fai-client fai-doc{a} fai-quickstart fai-server libapt-pkg-perl{a} libgraph-perl{a} libheap-perl{a} 
-%%   libproc-daemon-perl{a} libproc-processtable-perl{a} nfs-kernel-server{a} openbsd-inetd{a} reprepro{a} 
-%% 0 packages upgraded, 13 newly installed, 0 to remove and 0 not upgraded.
-%% Need to get 0 B/2,137 kB of archives. After unpacking 4,829 kB will be used.
-%% Do you want to continue? [Y/n/?] 
-
-%% ......................................
-%% ......................................
-
-
-%% Setting up nfs-kernel-server (1:1.2.6-4) ...
-%% [ ok ] Stopping NFS kernel daemon: mountd nfsd.
-%% [ ok ] Unexporting directories for NFS kernel daemon....
-%% [warn] Not starting NFS kernel daemon: no exports. ... (warning).
-%% Setting up openbsd-inetd (0.20091229-2) ...
-%% [ ok ] Stopping internet superserver: inetd.
-%% [info] Not starting internet superserver: no services enabled.
-%% Setting up debootstrap (1.0.48+deb7u1) ...
-%% Setting up fai-client (4.2) ...
-%% Setting up fai-doc (4.2) ...
-%% Setting up fai-server (4.2) ...
-%% You might want to edit fai.conf and nfsroot.conf in /etc/fai or
-%% go with the defaults. You should edit /etc/fai/apt/sources.list
-%% for faster access to a package repository.
-%% Setting up reprepro (4.12.5-1) ...
-%% Setting up fai-quickstart (4.2) ...
-
-%% \end{lstlisting}
-
-
-%% \section{Dynamic Host Configuration Protocol (DHCP) Configuration}
-%% The DHCP setting has all FAI host computers' MAC address and its ip address. And if there is no isc-dhcp packages, please install them by using the following command:
-%% \begin{lstlisting}
-%% root@faiserver:~# aptitude install isc-dhcp-server
-%% \end{lstlisting}
-%% Since the DHCP configuration is essential for the FAI setup, please edit dhcp daemon configuration file (dhcpd.conf) as follows:
-
-%% \begin{lstlisting}
-%% root@faiserver:/etc# emacs /etc/dhcp/dhcpd.conf
-%% \end{lstlisting}
-%% The following example is used in the \texttt{10.1.4.0} subnet inside the RISP 2nd floor office network. So, the ip range is limited for only two addresses (210 and 211). The \texttt{domain-name} is provided by the local nameserver (\texttt{10.1.5.11}). The gateway of the \texttt{10.1.4.0} subnet is used as \texttt{routers}. The DHCP server has \texttt{10.1.4.100}.
-
-%% \begin{lstlisting}
-%% ddns-update-style none;
-%% log-facility local7;
-
-%% deny unknown-clients;
-%% option dhcp-max-message-size 2048;
-%% use-host-decl-names on;
-
-%% subnet 10.1.4.0 netmask 255.255.255.0 {
-
-%%        option domain-name         "risp.invalid";
-%%        option domain-name-servers 10.1.5.11;
-%%        option routers             10.1.4.254;
-
-%%        range  10.1.4.210 10.1.4.211;
-%%        default-lease-time 60;
-%%        max-lease-time 720;
-
-%%        next-server 10.1.4.100;
-%%        filename "fai/pxelinux.0";
-%% }
-
-%% host demohost {
-%%         hardware ethernet e8:03:9a:63:83:81;
-%%         fixed-address 10.1.4.210;
-%% }
-
-%% host gnomehost{
-%%         hardware ethernet 00:50:56:39:D9:1E;
-%%         fixed-address 10.1.4.211;
-%% }
-%% \end{lstlisting}
-%% In addition, we have one more example which is a local \textit{home} domain, because of the better understanding for the DHCP configuration. In this example, the router is the DHCP server which provides an automatic IP address to wire and wireless clients. The faiserver (\texttt{10.0.185.12}) is one of the wire client and the target, i.e., a host with \texttt{10.0.185.200}, is the virtual image on the faiserver. 
-
-%% \begin{lstlisting}
-
-%% dns-update-style none;
-
-%% default-lease-time 600;
-%% max-lease-time 7200;
-
-%% log-facility local7;
-
-
-%% deny unknown-clients;
-%% option dhcp-max-message-size 2048;
-%% use-host-decl-names on;
-
-%% subnet 10.0.185.0 netmask 255.255.255.0 {
-%%        # network settings
-%%        option domain-name         "home.invalid";
-%%        option domain-name-servers 10.0.185.1;
-%%        option routers             10.0.185.1;
-
-%%        # client IP allocation
-%%        range  10.0.185.200 10.0.185.210;
-%%        default-lease-time 60;
-%%        max-lease-time 720;
-
-%%        # PXE boot server
-%%        next-server 10.0.185.12;
-%%        filename "fai/pxelinux.0";
-
-%% }
-
-%% host demohost {
-%%         hardware ethernet 00:50:56:36:52:2A;
-%%         fixed-address 10.0.185.200;
-%% }
-%% \end{lstlisting}
-
-%% After saving the configuration, one should restart or start the DHCP server on the faiserver as follows:     
-%% \begin{lstlisting}
-%% root@faiserver:/etc# /etc/init.d/isc-dhcp-server restart
-%% [FAIL] Stopping ISC DHCP server: dhcpd failed!
-%% [ ok ] Starting ISC DHCP server: dhcpd.
-%% \end{lstlisting}
-%% It the DHCP server never be executed before, Stoping process will be failed as the above what we see. 
-
-
-%% \section{The \texttt{/etc/hosts} file} 
-
-%% One should add the FAI server and FAI hosts IP addresses and their hostname in the /etc/hosts file. The information must be the same as what is inside /etc/dhcp/dhcpd.conf file. 
-%% %% #
-%% %% # Edit /etc/hosts file in order to add the FAI server and FAI hosts
-%% %% #
-%% \begin{lstlisting}
-%% 127.0.0.1       localhost
-%% 10.1.4.100      faiserver
-%% 10.1.4.210      demohost
-%% 10.1.4.211      gnomehost
-
-%% \end{lstlisting}
-
-
-%% \clearpage
-
-%% \chapter{FAI Settings}
-%% In this chapter, we configure many FAI settings one by one. There are two important directories : 1) the FAI server configuration directory (\texttt{/ect/fai}) is created by the fai packages, and 2) another one (\texttt{/srv/fai}) is created by the \texttt{fai-setup} command as follows :
-%% \begin{itemize}
-%%   \item \texttt{/etc/fai}
-%%     {\scriptsize
-%%      \begin{verbatim}
-%%       root@faiserver:/etc/fai# tree
-%%       .
-%%       ├── apt
-%%       │   └── sources.list
-%%       ├── fai.conf
-%%       ├── grub.cfg
-%%       ├── live.conf
-%%       ├── NFSROOT
-%%       └── nfsroot.conf
-%%      \end{verbatim}
-%%      }
-%%   \item \texttt{/srv/fai}
-%%     {\scriptsize
-%%      \begin{verbatim}
-%%       root@faiserver:/srv# tree -d -L 3
-%%       .
-%%       ├── fai
-%%       │   ├── config
-%%       │   │   ├── basefiles
-%%       │   │   ├── class
-%%       │   │   ├── debconf
-%%       │   │   ├── disk_config
-%%       │   │   ├── files
-%%       │   │   ├── hooks
-%%       │   │   ├── package_config
-%%       │   │   ├── scripts
-%%       │   │   └── tests
-%%       │   └── nfsroot
-%%       │       ├── bin
-%%       │       ├── boot
-%%       │       ├── dev
-%%       │       ├── etc
-%%       │       ├── home
-%%       │       ├── lib
-%%       │       ├── lib64
-%%       │       ├── media
-%%       │       ├── mnt
-%%       │       ├── opt
-%%       │       ├── proc
-%%       │       ├── root
-%%       │       ├── run
-%%       │       ├── sbin
-%%       │       ├── selinux
-%%       │       ├── srv
-%%       │       ├── sys
-%%       │       ├── tmp
-%%       │       ├── usr
-%%       │       └── var
-%%       └── tftp
-%%             └── fai
-%%                   └── pxelinux.cfg
-%%   \end{verbatim}
-%%   }
-%% \end{itemize}
-
-
-%% \section{The \texttt{/etc/fai/apt/sources.list} File}
-%% In the same way, we should change the Debian repository with the local (S.Korea) one, i.e., \texttt{http://ftp.lecl.net/debian/}, in order to speed up our installation method. 
-%% Please edit \texttt{/etc/fai/apt/sources.list} as follows:
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai/apt# emacs sources.list 
-
-%%     #deb http://http.debian.net/debian wheezy main contrib non-free
-%%     deb http://ftp.lecl.net/debian/ wheezy main contrib non-free
-%%     deb http://security.debian.org/debian-security wheezy/updates main contrib non-free
-
-%%     # repository that may contain newer fai packages for wheezy
-%%     deb http://fai-project.org/download wheezy koeln
-
-%% \end{lstlisting}
-
-%% \section{NFSROOT Configuration}
-
-%% \subsection{GPG Key for NFSROOT}
-%% %% # Prepare not to meet the GPG error: http://fai-project.org wheezy after adding fai-project.org in the nfsroot repository
-%% The GPG key of the fai project repository must be installed in nfsroot. Note that the \texttt{chroot /srv/fai/nfsroot/} command must be before \texttt{apt-key add -}.
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai/apt# wget -O - http://fai-project.org/download/074BCDE4.asc | chroot /srv/fai/nfsroot/ apt-key add -
-
-%% --2014-06-05 14:01:15--  http://fai-project.org/download/074BCDE4.asc
-%% Resolving fai-project.org (fai-project.org)... 134.95.9.240
-%% Connecting to fai-project.org (fai-project.org)|134.95.9.240|:80... connected.
-%% HTTP request sent, awaiting response... 200 OK
-%% Length: 5607 (5.5K) [text/plain]
-%% Saving to: `STDOUT'
-
-%% 100\%[============================================>] 5,607       --.-K/s   in 0s      
-%% 2014-06-05 14:01:16 (762 MB/s) - written to stdout [5607/5607]
-%% OK
-%% \end{lstlisting}
-
-%% \subsection{Debian Repository for NFSROOT}
-%% We change the Debian repository as the local one  to save the installation or downloading time, e.g., \texttt{http://ftp.lecl.net/debian}. 
-
-%% % # change FAI_DEBOOTSTRAP as the local one in order to reduce download time
-
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai/apt# emacs /etc/fai/nfsroot.conf 
-
-%%   # For a detailed description see nfsroot.conf(5)
-
-%%   # "<suite> <mirror>" for debootstrap
-%%   FAI_DEBOOTSTRAP="wheezy http://ftp.lecl.net/debian/"
-%%   FAI_ROOTPW='\$1\$kBnWcO.E\$djxB128U7dMkrltJHPf6d1'
-
-%%   NFSROOT=/srv/fai/nfsroot
-%%   TFTPROOT=/srv/tftp/fai
-%%   NFSROOT_HOOKS=/etc/fai/nfsroot-hooks/
-%%   FAI_DEBOOTSTRAP_OPTS="--exclude=info"
-
-%%   # Configuration space
-%%   FAI_CONFIGDIR=/srv/fai/config
-%% \end{lstlisting}
-
-
-%% \subsection{Package List for NFSROOT}
-%% %% #
-%% %% # Remove the console-tools and console-common
-%% %% # Replace ntpdate with ntp
-%% %% # Add firmware-linux-nonfree
-%% %% # Add console-setup-linux
-%% One must change the default package list from the FAI packages, because there are some dependent issues, which are described in Troubleshooting later. Here the summary what I've modified as follows:
-%% \begin{itemize}
-%%   \item \textbf{mandatory :} remove the troublesome \texttt{console-tools} and \texttt{console-common} packages in the line number \ref{troublesome_console} in Listing~\ref{list:nfsroot-file}.
-%%   \item \textbf{mandatory :} add \texttt{console-setup-linux} and \texttt{console-data} in the line number \ref{console-setup-linux} in Listing~\ref{list:nfsroot-file} in order to compensate two troublesome \texttt{console-tools} and \texttt{console-common} packages.
-%%   \item \textbf{convenience :} replace \texttt{ntpdate} with \texttt{ntp} in the line numbers \ref{ntpdate} and \ref{ntp} in Listing~\ref{list:nfsroot-file}
-%%   \item \textbf{mandatory for some FAI hosts :} add \texttt{firmware-linux-nonfree} for selected demohost. If not, after successfully installation, there is no network connection on the demohost in the line number \ref{firmware-linux-nonfree} in Listing~\ref{list:nfsroot-file}. 
-%% \end{itemize}
-
-%% \begin{lstlisting}[style=termstylenumber, caption={Editing \texttt{/etc/fai/NFSROOT}}, label={list:nfsroot-file}]
-%% root@faiserver:/etc/fai# emacs -nw NFSROOT 
-
-%%    # package list for creating the NFSROOT
-
-%%    PACKAGES aptitude
-%%    nfs-common fai-nfsroot module-init-tools ssh rdate lshw rpcbind
-%%    rsync lftp less dump reiserfsprogs e2fsprogs usbutils
-%%    hwinfo psmisc pciutils hdparm smartmontools parted mdadm lvm2
-%%    dnsutils
-%%    #ntpdate  (*@\label{ntpdate}@*) 
-%%    ntp       (*@\label{ntp}@*) 
-%%    dosfstools xfsprogs xfsdump
-%%    procinfo numactl dialog
-%%    #console-tools console-common (*@\label{troublesome_console}@*) 
-%%    console-setup-linux console-data           (*@\label{console-setup-linux}@*) 
-%%    kbd
-%%    iproute moreutils udev subversion
-%%    xz-utils
-%%    cupt
-
-%%    # some network cards needs firmware
-%%    firmware-bnx2 firmware-bnx2x firmware-realtek
-%%    firmware-linux-nonfree        (*@\label{firmware-linux-nonfree}@*) 
-
-%%    # dracut can replace live-boot
-%%    dracut-network live-boot- live-boot-initramfs-tools-
-
-%%    # choose if you like live-boot or dracut inside the nfsroot
-%%    #live-boot live-boot-doc
-
-%%    # you should not edit the lines below
-%%    # architecture dependend list of packages that are installed
-
-%%    #git # git consumes a lot of disk space on the FAI CD (ISO 9660)
-
-%%    PACKAGES aptitude I386
-%%    grub-pc
-%%    linux-image-686
-
-%%    # packages for Ubuntu natty/oneiric/precise:
-%%    # linux-image-generic live-boot
-
-%%    PACKAGES aptitude AMD64
-%%    grub-pc
-%%    linux-image-amd64
-
-%%    # packages for Ubuntu natty/oneiric/precise:
-%%    # linux-image-generic live-boot
-%% \end{lstlisting}
-
-
-%% \section{FAI Setup}
-
-%% Now, ready to execute \texttt{fai-setup} command. With \texttt{-v} option, we can see the verbose output.
-%% \subsection{First \texttt{fai-setup} command}
-
-%% \begin{lstlisting}[style=termstylenumber, caption={fai-setup output}, label={list:fai-setup-output}]
-%% root@faiserver:/etc/fai# fai-setup -v
-%% Using configuration files from /etc/fai
-%% Creating FAI nfsroot in /srv/fai/nfsroot
-%% Creating base system using debootstrap version 1.0.48+deb7u1
-%% Calling debootstrap --exclude=info wheezy /srv/fai/nfsroot http://ftp.lecl.net/debian/
-%% I: Retrieving Release
-%% I: Retrieving Release.gpg
-%% I: Checking Release signature
-%% .....................
-
-%% WARNING: untrusted versions of the following packages will be installed!
-
-%% Untrusted packages could compromise your system's security.
-%% You should only proceed with the installation if you are certain that
-%% this is what you want to do.
-
-%%   liblinux-lvm-perl fai-nfsroot fai-client fai-setup-storage 
-
-%% *** WARNING ***   Ignoring these trust violations because
-%%                   aptitude::CmdLine::Ignore-Trust-Violations is 'true'!
-%% Writing extended state information...
-%% ...................
-%% `/srv/fai/nfsroot/boot/vmlinuz-3.2.0-4-amd64' -> `/srv/tftp/fai/vmlinuz-3.2.0-4-amd64'
-%% `/srv/fai/nfsroot/boot/initrd.img-3.2.0-4-amd64' -> `/srv/tftp/fai/initrd.img-3.2.0-4-amd64'
-%% TFTP environment prepared. Enable DHCP and start the TFTP daemon on root /srv/tftp/fai.
-%% FAI packages inside the nfsroot:
-%% fai-client         4.2
-%% fai-nfsroot        4.2
-%% fai-setup-storage  4.2
-%% FAI related packages inside the nfsroot:
-%% dracut             037-1
-%% dracut-network     037-1
-%% Waiting for background jobs to finish
-%% [1]+  Done                    nice xz -q \$NFSROOT/var/tmp/base.tar  (wd: /srv/fai/nfsroot)
-%% fai-make-nfsroot finished properly.
-%% Log file written to /var/log/fai/fai-make-nfsroot.log
-%% Adding line to /etc/exports: /srv/fai/nfsroot 10.1.4.100/24(async,ro,no_subtree_check,no_root_squash) (*@\label{exports}@*) 
-%% Re-exporting directories for NFS kernel daemon....
-
-%%    You have no FAI configuration space yet. Copy the simple examples with:
-%%    cp -a /usr/share/doc/fai-doc/examples/simple/* /srv/fai/config (*@\label{configuration_example}@*) 
-%%    Then change the configuration files to meet your local needs.
-%% Please don't forget to fill out the FAI questionnaire after you've finished your project with FAI.
-
-%% FAI setup finished.
-%% Log file written to /var/log/fai/fai-setup.log
-%% \end{lstlisting}
-
-%% \subsection{NFS setup}
-%% The \texttt{fai-setup} command adds one important nfs path in \texttt{/etc/exports} in the line number \ref{exports} in Listing~\ref{list:fai-setup-output}. However, it is necessary to add another nfs path in \texttt{/etc/exports}. Consult the line number \ref{fai-config} in Listing~\ref{list:etc-exports}.
-%% \begin{lstlisting}[style=termstylenumber, caption={Add \texttt{/srv/fai/config} directory to \texttt{/etc/exports}}, label={list:etc-exports}]
-%% root@faiserver:/etc/fai# emacs /etc/exports
-
-%%   /srv/fai/nfsroot 10.1.4.100/24(async,ro,no_subtree_check,no_root_squash)
-%%   /srv/fai/config  10.1.4.100/24(async,ro,no_subtree_check) (*@\label{fai-config}@*) 
-%% \end{lstlisting}
-%% After that, restart NFS services 
-
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai#  /etc/init.d/nfs-kernel-server restart
-
-%% [ ok ] Stopping NFS kernel daemon: mountd nfsd.
-%% [ ok ] Unexporting directories for NFS kernel daemon....
-%% [ ok ] Exporting directories for NFS kernel daemon....
-%% [ ok ] Starting NFS kernel daemon: nfsd mountd.
-%% \end{lstlisting}
-%% %% root@faiserver:/etc/fai# 
-
-%% \subsection{Example Configurations : demohost and gnomehost}
-%% \begin{itemize}
-%% \item According to the line number \ref{configuration_example} in Listing~\ref{list:etc-exports}, we simply copy the example configuration into \texttt{/srv/fai/config}.
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai# cp -a /usr/share/doc/fai-doc/examples/simple/* /srv/fai/config
-%% \end{lstlisting}
-
-%% \item Generate boot parameters for two example hosts which are named as \texttt{demohost} and \texttt{gnomehost}.
-%% %% #
-%% %% # Generate a fai-client configuration for demohost / gnomehost
-%% %% #
-
-%% \begin{lstlisting}[style=termstylenumber, caption={Generate Boot Parameters for \texttt{demohost} and \texttt{gnomehost}}, label={list:boot-parameters}]
-%% root@faiserver:/etc/fai#  fai-chboot -IFv -u nfs://10.1.4.100/srv/fai/config demohost
-
-%% Booting kernel vmlinuz-3.2.0-4-amd64
-%%  append initrd=initrd.img-3.2.0-4-amd64 ip=dhcp  
-%%    FAI_FLAGS=verbose,sshd,createvt FAI_CONFIG_SRC=nfs://10.1.4.100/srv/fai/config
-
-%% demohost has 10.1.4.210 in hex 0A0104D2
-%% Writing file /srv/tftp/fai/pxelinux.cfg/0A0104D2 for demohost (*@\label{demohost-boot-parameter}@*) 
-
-%% root@faiserver:/etc/fai#  fai-chboot -IFv -u nfs://10.1.4.100/srv/fai/config gnomehost
-
-%% Booting kernel vmlinuz-3.2.0-4-amd64
-%%  append initrd=initrd.img-3.2.0-4-amd64 ip=dhcp  
-%%    FAI_FLAGS=verbose,sshd,createvt FAI_CONFIG_SRC=nfs://10.1.4.100/srv/fai/config
-
-%% gnomehost has 10.1.4.211 in hex 0A0104D3
-%% Writing file /srv/tftp/fai/pxelinux.cfg/0A0104D3 for gnomehost (*@\label{gnomehost-boot-parameter}@*) 
-%% \end{lstlisting}
-
-%% \item Edit the boot parameters in the line numbers \ref{demohost-boot-parameter} and \ref{gnomehost-boot-parameter} in Listing~\ref{list:boot-parameters}. If not, we will meet the message like as \texttt{can't open /etc/fstab}. This is the bug of NFS.V4, so this change makes to let systems to use NFS.V3. 
-%% \begin{lstlisting}[emph={nfsroot}, emphstyle=\underbar, style=termstylenumber, caption={Default Boot Parameters}, label={list:default-boot-parameter}]
-%% root@faiserver:/etc/fai# emacs /srv/tftp/fai/pxelinux.cfg/0A0104D2
-
-%%   # generated by fai-chboot for host demohost with IP 10.1.4.210
-%%   default fai-generated
-
-%%   label fai-generated
-%%   kernel vmlinuz-3.2.0-4-amd64
-%%   append initrd=initrd.img-3.2.0-4-amd64 ip=dhcp  root=/srv/fai/nfsroot aufs  FAI_FLAGS=verbose,sshd,createvt FAI_CONFIG_SRC=nfs://10.1.4.100/srv/fai/config FAI_ACTION=install (*@\label{nfsroot_v3}@*) 
-%% \end{lstlisting}
-%% Add the \texttt{:vers=3} at the end of \texttt{root=/srv/fai/nfsroot} in the line number~\ref{nfsroot_v3} in Listing~\ref{list:default-boot-parameter}. So it should be 
-
-%% \begin{lstlisting}[emph={nfsroot, vers}, emphstyle=\underbar]
-%%   root=/srv/fai/nfsroot:vers=3 
-%% \end{lstlisting}
-%% Modify \texttt{/srv/tftp/fai/pxelinux.cfg/0A0104D3} also. 
-
-%% \item Restart tftpd-hpa (Trivial File Transfer Protocol Server) service. 
-
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai# /etc/init.d/tftpd-hpa restart
-
-%% [ ok ] Restarting HPA's tftpd: in.tftpd.
-%% \end{lstlisting}
-
-%% \item Add FAI repository GPG key to \texttt{/srv/fai/nfsroot}
-
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai# wget -O - http://fai-project.org/download/074BCDE4.asc | chroot /srv/fai/nfsroot/ apt-key add -
-%% --2014-06-05 14:21:43--  http://fai-project.org/download/074BCDE4.asc
-%% Resolving fai-project.org (fai-project.org)... 134.95.9.240
-%% Connecting to fai-project.org (fai-project.org)|134.95.9.240|:80... connected.
-%% HTTP request sent, awaiting response... 200 OK
-%% Length: 5607 (5.5K) [text/plain]
-%% Saving to: `STDOUT'
-%% 100\%[==========================================>] 5,607       --.-K/s   in 0s      
-%% 2014-06-05 14:21:44 (749 MB/s) - written to stdout [5607/5607]
-%% OK
-%% \end{lstlisting}
-%% \end{itemize}
-
-%% \section{Start gnomehost}
-%% Figure~\ref{fig:gnomehost} shows the whole screen shots for the gnomehost, which is the virtual PC by vmplayer.
-
-%% \begin{figure}[!htb]
-%%   \centering
- 
-%%   \subbottom[F12 lets us to boot this host]
-%% 	    {
-%% 	      \includegraphics[width=0.45\textwidth]{./images/f-0.eps}
-%% 	      \label{fig:f-0}
-%% 	    }
-%%             \hfill
-%%   \subbottom[Booting .... ]
-%% 	    {
-%% 	      \includegraphics[width=0.45\textwidth]{./images/f-1.eps}
-%% 	      \label{fig:f-1}
-%% 	    }
-%%             \subbottom[Clearly see the FAI Screen]
-%% 	    {
-%% 	      \includegraphics[width=0.45\textwidth]{./images/f-2.eps}
-%% 	      \label{fig:f-2}
-%% 	    }
-%%             \hfill
-%%   \subbottom[After reboot, the grub screen is shown]
-%% 	    {
-%% 	      \includegraphics[width=0.45\textwidth]{./images/f-3.eps}
-%% 	      \label{fig:f-3}
-%% 	    }
-%%             \subbottom[GNOME login screen]
-%% 	    {
-%% 	      \includegraphics[width=0.45\textwidth]{./images/f-4.eps}
-%% 	      \label{fig:f-4}
-%% 	    }
-%%             \hfill
-%%   \subbottom[IP address in Gnome terminal]
-%% 	    {
-%% 	      \includegraphics[width=0.45\textwidth]{./images/f-5.eps}
-%% 	      \label{fig:f-5}
-%% 	    }
-%%   \caption
-%%       {
-%%         FAI Installation screenshots and the installed Debian Linux
-%%       }
-%%  \label{fig:gnomehost}
-%% \end{figure}
-
-
-%% \section{Update FAI Setup}
-%% Technically, it is unnecessary to update the FAI setup. Once one follows the instructions one by one, it should work. I think, from this ugly installation experience, it may be necessary to run later on after changing any default packages and so on. However, I am not sure when we need this later on. It should be tested a bit more later. 
-
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai# fai-setup -vk
-%% Using configuration files from /etc/fai
-%% Upgrading nfsroot and installing new packages into the nfsroot.
-%% Hit http://ftp.lecl.net wheezy Release.gpg
-
-%% ........................
-%% ........................
-
-%% install_packages: executing chroot /srv/fai/nfsroot apt-get clean
-%% install_packages: executing chroot /srv/fai/nfsroot dpkg --configure --pending
-%% install_packages: executing chroot /srv/fai/nfsroot dpkg -C
-%% install_packages: executing chroot /srv/fai/nfsroot apt-get clean
-%% install_packages exit code: 0
-%% `/srv/fai/nfsroot/boot/vmlinuz-3.2.0-4-amd64' -> `/srv/tftp/fai/vmlinuz-3.2.0-4-amd64'
-%% `/srv/fai/nfsroot/boot/initrd.img-3.2.0-4-amd64' -> `/srv/tftp/fai/initrd.img-3.2.0-4-amd64'
-%% TFTP environment prepared. Enable DHCP and start the TFTP daemon on root /srv/tftp/fai.
-%% fai-make-nfsroot finished properly.W: GPG error: http://fai-project.org wheezy Release: 
-%% The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 2BF8D9FE074BCDE4
-
-%% Re-exporting directories for NFS kernel daemon....
-%% FAI setup finished.
-%% Log file written to /var/log/fai/fai-setup.log
-
-%% \end{lstlisting}
-
-%% %% # The demohost has demo or root users and with 'fai' password
-%% \chapter{Build i386 Compatible FAI Server on x86\_{64}}
-%% There are two references \citep{faii386,faiguide} to this issue. Both methods do not give me the full instruction for setup to build i386 compatible FAI server. So, this chapter was developed by a traditional trial and error. However, they \citep{faii386,faiguide} gave me a way where I should go. The general procedure is almost the same as the normal procedure, which is described before. Therefore, I use the same way to do so here. 
-
-%% \section{Requirements}
-%% I slightly modify what I've done before to rename gnomehost to ctrldemo01, and add a virtual i386 PC in a vmplayer. So ctrldemo01 is the 64bit virtual PC. Note that one must select a proper virtual image setting for an i386 PC in a vmplayer.
-%% \subsection{MAC addresses of target computers}
-%% \begin{itemize}
-%%   \item demohost   : \texttt{e8:03:9a:63:83:81}, a PC
-%%   \item ctrldemo01 : \texttt{00:50:56:39:D9:1E}, a virtual 64bit PC
-%%   \item ctrldemo02 : \texttt{00:50:56:3E:0B:CE}, a virtual i386 PC
-%% \end{itemize}
-%% \subsection{DHCP configuration}
-%% The existing DHCP configuration is modified as follows :
-%% \begin{lstlisting}
-%% ddns-update-style none;
-
-%% log-facility local7;
- 
-%% deny unknown-clients;
-%% option dhcp-max-message-size 2048;
-%% use-host-decl-names on;
-
-%% subnet 10.1.4.0 netmask 255.255.255.0 {
-%%        # network settings
-%%        option domain-name         "risp.invalid";
-%%        option domain-name-servers 10.1.5.11;
-%%        option routers             10.1.4.254;
-
-%%        # client IP allocation
-%%        range  10.1.4.210 10.1.4.219;
-%%        default-lease-time 60;
-%%        max-lease-time 720;
-
-%%        # PXE boot server
-%%        next-server 10.1.4.100;
-%%        filename "fai/pxelinux.0";
-
-%% }
-
-
-%% host demohost {
-%%         hardware ethernet e8:03:9a:63:83:81;
-%%         fixed-address 10.1.4.210;
-%% }
-
-
-%% host ctrldemo01{
-%%         hardware ethernet 00:50:56:39:D9:1E;
-%%         fixed-address 10.1.4.211;
-%% }
-
-%% host ctrldemo02 {
-%%         hardware ethernet 00:50:56:3E:0B:CE;
-%%         fixed-address 10.1.4.212;
-%% }
-
-%% \end{lstlisting}
-%% After saving the configuration, one should restart or start the DHCP server on the faiserver as follows:     
-%% \begin{lstlisting}
-%% root@faiserver:/etc/dhcp# /etc/init.d/isc-dhcp-server restart
-%% [ ok ] Stopping ISC DHCP server: dhcpd.
-%% [ ok ] Starting ISC DHCP server: dhcpd.
-%% root@faiserver:/etc/dhcp# 
-%% \end{lstlisting}
-
-
-%% \subsection{The \texttt{/etc/hosts} file}
-%% One should add the FAI hosts' IP addresses and their hostnames in the \texttt{/etc/hosts} file as follows:
-
-%% \begin{lstlisting}
-%% 127.0.0.1       localhost
-%% 10.1.4.100      faiserver
-%% 10.1.4.210      demohost
-%% 10.1.4.211      ctrldemo01
-%% 10.1.4.212      ctrldemo02
-%% 10.1.4.213      ctrldemo03
-%% 10.1.4.214      ctrldemo04
-%% 10.1.4.215      ctrldemo05
-%% 10.1.4.216      ctrldemo06
-%% 10.1.4.217      ctrldemo07
-%% 10.1.4.218      ctrldemo08
-%% 10.1.4.219      ctrldemo09
-%% \end{lstlisting}
-%% And the list is generated by a perl command in the reference \citep{faiguide} Chapter 9 as follows :
-%% \begin{lstlisting}
-%% perl -e 'for (1..9) {printf "10.1.4.21%s ctrldemo%02s\n",$_,$_;}'
-
-%% 10.1.4.211 ctrldemo01
-%% 10.1.4.212 ctrldemo02
-%% 10.1.4.213 ctrldemo03
-%% 10.1.4.214 ctrldemo04
-%% 10.1.4.215 ctrldemo05
-%% 10.1.4.216 ctrldemo06
-%% 10.1.4.217 ctrldemo07
-%% 10.1.4.218 ctrldemo08
-%% 10.1.4.219 ctrldemo09
-%% \end{lstlisting}
-%% I add seven more ctrldemo for further tests.
-
-%% \section{i386 FAI Settings}
-%% In this section, we re-use the existent fai setting of a 64bit. Thus, first of all, simple copy them to a new directory which name is \texttt{fai-i386} as 
-
-%% \begin{lstlisting}
-%% root@faiserver:/etc# cp -a /etc/fai /etc/fai-i386
-%% \end{lstlisting}
-
-%% \subsection{Create New Host Classes for ctrldemo hosts}
-
-%% The ctrldemo host names are not in the class in \texttt{/srv/fai/config}, so I add it to be the same as \texttt{gnomehost} as 
-
-%% \begin{lstlisting}
-%% root@faiserver:/srv/fai/config/class# emacs 50-host-classes 
-%% # use a list of classes for our demo machine                                                                                                                
-%% case \$HOSTNAME in
-%%     ctrldemo*)
-%%         echo "FAIBASE DEBIAN DHCPC DEMO XORG GNOME";;
-%% \end{lstlisting}
-
-
-%% \subsection{NFSROOT configuration for i386}
-
-%% \begin{itemize}
-
-%% \item GPG Key
-
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai-i386# wget -O - http://fai-project.org/download/074BCDE4.asc | chroot /srv/fai/nfsroot-i386/ apt-key add -
-%% --2014-07-07 19:44:54--  http://fai-project.org/download/074BCDE4.asc
-%% Resolving fai-project.org (fai-project.org)... 134.95.9.240
-%% Connecting to fai-project.org (fai-project.org)|134.95.9.240|:80... connected.
-%% HTTP request sent, awaiting response... 200 OK
-%% Length: 5607 (5.5K) [text/plain]
-%% Saving to: `STDOUT'
-
-%% 100\%[====================================================>] 5,607       --.-K/s   in 0s      
-
-%% 2014-07-07 19:44:55 (487 MB/s) - written to stdout [5607/5607]
-
-%% OK
-%% \end{lstlisting}
-
-%% \item Edit \texttt{nfsroot.conf} file for i386 hosts. I add the \texttt{i386} suffix in the line numbers \ref{i386-1} and include the architecture in \texttt{FAI\_DEBOOTSTRAP\_OPTS} in the line number \ref{i386-2} in Listing~\ref{list:nfsroot-conf-i386-file}.
-
-%% \begin{lstlisting}[style=termstylenumber, caption={Editing \texttt{nfsroot.conf} for i386}, label={list:nfsroot-conf-i386-file}]
-%% # For a detailed description see nfsroot.conf(5)
-
-%% # "<suite> <mirror>" for debootstrap
-%% FAI_DEBOOTSTRAP="wheezy http://ftp.lecl.net/debian/"
-%% FAI_ROOTPW='\$1\$kBnWcO.E\$djxB128U7dMkrltJHPf6d1'
-
-%% NFSROOT=/srv/fai/nfsroot-i386 (*@\label{i386-1}@*) 
-%% TFTPROOT=/srv/tftp/fai
-%% NFSROOT_HOOKS=/etc/fai/nfsroot-hooks/
-%% FAI_DEBOOTSTRAP_OPTS="--arch i386 --exclude=info" (*@\label{i386-2}@*) 
-
-%% # Configuration space
-%% FAI_CONFIGDIR=/srv/fai/config
-%% \end{lstlisting}
-
-
-%% \end{itemize}
-
-
-%% \section{i386 FAI Setup}
-%% \subsection{First \texttt{fai-setup} command}
-%% \begin{lstlisting}
-%% root@faiserver:/srv/fai/config/class# fai-setup -C /etc/fai-i386 -vk
-%% \end{lstlisting}
-%% , where the options are 
-%% \begin{itemize}
-%% \item \texttt{-C} : Use \texttt{CFDIR} as the configuration directory. Default is \texttt{/etc/fai}. You can also set the environment variable \texttt{FAI\_ETC\_DIR}.
-%% \item \texttt{-k} : Update/install packages defined in NFSROOT config.
-%% \item \texttt{-v} : I guess this option is Verbose mode, because I cannot find it in manpage and so on. 
-%% \end{itemize}
-
-%% \subsection{Check NFS environment}
-%% Check the NFS environment for i386 in \texttt{/etc/exports} which should have the following line :
-%% \begin{lstlisting}
-%% /srv/fai/nfsroot-i386 10.1.4.100/24(async,ro,no_subtree_check,no_root_squash)
-%% \end{lstlisting}
-
-%% After that, restart NFS services (is it necessary?)
-
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai#  /etc/init.d/nfs-kernel-server restart
-
-%% [ ok ] Stopping NFS kernel daemon: mountd nfsd.
-%% [ ok ] Unexporting directories for NFS kernel daemon....
-%% [ ok ] Exporting directories for NFS kernel daemon....
-%% [ ok ] Starting NFS kernel daemon: nfsd mountd.
-%% \end{lstlisting}
-
-%% \subsection{Create Boot Parameters for \texttt{ctrldemo02} host}
-%% First of all, we must select proper Linux Kernel Executable (vmlinuz) and Initial RAM disk (initrd) for i386 in \texttt{/srv/tftp/fai/} directory.
-
-%% \begin{lstlisting}
-%% root@faiserver:/srv/fai# ls /srv/tftp/fai/initrd.img-* 
-%% /srv/tftp/fai/initrd.img-3.2.0-4-686-pae  /srv/tftp/fai/initrd.img-3.2.0-4-amd64
-%% root@faiserver:/srv/fai# ls /srv/tftp/fai/vmlinuz-3.2.0-4-* 
-%% /srv/tftp/fai/vmlinuz-3.2.0-4-686-pae  /srv/tftp/fai/vmlinuz-3.2.0-4-amd64
-%% \end{lstlisting}
-%% By using \texttt{fai-chboot} command, 
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai-i386# fai-chboot -IFv -s3.2.0-4-686-pae -u nfs://10.1.4.100/srv/fai/config -C /etc/fai-i386/ ctrldemo02
-%% Booting kernel vmlinuz-3.2.0-4-686-pae
-%%  append initrd=initrd.img-3.2.0-4-686-pae ip=dhcp  
-%%    FAI_FLAGS=verbose,sshd,createvt FAI_CONFIG_SRC=nfs://10.1.4.100/srv/fai/config
-
-%% ctrldemo02 has 10.1.4.212 in hex 0A0104D4
-%% Writing file /srv/tftp/fai/pxelinux.cfg/0A0104D4 for ctrldemo02
-%% root@faiserver:/etc/fai-i386# fai-chboot -L
-%% ctrldemo02 0A0104D4 vmlinuz-3.2.0-4-686-pae initrd=initrd.img-3.2.0-4-686-pae ip=dhcp  root=/srv/fai/nfsroot-i386 aufs  FAI_FLAGS=verbose,sshd,createvt FAI_CONFIG_SRC=nfs://10.1.4.100/srv/fai/config FAI_ACTION=install
-%% \end{lstlisting}
-%% , where the options are 
-%% \begin{itemize}
-%% \item \texttt{-s} : Use SUFFIX to determine which kernel and initrd to use.
-%% \item \texttt{-u} : Set \texttt{FAI\_CONFIG\_SRC} to \texttt{URL}. Setting this variable is mandatory for the operation of FAI.
-%% \item \texttt{-C} : Use \texttt{CFDIR} as the configuration directory. Default is \texttt{/etc/fai}. You can also set the environment variable \texttt{FAI\_ETC\_DIR}.
-%% \item \texttt{-I} : Same as -i but also sets \texttt{FAI\_ACTION=install}. So a fully automatic installation will be performed. ATTENTION! This will erase most of the data  on  the local disks of the install clients.
-%% \item \texttt{-F} : Set default values for \texttt{FAI\_FLAGS}. This is the same as -f verbose,sshd,createvt
-%% \end{itemize}
-%% And after adding \texttt{:vers=3}, 
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai-i386# fai-chboot -L
-%% ctrldemo02 0A0104D4 vmlinuz-3.2.0-4-686-pae initrd=initrd.img-3.2.0-4-686-pae ip=dhcp  root=/srv/fai/nfsroot-i386:vers=3 aufs  FAI_FLAGS=verbose,sshd,createvt FAI_CONFIG_SRC=nfs://10.1.4.100/srv/fai/config FAI_ACTION=install
-%% \end{lstlisting}
-%% And restart tftpd-hpa (Trivial File Transfer Protocol Server) service. 
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai-i386# /etc/init.d/tftpd-hpa restart
-%% [ ok ] Restarting HPA's tftpd: in.tftpd.
-%% \end{lstlisting}
-
-%% And turn on \texttt{ctrldemo01} and \texttt{ctrldemo02} in a vmplayer, all FAI installation are done well. See the Figure~\ref{fig:ctrldemo1and2} for its results.
-
-%% \begin{figure}[!htb]
-%%   \centering
- 
-%%   \subbottom[\texttt{ctrldemo01} : x86\_{64} host]
-%% 	    {
-%% 	      \includegraphics[width=0.45\textwidth]{./images/ctrldemo1_amd64.eps}
-%% 	      \label{fig:ctrldemo1_amd64}
-%% 	    }
-%%             \hfill
-%%   \subbottom[\texttt{ctrldemo02} : x86 host]
-%% 	    {
-%% 	      \includegraphics[width=0.45\textwidth]{./images/ctrldemo2_i386.eps}
-%% 	      \label{fig:ctrldemo2_i386}
-%% 	    }
-%%   \caption
-%%       {
-%%         i386 and x86\_{64} compatible FAI server on x86\_{64}
-%%       }
-%%  \label{fig:ctrldemo1and2}
-%% \end{figure}
-
-%% %\newpage
-%% \chapter{Troubleshooting}
-%% This chapter has trial and error while installing and configuring the FAI server. 
-
-%% \section{Kernel Panic}
-%% One can see the following message during a host network booting :
-
-%% \begin{lstlisting}
-%% can't open /etc/fstab.... >>> kernel panic
-%% \end{lstlisting}
-%% As far as I understand, NFS.V4 doesn't fully support some features of FAI, so force to use V3. One can add \texttt{:vers=3} in the generated network boot configuration. For example, the generated network boot configuration of the demohost is located in 
-%% \begin{lstlisting}
-%% /srv/tftp/fai/pxelinux.cfg/0A0104D2
-%% \end{lstlisting}
-
-%% %% ** Case 2 **
-%% \section{GPG Error}
-%% Debian has been using strong crypto to validate downloaded packages \citep{DEBIANSecureApt}. Each release files has a GPG signature. If the system, i.e., faiserver, does not know the GPG signature of fai-project, the following error is shown as
-%% \begin{lstlisting}
-%% W: GPG error: http://fai-project.org wheezy Release: 
-%% The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 2BF8D9FE074BCDE4
-%% \end{lstlisting}
-%% The easy way to resolve to let the system (faiserver) knows the gpg key of the fai-project. 
-
-%% \begin{lstlisting}
-%% root@faiserver:/etc/fai# wget -O - http://fai-project.org/download/074BCDE4.asc | chroot /srv/fai/nfsroot/ apt-key add -
-%% --2014-06-05 14:21:43--  http://fai-project.org/download/074BCDE4.asc
-%% Resolving fai-project.org (fai-project.org)... 134.95.9.240
-%% Connecting to fai-project.org (fai-project.org)|134.95.9.240|:80... connected.
-%% HTTP request sent, awaiting response... 200 OK
-%% Length: 5607 (5.5K) [text/plain]
-%% Saving to: `STDOUT'
-
-%% 100\%[=============================================>] 5,607       --.-K/s   in 0s      
-
-%% 2014-06-05 14:21:44 (749 MB/s) - written to stdout [5607/5607]
-
-%% OK
-
-%% \end{lstlisting}
-
-%% \section{Deprecated Option}
-%% If one uses only the Debian Wheezy repositories, one should see the following lines in the network boot configuration, e.g., \texttt{/srv/tftp/fai/pxelinux.cfg/0A0104D2}, generated by fai-chroot as 
-%% \begin{lstlisting}
-%% append initrd=initrd.img-3.2.0-4-amd64 ip=dhcp  root=/dev/nfs nfsroot=/srv/fai/nfsroot aufs  
-%% FAI_FLAGS=verbose,sshd,createvt FAI_CONFIG_SRC=nfs://10.1.4.100/srv/fai/config FAI_ACTION=install
-%% \end{lstlisting}
-%% instead of 
-%% \begin{lstlisting}
-%% append initrd=initrd.img-3.2.0-4-amd64 ip=dhcp  root=/srv/fai/nfsroot aufs  
-%% FAI_FLAGS=verbose,sshd,createvt FAI_CONFIG_SRC=nfs://10.1.4.100/srv/fai/config FAI_ACTION=install
-%% \end{lstlisting}
-
-%% The option \texttt{root=/dev/nfs nfsroot=/srv/fai/nfsroot} is depreciated \citep{dracut}. The manpage of the dracut.cmdline \citep{dracutmanpage} shows 
-%% \begin{lstlisting}
-%% root=/dev/nfs nfsroot=[<server-ip>:]<root-dir>[:<nfs-options>]
-%%            Deprecated!  kernel Documentation_/filesystems/nfsroot.txt_
-%%            defines this method. This is supported by dracut, but not
-%%            recommended.
-%% \end{lstlisting}
-%% The recent dracut is provided by the fai-project repository. Therefore, it is the better way to use \textbf{one} repository selected from Debian Wheezy or fai project. Both cases works well with the additional :vers=3 option.
-
-
-%% %% ** Case 4 **
-%% \section{Debian Package Dependency Error}
-%% If one follow the instruction before, the following error will not be shown. However, just in case that one might see the following error :
-%% \begin{lstlisting}
-
-%% Errors were encountered while processing:
-%%  linux-image-3.2.0-4-amd64
-%% E: Sub-process /usr/bin/dpkg returned an error code (1)
-%% A package failed to install.  Trying to recover:
-%% ...........................
-%% 1 errors during executing of commands
-%% \end{lstlisting}
-%% If one sees the error message, \texttt{ chroot /srv/fai/nfsroot/ apt-get install -f} may solve this problem temporarily. However, it will fail again later on. This error, as far as I know, is related the following section problem.
-
-%% \section{Infinite Error Messages with fai-setup -vk command}
-%% %% ** Case 5 **
-%% One might see the following infinite error messages when fai-setup -vk is issued in both cases : 1) only Debian Wheezy repository and 2) Debian Wheezy/fai-project repositories. 
-
-%% \begin{lstlisting}
-
-%% root@faiserver:/srv/fai/nfsroot/etc/apt# fai-setup -vk
-
-%% ............................................
-
-%% Building dependency tree...
-%% Reading state information...
-%% The following NEW packages will be installed:
-%%   ca-certificates curl libcurl3 librtmp0 libssh2-1 openssl
-%% The following packages will be upgraded:
-%%   dracut dracut-network fai-client fai-nfsroot fai-setup-storage
-%%   liblinux-lvm-perl
-%% 6 upgraded, 6 newly installed, 0 to remove and 0 not upgraded.
-%% Need to get 2323 kB of archives.
-%% After this operation, 3316 kB of additional disk space will be used.
-%% WARNING: The following packages cannot be authenticated!
-%%   librtmp0 libssh2-1 libcurl3 openssl ca-certificates curl dracut
-%%   dracut-network liblinux-lvm-perl fai-client fai-setup-storage fai-nfsroot
-%% Authentication warning overridden.
-
-%% ............................................
-
-%% The following NEW packages will be installed:
-%%   console-tools{b} libconsole{a} 
-%% 0 packages upgraded, 2 newly installed, 0 to remove and 0 not upgraded.
-%% Need to get 467 kB of archives. After unpacking 1561 kB will be used.
-%% The following packages have unmet dependencies:
-%%  kbd : Conflicts: console-utilities which is a virtual package.
-%%  console-tools : Conflicts: console-utilities which is a virtual package.
-%% The following actions will resolve these dependencies:
-
-%%      Remove the following packages:
-%% 1)     dracut                      
-%% 2)     dracut-network              
-%% 3)     kbd                         
-%% 4)     linux-image-3.2.0-4-amd64   
-%% 5)     linux-image-amd64           
-
-%% The following NEW packages will be installed:
-%%   console-tools libconsole{a} 
-%% The following packages will be REMOVED:
-%%   dracut{a} dracut-network{a} kbd{a} linux-image-3.2.0-4-amd64{a} 
-%%   linux-image-amd64{a} 
-%% 0 packages upgraded, 2 newly installed, 5 to remove and 0 not upgraded.
-%% Need to get 467 kB of archives. After unpacking 109 MB will be freed.
-%% Writing extended state information...
-%% Get: 1 http://ftp.lecl.net/debian/ wheezy/main libconsole amd64 1:0.2.3dbs-70 [155 kB]
-%% Get: 2 http://ftp.lecl.net/debian/ wheezy/main console-tools amd64 1:0.2.3dbs-70 [312 kB]
-%% Fetched 467 kB in 0s (5577 kB/s)
-%% Can not write log, openpty() failed (/dev/pts not mounted?)
-%% (Reading database ... 18224 files and directories currently installed.)
-%% Removing dracut-network ...
-%% Removing linux-image-amd64 ...
-%% Removing linux-image-3.2.0-4-amd64 ...
-%% Aborting removal of running kernel image.
-%% dpkg: error processing linux-image-3.2.0-4-amd64 (--remove):
-%%  subprocess installed pre-removal script returned error exit status 1
-%% dpkg: dracut: dependency problems, but removing anyway as you requested:
-%%  linux-image-3.2.0-4-amd64 depends on initramfs-tools (>= 0.99~) | linux-initramfs-tool; however:
-%%   Package initramfs-tools is not installed.
-%%   Package linux-initramfs-tool is not installed.
-%%   Package dracut which provides linux-initramfs-tool is to be removed.
-
-%% Removing dracut ...
-%% Processing triggers for man-db ...
-%% Errors were encountered while processing:
-%%  linux-image-3.2.0-4-amd64
-%% E: Sub-process /usr/bin/dpkg returned an error code (1)
-%% A package failed to install.  Trying to recover:
-%% Reading package lists...
-%% Building dependency tree...
-%% Reading state information...
-%% Reading extended state information...
-%% Initializing package states...
-%% Writing extended state information...
-%% Reading task descriptions...
-%% ERROR: 65280 65280
-%% ERROR: chroot /srv/fai/nfsroot aptitude -R -y -o Dpkg::Options::=--force-confdef -o Dpkg::Options::=--force-confnew install nfs-common fai-nfsroot module-init-tools ssh rdate lshw rpcbind rsync lftp less dump reiserfsprogs e2fsprogs usbutils hwinfo psmisc pciutils hdparm smartmontools parted mdadm lvm2 dnsutils ntpdate dosfstools xfsprogs xfsdump procinfo numactl dialog console-tools console-common kbd iproute moreutils udev subversion xz-utils cupt firmware-bnx2 firmware-bnx2x firmware-realtek dracut-network live-boot- live-boot-initramfs-tools- grub-pc linux-image-amd64 return code 255
-%% install_packages: executing chroot /srv/fai/nfsroot apt-get clean
-%% install_packages: executing chroot /srv/fai/nfsroot dpkg --configure --pending
-%% install_packages: executing chroot /srv/fai/nfsroot dpkg -C
-%% install_packages: executing chroot /srv/fai/nfsroot apt-get clean
-%% 1 errors during executing of commands
-%% Log file written to /var/log/fai/fai-setup.log
-
-
-%% root@faiserver:/srv/fai/nfsroot/etc/apt# chroot /srv/fai/nfsroot/ apt-get install -f
-%% Reading package lists... Done
-%% Building dependency tree       
-%% Reading state information... Done
-%% Correcting dependencies... Done
-%% The following extra packages will be installed:
-%%   busybox initramfs-tools klibc-utils libklibc
-%% Suggested packages:
-%%   bash-completion
-%% The following NEW packages will be installed:
-%%   busybox initramfs-tools klibc-utils libklibc
-%% 0 upgraded, 4 newly installed, 0 to remove and 0 not upgraded.
-%% Need to get 792 kB of archives.
-%% After this operation, 1661 kB of additional disk space will be used.
-%% WARNING: The following packages cannot be authenticated!
-%%   busybox libklibc klibc-utils initramfs-tools
-%% Authentication warning overridden.
-
-%% ...................
-
-%% Fetched 792 kB in 1s (539 kB/s)          
-%% perl: warning: Setting locale failed.
-%% perl: warning: Please check that your locale settings:
-%%         LANGUAGE = "en_US:en",
-%%         LC_ALL = (unset),
-%%         LANG = "en_US.UTF-8"
-%%     are supported and installed on your system.
-%% perl: warning: Falling back to the standard locale ("C").
-%% locale: Cannot set LC_CTYPE to default locale: No such file or directory
-%% locale: Cannot set LC_MESSAGES to default locale: No such file or directory
-%% locale: Cannot set LC_ALL to default locale: No such file or directory
-%% Can not write log, openpty() failed (/dev/pts not mounted?)
-%% Selecting previously unselected package busybox.
-%% (Reading database ... 17844 files and directories currently installed.)
-%% Unpacking busybox (from .../busybox_1\%3a1.20.0-7_amd64.deb) ...
-%% Selecting previously unselected package libklibc.
-%% Unpacking libklibc (from .../libklibc_2.0.1-3.1_amd64.deb) ...
-%% Selecting previously unselected package klibc-utils.
-%% Unpacking klibc-utils (from .../klibc-utils_2.0.1-3.1_amd64.deb) ...
-%% Selecting previously unselected package initramfs-tools.
-%% Unpacking initramfs-tools (from .../initramfs-tools_0.109.1_all.deb) ...
-%% Processing triggers for man-db ...
-%% locale: Cannot set LC_CTYPE to default locale: No such file or directory
-%% locale: Cannot set LC_MESSAGES to default locale: No such file or directory
-%% locale: Cannot set LC_ALL to default locale: No such file or directory
-%% Can not write log, openpty() failed (/dev/pts not mounted?)
-%% Setting up busybox (1:1.20.0-7) ...
-%% Setting up libklibc (2.0.1-3.1) ...
-%% Setting up klibc-utils (2.0.1-3.1) ...
-%% Setting up initramfs-tools (0.109.1) ...
-%% update-initramfs: deferring update (trigger activated)
-%% Processing triggers for initramfs-tools ...
-%% update-initramfs: /boot/initrd.img-3.2.0-4-amd64 has been altered.
-%% update-initramfs: Cannot update. Override with -t option.
-
-%% root@faiserver:/srv/fai/nfsroot/etc/apt# chroot /srv/fai/nfsroot/ apt-get install bash-completion
-%% Reading package lists... Done
-%% Building dependency tree       
-%% Reading state information... Done
-%% The following NEW packages will be installed:
-%%   bash-completion
-%% 0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.
-%% Need to get 193 kB of archives.
-%% After this operation, 784 kB of additional disk space will be used.
-%% WARNING: The following packages cannot be authenticated!
-%%   bash-completion
-%% Authentication warning overridden.
-%% Get:1 http://ftp.lecl.net/debian/ wheezy/main bash-completion all 1:2.0-1 [193 kB]
-%% Fetched 193 kB in 0s (2922 kB/s)        
-%% perl: warning: Setting locale failed.
-%% perl: warning: Please check that your locale settings:
-%%         LANGUAGE = "en_US:en",
-%%         LC_ALL = (unset),
-%%         LANG = "en_US.UTF-8"
-%%     are supported and installed on your system.
-%% perl: warning: Falling back to the standard locale ("C").
-%% locale: Cannot set LC_CTYPE to default locale: No such file or directory
-%% locale: Cannot set LC_MESSAGES to default locale: No such file or directory
-%% locale: Cannot set LC_ALL to default locale: No such file or directory
-%% Can not write log, openpty() failed (/dev/pts not mounted?)
-%% Selecting previously unselected package bash-completion.
-%% (Reading database ... 17976 files and directories currently installed.)
-%% Unpacking bash-completion (from .../bash-completion_1\%3a2.0-1_all.deb) ...
-%% Processing triggers for man-db ...
-%% locale: Cannot set LC_CTYPE to default locale: No such file or directory
-%% locale: Cannot set LC_MESSAGES to default locale: No such file or directory
-%% locale: Cannot set LC_ALL to default locale: No such file or directory
-%% Can not write log, openpty() failed (/dev/pts not mounted?)
-%% Setting up bash-completion (1:2.0-1) ...
-%% \end{lstlisting}
-
-%% It looks like that works again. However, it doesn't work. See Figure~\ref{fig:fai-error} for the possible error which one may see.
-
-%% \begin{figure}[!htb]
-%%   \centering
-%%   \includegraphics[width=0.96\textwidth]{./images/fai-error.eps}
-%%   \caption{
-%%             A Booting Failure for a demohost within a virtual environment.
-%%           }
-%%   \label{fig:fai-error}   
-%% \end{figure}
-
-%% In order to solve this issue, it is necessary to remove two packages in \texttt{/etc/fai/NFSROOT} as follows:
-%% \texttt{console-tools} and \texttt{console-common}. The exact reason why it is so, I don't know. However, if I remove two packages in \texttt{NFSROOT} and add \texttt{console-setup-linux} and \texttt{console-data} instead, the infinite install/uninstall procedures are disappeared.
-
-%% %## 
-%% %## Installation documents guided me a lot of failures, but the following wiki
-%% %## did many helps : http://wiki.fai-project.org/wiki/Installation_walkthrough
-%% %##
-
-%% %Installation documents guided me a lot of failures, but the following wiki did many helps %%: http://wiki.fai-project.org/wiki/Installation_walkthrough
- 
-%% %% Useful package : fai-doc
-%% %%  Check /usr/share/doc/fai-doc/examples/etc/
-
-%% \section{Useful information}
-%% \begin{itemize}
-%%   \item One subject of the FAI project wiki \citep{FAIWikiWorkthrough}, gave me many helps to resolve some issues. 
-%%   \item The useful package is fai-doc, will be installed at 
-%%     \begin{lstlisting}
-%%       /usr/share/doc/fai-doc/examples/etc/    \end{lstlisting}
-%% \end{itemize}

@@ -1,0 +1,304 @@
+%  Copyright (c) Jeong Han Lee
+%
+%  This essdocs.sty is free software: you can redistribute
+%  it and/or modify it under the terms of the GNU General Public License
+%  as published by the Free Software Foundation, either version 2 of the
+%  License, or any newer version.
+%
+%  This program is distributed in the hope that it will be useful, but WITHOUT
+%  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+%  FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+%  more details.
+%
+%  You should have received a copy of the GNU General Public License along with
+%  this program. If not, see https://www.gnu.org/licenses/gpl-2.0.txt
+
+%  Author:   Jeong Han Lee
+%  email :   jeonghan.lee@gmail.com
+%  Date  :   Wednesday, July 13 12:46:07 CEST 2016
+%
+%
+
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{essdocs}[2016/07/12 v0.1 Jeong Han Lee]
+
+\RequirePackage{geometry}
+\RequirePackage{verbatim}
+\RequirePackage{graphicx}
+\RequirePackage{amsmath}
+\RequirePackage{amssymb}
+\RequirePackage{appendix}
+\RequirePackage{xcolor}
+\RequirePackage{setspace}
+\RequirePackage{hyperref}
+\RequirePackage{pstricks}
+\RequirePackage{pifont}
+\RequirePackage{wasysym}
+\RequirePackage{booktabs}
+\RequirePackage{multirow}
+\RequirePackage{array}
+\RequirePackage{makeidx}
+\RequirePackage{shortvrb}
+\RequirePackage{latexsym}
+\RequirePackage{fixltx2e}
+\RequirePackage{textcomp}
+%\RequirePackage{microtype}
+%\RequirePackage{tabu}
+\RequirePackage{longtable}
+\RequirePackage{booktabs}
+\RequirePackage{verbatim}
+\RequirePackage{framed}
+\RequirePackage{ifpdf}
+\RequirePackage{alltt}
+\RequirePackage{listings}
+%\RequirePackage{kotex}
+\RequirePackage{url}
+\RequirePackage{soulutf8}
+%\RequirePackage{fancyhdr}
+
+%\RequirePackage{datetime}
+%\RequirePackage{fmtcount}
+% geometry setup for a binding offset
+
+
+%% Only for Draft 
+%% Fedora - nrich cannot handle this  option
+%% 
+%% Thursday, July 11 19:51:21 KST 2013, jhlee
+%% \RequirePackage{draftwatermark}
+%% \SetWatermarkScale{5.0}
+%% \SetWatermarkLightness{0.92}
+
+
+\geometry{a4paper}
+\geometry{centering}
+\geometry{bindingoffset=0mm}
+\geometry{hmarginratio=1:1}
+\special{papersize=210mm,297mm}
+\geometry{head=90pt}
+%\geometry{letter}
+%\special{papersize=215.9mm,279.4mm}
+
+% microtypesetup option
+% http://mirrors.ibiblio.org/CTAN/macros/latex/contrib/microtype/microtype.pdf
+%\microtypesetup{draft=false, final}
+
+
+% includegraphics default image width option
+\setkeys{Gin}{width=0.99\textwidth} 
+
+% more space between rows in table 1.2 or 1.3 is recommended
+\renewcommand{\arraystretch}{1.2}
+
+% Change Figure, Table, Listing as bold...
+\renewcommand\fnum@figure[1]{\textbf{\figurename~\thefigure~}}
+\renewcommand\fnum@table[1]{\textbf{\tablename~\thetable~} }
+\renewcommand\fnum@lstlisting[1]{\textbf{\lstlistingname~\thelstlisting~} } % page.34 in the Listings Package
+
+
+%% http://tex.stackexchange.com/questions/33841/how-to-modify-the-indentation-before-sectioning-titles-in-the-table-of-contents
+\renewcommand*\l@figure{\@dottedtocline{1}{1em}{3.2em}}
+\renewcommand*\l@table{\@dottedtocline{1}{1em}{3.2em}}
+\renewcommand*\l@lstlisting{\@dottedtocline{1}{1em}{3.2em}}
+
+
+%% %% memoir has \thelastpage and \thelastsheet
+%% %%
+\makepagestyle{pstyle}
+\makeevenhead{pstyle}{
+  \noindent
+  {\miniscule
+    \begin{tabular}{ll}
+      Description     & \@essdocdesc \\
+      Document number & \@essdocnum \\
+      Date            & \@date \\
+      Revision        & \@essdocrev \\
+      State           & \@essdocstate \\
+      Classification  & \@essdocclass
+    \end{tabular}
+  }
+}{}{}
+\makeoddhead{pstyle}{
+  \noindent
+  {\miniscule
+    \begin{tabular}{ l l }
+      Description     & \@essdocdesc \\
+      Document number & \@essdocnum \\
+      Date            & \@date \\
+      Revision        & \@essdocrev \\
+      State           & \@essdocstate \\
+      Classification  & \@essdocclass
+    \end{tabular}
+  }
+}{}{}
+\makeevenfoot{pstyle}{}{\thepage~(\thelastpage)}{}
+\makeoddfoot{pstyle}{}{\thepage~(\thelastpage)}{}
+\pagestyle{pstyle}
+
+%\pagestyle{plain}
+%\pagestyle{myheadings}
+%\makeheadrule{myheadings}{\textwidth}{
+%   \normalrulethickness
+%}
+%\renewcommand{\chaptermark}[1]% 
+%             {\markboth{\thechapter. \ #1}{} }
+%% \renewcommand{\sectionmark}[1]% 
+%%              {\markright{ \thesection. \ #1}{} }
+%% \newcommand \headerfont  {\fontsize{10pt}{10pt} \fontfamily{ppl} \selectfont}
+             %% \newcommand \thepagefont {\fontsize{10pt}{10pt} \bfseries }
+             
+
+%% ESS specified commands
+             
+\def\reviewer#1{\def\@reviewer{#1}}
+\def\owner#1{\def\@owner{#1}}
+\def\approver#1{\def\@approver{#1}}
+\def\essdocdesc#1{\def\@essdocdesc{#1}}
+\def\essdocnum#1{\def\@essdocnum{#1}}
+\def\essdocrev#1{\def\@essdocrev{#1}}
+\def\essdocstate#1{\def\@essdocstate{#1}}
+\def\essdocclass#1{\def\@essdocclass{#1}}
+\def\subtitle#1{\def\@subtitle{#1}}
+
+%% ESS Specified Title Page
+
+\newcommand{\esstitle}{%
+  \begingroup
+  \thispagestyle{empty}
+  \noindent
+  \begin{minipage}[c]{0.3\textwidth}
+    \includegraphics[width=1.0\textwidth,angle=0]{./figs/ESS_Logo_Frugal_Blue_cmyk.eps}
+  \end{minipage}
+  \begin{minipage}[c]{0.7\textwidth}
+    \flushright
+        {\miniscule
+          \begin{tabular}{ll}
+            Description     & \@essdocdesc \\
+            Document number & \@essdocnum \\
+            Date            & \@date \\
+            Revision        & \@essdocrev \\
+            State           & \@essdocstate \\
+            Classification  & \@essdocclass\\
+            Page            & \thepage~(\thelastpage)
+          \end{tabular}
+        }
+  \end{minipage}
+  \vskip 8em
+  \noindent
+  \centering
+  \rule[0.5ex]{\linewidth}{2pt}\vspace*{-\baselineskip}\vspace*{3.2pt}
+  \rule[0.5ex]{\linewidth}{1pt}\\[\baselineskip]
+       {\Large \textbf{\@title}}\\[4mm]
+       {\large \textsc{\@subtitle}}\\[4mm]
+  \rule[0.5ex]{\linewidth}{1pt}\vspace*{-\baselineskip}\vspace{3.2pt}
+  \rule[0.5ex]{\linewidth}{2pt}\\
+  \vskip 8em%
+  \vfill
+  \begin{center}
+    \begin{tabular}{l|p{0.7\linewidth}}
+      \toprule
+      &  Name (Role/Title) \\
+      \toprule
+      Author   & \@author    \\\midrule
+      Reviewer & \@reviewer  \\\midrule
+      Owner    & \@owner     \\\midrule
+      Approver & \@approver  \\\bottomrule
+    \end{tabular}
+  \end{center}
+  \vfill
+  \endgroup
+}
+
+\def\addlinecenter#1{%
+  \hbox to \hsize{%
+     \vbox{\centering #1}}}%
+
+
+
+\hypersetup{
+  , pdfstartview = {Fit}
+  , pdfpagemode= {UseOutlines}
+  , pdftitle    = {\@title}
+  , pdfauthor   = {\@author}
+  , pdfcreator  = {\@author}
+  , pdfproducer = {\@author}
+  , bookmarksnumbered = {true}
+  , bookmarksopen = {false}
+  , baseurl = {https://github.com/jeonghanlee/esstex}
+  , colorlinks = {true}
+  , linkcolor  = {red}          % color of internal links
+  , citecolor  = {green}
+  , filecolor  = {magenta}
+  , urlcolor   = {cyan}
+%  , unicode    = {true}
+  %  , bookmarks  = {true}
+  %  , linkbordercolor = {1 0 0}
+  %  pdfstartview = {FitH}
+}
+
+
+\hypersetup{breaklinks}
+
+% Declare figure/table as a subfloat.
+\newsubfloat{figure} % Subfigures
+\newsubfloat{table} % Subtables
+
+
+%% Special for listings
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+%%%% This is for 
+\lstdefinestyle{termstyle}{
+  backgroundcolor=\color{backcolour}
+  , commentstyle=\color{codegreen}
+  , keywordstyle=\color{codegreen}
+  , numberstyle=\tiny\color{codegray}
+  , basicstyle=\scriptsize\ttfamily
+  , basewidth  = {0.5em,0.5em}
+  , breakatwhitespace=false
+  , breaklines=true
+  , captionpos=b
+  , keepspaces=true
+%  , numbers=left                        % Line nums position
+%  , numberstyle=\tiny                   % Line-numbers fonts
+%  , stepnumber=1                        % Step between two line-numbers
+%  , numbersep=5pt                       % How far are line-numbers from code
+  , showspaces=false                    % Dont make spaces visible
+  , showtabs=false                      % Dont make tabls visible
+  , tabsize=3                           %  showspaces=false,                
+%  showstringspaces=false,
+  , morekeywords={root@,Link-Clk-SP }
+%  morekeywords={emacs, aptitude, cp, wget}
+}
+
+
+\lstdefinestyle{termstylenumber}{
+  backgroundcolor=\color{backcolour}
+  , commentstyle=\color{codegreen}
+  , keywordstyle=\color{codegreen}
+  , numberstyle=\tiny\color{codegray}
+  , basicstyle=\scriptsize\ttfamily
+  , basewidth  = {0.5em,0.5em}
+  , breakatwhitespace=false
+  , breaklines=true
+  , captionpos=b
+  , keepspaces=true
+  , numbers=left                        % Line nums position
+  , numberstyle=\tiny                   % Line-numbers fonts
+  , stepnumber=1                        % Step between two line-numbers
+%  , numbersep=5pt                       % How far are line-numbers from code
+  , showspaces=false                    % Dont make spaces visible
+  , showtabs=false                      % Dont make tabls visible
+  , tabsize=3                           %  showspaces=false,                
+%  showstringspaces=false,
+  , morekeywords={124.916}
+%  morekeywords={emacs, aptitude, cp, wget}
+}
+
+\lstset{style=termstyle}
+\lstset{escapeinside={(*@}{@*)}}

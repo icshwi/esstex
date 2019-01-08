@@ -21,7 +21,7 @@
 
 %% ESS Document Number
 %%
-\essdocnum{ESS-XXXXXXXX}
+\essdocnum{ESS-0508480}
 
 %% Date
 %%
@@ -776,7 +776,7 @@ The configuration of the outputs and pulse generators can be added to the startu
 
 
 \section{Step 4 : Configure hardware timestamps}
-This section provides the minimal information to configure an IOC to get its timestamps from the timing system. More information about timestamping can be found in the document ESS-0085848. Short comments on each command or a series of commands are shown before the corresponding command.
+This section provides the minimal information to configure an IOC to get its timestamps from the timing system. More information about timestamping can be found in the document ESS-0085848 (ICS Engineering Manual for Timestamping). Short comments on each command or a series of commands are shown before the corresponding command.
 \begin{lstlisting}[style=termstyle]
 #
 # Set up the Time-I record to process on arrival of event 14
@@ -863,7 +863,7 @@ caput -a $1-$2:SoftSeq0-Timestamp-SP 2 0 1
 # Commit the sequence to HW
 caput $1-$2:SoftSeq0-Commit-Cmd 1
 \end{lstlisting}
-For more information, please check ESS-XXXXXXX (ICS Engineering Manual for MRF cPCI-EVG-230), the EVR sequencer acts in exactly the same way as the EVG sequencer, but the EVR only has one sequencer.
+For more information, please check ESS-0508483 (ICS Engineering Manual for MRF cPCI-EVG-230), the EVR sequencer acts in exactly the same way as the EVG sequencer, but the EVR only has one sequencer.
 
 
 \section{Step 6 : Generate events from the inputs}
@@ -888,7 +888,7 @@ New : EMMTCAEVR300-EVR0:In0-Code-Ext-SP 10
 
 
 \section{Step 7 : Share the event clock}
-The MTCA-EVR-300(U) can share the event clock with the rest of the AMCs in the uTCA crate. This process is explained in the document ESS-XXXXXXXX (ICS Engineering Manual for $\mu$TCA backplane clock distribution).
+The MTCA-EVR-300(U) can share the event clock with the rest of the AMCs in the uTCA crate. This process is explained in the document ESS-0508492 (ICS Engineering Manual for $\mu$TCA Backplane Clock Distribution).
 
 
 

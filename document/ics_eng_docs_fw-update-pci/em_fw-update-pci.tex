@@ -33,7 +33,7 @@
 
 %% ESS Document Revision Number
 %%
-\essdocrev{0.2}
+\essdocrev{0.3}
 
 %% ESS Document State
 %%
@@ -46,7 +46,7 @@
 %% Document Title
 %%
 \title{ICS Engineering Manual}
-\subtitle{for FirmWare update of PCI-based MRF products}
+\subtitle{for Firmware update of PCI-based MRF products}
 %% Document Author(s), if more than one author,
 %% use \newline instead of \\ or \linebreak in order to seperate them
 \author{Javier Cereijo Garcia \newline Jeong Han Lee }
@@ -79,7 +79,7 @@ At European Spallation Source (ESS), Integrated Control System (ICS) uses the Mi
 
 \section{Scope}
 \begin{itemize}
-\item This document explains how to perform a FirmWare (FW) update of PCI-based MRF products used at ESS.
+\item This document explains how to perform a Firmware (FW) update of PCI-based MRF products used at ESS.
 \item This document identifies two possible ways of performing such update: using the mrfioc2 EPICS module, or using the vendor's own driver.
 \item This document attempts to maintain consistency with existing ESS Timing system hardware as far as possible.
 \end{itemize}
@@ -118,7 +118,7 @@ Table~\ref{table:hwlist} shows the hardware list and its environment. Here, \tex
     Workstation                     &                                             &               \\\midrule
     MRF MTCA-EVR-300                & \texttt{ICS TAG-255}                        & L534006       \\\midrule
     NAT-MCH-PHYS                    & \texttt{ICS TAG-704}                        & 1135210809    \\\midrule
-    Concurrent Technologies AMC CPU & \texttt{ICS TAG-734}, hostname: icslab-ts02 & M29597/010    \\\midrule
+    Concurrent Technologies AMC CPU & \texttt{ICS TAG-734}                        & M29597/010    \\\midrule
     Schroff MTCA 3U crate           & \texttt{ICS TAG-793}                        & 1401701204AA  \\\midrule
     NAT MTCA power supply unit      & \texttt{ICS TAG-743}                        & 121114 0269   \\\bottomrule
   \end{tabular}
@@ -134,12 +134,12 @@ Table~\ref{table:swlist} shows the Software list and its environment. It is mand
   \begin{tabular}{l|l}
     \toprule
     Item               & Version Info.                                                      \\\midrule
-    CentOS Linux       & \texttt{CentOS 7.5.1804}                                           \\\midrule
-    Kernel             & \texttt{3.10.0-862.3.2.el7.x86\_64}                                 \\\midrule
-    mrf kernel module  & version : \texttt{1} / srcversion \texttt{A998B22F1425D7388F5F7A7} \\\midrule
-    E3                 & \texttt{3.0.0}                                                     \\\midrule
+    CentOS Linux       & \texttt{CentOS 7.6.1810}                                           \\\midrule
+    Kernel             & \texttt{3.10.0-957.5.1.el7.x86\_64}                                 \\\midrule
+    mrf kernel module  & version : \texttt{1} / srcversion \texttt{E3290AD048B5B57D2EAA55E} \\\midrule
+    E3 Require         & \texttt{3.0.5}                                                     \\\midrule
     EPICS Base         & \texttt{3.15.5}                                                    \\\midrule
-    mrfioc2            & E3 module ver. \texttt{2.2.0-rc2}                                  \\\midrule
+    mrfioc2            & E3 module ver. \texttt{2.2.0-rc5}                                  \\\midrule
     devLib2            & E3 module ver. \texttt{2.9.0}                                      \\\bottomrule
   \end{tabular}
   \caption[]{Software and its version information.}
@@ -153,33 +153,27 @@ This chapter provides the instructions on how to perform the FW update.
 
 
 \section{FW update using mrfioc2}
-This is the preferred method. Tested on MTCA, PCIe.
+\textbf{This is the preferred method}, which we tested with MTCA EVR 300 and PCIE EVR 300DC. Since this method uses the mrfioc2 module, it is assumed that the E3 is installed and loaded in the current session{\footnote{To install and load E3 check \url{https://github.com/icshwi/e3} and \url{https://github.com/icshwi/e3training}.}}. It is also necessary to have the mrf kernel module loaded and to register the EVR with the IOC. To do so you need to know the PCI parameters, which can be retrieved as is explained in the engineering manual corresponding to your specific form factor \cite{empcieeevr300dc, emmtcaevr300}.
 
-Since this method uses the mrfioc2 module, it is assumed that the E3 is installed and loaded in the current session{\footnote{To install and load E3 check \url{https://github.com/icshwi/e3} and \url{https://github.com/icshwi/e3training}.}}. It is also necessary to have the mrf kernel module loaded and to register the EVR with the IOC. To do so you need to know the PCI parameters, which can be retrieved as is explained in the engineering manual corresponding to your specific form factor \cite{empcieeevr300dc, emmtcaevr300}.
-
-Then run the following IOC from the directory containing your bitfile using your PCI parameters with \texttt{iocsh.bash fwupdate.cmd}:
+Then run the following IOC from the directory containing your bit file using your PCI parameters with \texttt{iocsh.bash fwupdate.cmd}, which is in \texttt{e3-mrfioc/cmds}:
 \begin{lstlisting}[
   style=termstyle,
   numbers=left,
   label={list:fwupdate.cmd},
-  caption={Start-up script \texttt{fwupdate.cmd}. Line \ref{pciid0} should be modified according to the PCI parameters. }
+  caption={Start-up script \texttt{fwupdate.cmd}. Line \ref{require} and Line \ref{pciid0} should be modified according to the installed require version and its corresponding MRF hardware. One can get them easily via \texttt{bash tools/get\_pciaddr.bash pcieevr300} and \texttt{make dep}. }
 ]
-require devlib2,2.9.0
-require mrfioc2,2.2.0-rc2
-
+require mrfioc2,2.2.0-rc5 (*@\label{require}@*)
 epicsEnvSet("DEV1", "EVR1")
-
 mrmEvrSetupPCI("$(DEV1)",  "01:00.0") (*@\label{pciid0}@*)
-
 iocInit()
-
 \end{lstlisting}
 
 Before upgrading, it is suggested to backup the existing firmware. All Xilinx bit files for a particular device typically have the same size, so you can use the size of the new FW to estimate the size of the old one.
 
 In this example of a PCIe-EVR-300DC with the 207.0 firmware, the exact size is 3011417 bytes, which is arbitrarily rounded up to 3MB. Create the backup bit file running from inside the IOC:
 \begin{lstlisting}[style=termstyle]
-epics> flashread("EVR1:FLASH", 0, 0x300000, "PCIe-EVR-300DC.207.0.backup.bit")
+  
+> flashread("EVR1:FLASH", 0, 0x300000, "PCIe-EVR-300DC.207.0.backup.bit")
 | 3080192
 | 3014656
 | 2949120
@@ -191,29 +185,29 @@ Done
 epics>
 \end{lstlisting}
 
-Now write the new FW file, named \texttt{PCIe-EVR-300DC.207.8.bit} in this example, that should be located in the current directory:
+Now write the new FW file, named \texttt{PCIe-EVR-300DC-17080207.bit} in this example, that should be located in the current directory. One can check this via \texttt{> system("ls *.bit")}.
+
 \begin{lstlisting}[style=termstyle]
-epics> flashwrite("EVR1:FLASH", 0, "PCIe-EVR-300DC.207.8.bit")
+>  flashwrite("EVR1:FLASH", 0, "PCIe-EVR-300DC-17080207.bit")
 | 0/3011417
 | 65536/3011417
 | 131072/3011417
+| 196608/3011417
+| 262144/3011417
+...
 ...
 | 2949120/3011417
 | 3011417/3011417
 
 Done
-epics>
+>
 \end{lstlisting}
 
-If the update process is interrupted, do not power cycle! Re-run the update process to completion.
-
-After the write completes successfully, power cycle the card to load the new bit file.
-
-For more information you can check \citep[section Firmware Update, PCIe-EVR-300DC, mTCA-EVR-300]{EVRUSAGEGUIDE}.
+If the update process is interrupted, \textbf{DO NOT POWER CYCLE!} and Re-run the update process in order to be completed. After the write completes successfully, please do power cycle the MRF EVR card to load the new bit file. For more information you can check \citep[section Firmware Update, PCIe-EVR-300DC, mTCA-EVR-300]{EVRUSAGEGUIDE}.
 
 
 \subsection{Troubleshooting}
-If the mrfioc2 module was built for a different kernel version that the one the system has, it is possible that the FW update fails while printing a successful message. In this case, if the update is interrupted and the board is power cycled, or if you have any other problem that causes an incorrect bit file being flashed, bring the board to ICS for manual flashing of the board.
+If the mrfioc2 module was built for a different kernel version that the one the system has, it is possible that the FW update fails while printing a successful message. One can check the kernel module version via \texttt{modinfo mrf}. In this case, if the update is interrupted and the board is power cycled, or if you have any other problem that causes an incorrect bit file being flashed, bring the board to ICS for manual flashing of the board. 
 
 
 \clearpage

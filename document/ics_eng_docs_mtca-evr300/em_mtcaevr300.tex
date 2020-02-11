@@ -13,51 +13,57 @@
 
 \setsecnumdepth{subsection}
 
+
 \begin{document}
 %\frontmatter
-%% ESS Document Description
-%%
-\essdocdesc{Engineering Manual}
+% ESS Document Description
+%
+\essdoctype{Engineering Manual}
 
-%% ESS Document Number
-%%
+% ESS Document Number
+%
 \essdocnum{ESS-0508480}
 
-%% Date
-%%
+% Date
+%
 \date{\today}
 
-%% ESS Document Revision Number
-%%
-\essdocrev{0.3}
+% ESS Document Revision Number
+%
+\essdocrev{1}
 
-%% ESS Document State
-%%
-\essdocstate{Early Draft}
+% ESS Document State
+%
+\essdocstate{Released}
 
-%% ESS Document Classification
-%%
-\essdocclass{ESS Use Only}
+% ESS Document Classification
+%
+\essdocclass{Internal}
 
-%% Document Title
-%%
+% Document Title
+%
 \title{ICS Engineering Manual}
 \subtitle{for MRF MTCA-EVR-300(U)}
-%% Document Author(s), if more than one author,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-\author{Javier Cereijo Garcia \newline Jeong Han Lee }
+% Document Author(s), if more than one author,
+% use \newline instead of \\ or \linebreak in order to seperate them
+\author{Javier Cereijo Garcia}
+\authorrole{Timing System Engineer}
 
-%% Document Reviewer(s) if more than one reviewer,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-%\reviewer{Timo Korhonen (Chief Engineer) \newline Timo Korhonen (Chief Engineer)}
-\reviewer{TBD}
-%% Document Owner(s) if more than one owner,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-\owner{ICS}
+% Document Reviewer(s) if more than one reviewer,
+% use \newline instead of \\ or \linebreak in order to seperate them
+%\reviewer{-}
+%\reviewerrole{-}
 
-%% Document Approver(s) if more than one approver,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-\approver{ICS}
+% Document Owner(s) if more than one owner,
+% use \newline instead of \\ or \linebreak in order to seperate them
+\owner{Javier Cereijo Garcia}
+\ownerrole{Timing System Engineer}
+
+% Document Approver(s) if more than one approver,
+% use \newline instead of \\ or \linebreak in order to seperate them
+%\approver{-}
+%\approverrole{-}
+
 
 \showtrimson
 
@@ -69,41 +75,41 @@
 %\mainmatter
 
 
-%%% Actual Document Start at below
+% Actual Document Start at below
 \chapter{Overview}
-At European Spallation Source (ESS), Integrated Control System (ICS) uses the Micro Research Finland (MRF) Timing System{\footnote{\url{http://www.mrf.fi/}}} as its timing system of the ESS site. The consistent and up-to-date engineering manual is essential for the ESS Timing system.
+At European Spallation Source (ESS), Integrated Control System (ICS) uses the Micro Research Finland (MRF) timing System{\footnote{\url{http://www.mrf.fi/}}} as its timing system of the ESS site. The consistent and up-to-date engineering manual is essential for the ESS timing system.\\
 
 
 \section{Scope}
 \begin{itemize}
-\item This document identifies one of the MRF Timing Event Receivers (EVR) that needs to be configured for an ESS subsystem that needs synchronous frequencies, trigger signals and sequences of events \cite{MRFEVENTSYSTEMDC}.
-\item This document provides the generic description of the MRF MTCA-EVR-300(U) and its interface board (IFB-300). In addition, it affords the minimal, essential, and generic information for the system configuration.
+\item This document identifies one of the MRF timing Event Receivers (EVRs) that need to be configured for an ESS subsystem that needs synchronous frequencies, trigger signals and sequences of events \cite{MRFEVENTSYSTEMDC}.
+\item This document provides the generic description of the MRF MTCA-EVR-300(U) board and its interface board IFB-300. In addition, it affords the minimal, essential, and generic information for the system configuration.
 \item The purpose of this document is to describe the engineering procedure and troubleshooting about how the MRF MTCA-EVR-300(U) board will be integrated in cooperation with the new ESS EPICS Environment (E3).
-\item This document attempts to maintain consistency with existing ESS Timing system hardware as far as possible.
+\item This document attempts to maintain consistency with existing ESS timing system hardware as far as possible.
 \end{itemize}
-\textbf{Note that this is a very early draft document and should be updated as development progresses.}
+%\textbf{Note that this is a very early draft document and should be updated as development progresses.}
 
 
-\section{Target Audience}
-This document is targeted to ICS engineers and technical stakeholders of the ESS timing system. It is assumed that the target audience has a technical background in the MRF Timing System, the EPICS development, and a Linux environment.
+\section{Target audience}
+This document is targeted to ICS engineers and technical stakeholders of the ESS timing system. It is assumed that the target audience has a technical background in the MRF Timing System, the Experimental Physics and Industrial Control System (EPICS) development, and a Linux environment.\\
 
 
 
-\chapter{System Description}
-MRF Technical Reference \citep[see][p45]{MRFEVENTSYSTEMDC} explained Event Receivers and wrote :
+\chapter{System description}
+MRF Technical Reference \citep[see][p45]{MRFEVENTSYSTEMDC} describes EVRs as:
 \blockquote{\textit{Event Receivers decode timing events and signals from an optical event stream transmitted by an Event Generator. Events and signals are received at predefined rate the event clock that is usually divided down from an accelerators main RF reference. The event receivers lock to the phase event clock of the Event Generator and are thus phase locked to the RF reference. Event Receivers convert event codes transmitted by an Event Generator to hardware outputs. They can also generate software interrupts and store the event codes with globally distributed timestamps into FIFO memory to be read by a CPU.}}
 
-ICS uses and will use the following different types of EVR :
+ICS uses and will use the following different types of EVRs:
 \begin{itemize}
 \item MTCA-EVR-300(U)
 \item PCIe-EVR-300DC
 \end{itemize}
 
-The scope of this document is to cover the MTCA-EVR-300(U) board.
+The scope of this document is to cover the MTCA-EVR-300(U) board.\\
 
 
 \section{MTCA-EVR-300(U)}
-Figure~\ref{fig:mtca-evr300} shows the rough physical dimensions $181\times 148~\mathrm{mm}{}^2$ of the MTCA-EVR-300 card.
+Figure~\ref{fig:mtca-evr300} shows the rough physical dimensions of $181\times 148~\mathrm{mm}{}^2$ of the MTCA-EVR-300 card.
 
 \begin{figure}[!htb]
   \centering
@@ -115,48 +121,48 @@ Figure~\ref{fig:mtca-evr300} shows the rough physical dimensions $181\times 148~
 \end{figure}
 
 
-The MTCA-EVR-300  has a SFP transceiver as an input from EVG and several outputs: 4 front panel outputs, 16 front universal outputs (through the IFB-300 extension board) and 40 rear outputs. The initial 32 rear outputs map to the RTM connector, the last 8 rear outputs map to the MTCA backplane. The 16 front universal outputs are implemented through a micro-SCSI type connector for an interface board IFB-300. The IFB-300 has eight Universal I/O slots, each of them accommodating 2 outputs/inputs, shown in Figure~\ref{fig:ifb-300}. With different type of MRF Universal I/O modules, each slot can be used as an unique trigger or event signal source.
+The MTCA-EVR-300  has a small form-factor pluggable (SFP) transceiver as an input from an Event Master (EVM) and several outputs: 4 front panel outputs, 16 front universal outputs (through the IFB-300 extension board) and 40 rear outputs. The initial 32 rear outputs map to the Rear Transition Module (RTM) connector, the last 8 rear outputs map to the Micro Telecommunications Computing Architecture (MTCA) backplane. The 16 front universal outputs are implemented through a micro-SCSI type connector for an interface board IFB-300. The IFB-300 has eight Universal Input/Output (I/O) slots, each of them accommodating 2 outputs/inputs, shown in Figure~\ref{fig:ifb-300}. With different type of MRF Universal I/O modules, each slot can be used as an unique trigger or event signal source.\\
 
 \begin{figure}[!htb]
   \centering
   \includegraphics{./pictures/ifb-300.eps}
   \caption{
-    MRF Interface Board IFB 300 Front Panel \cite{MRFEVENTSYSTEMDC}.
+    MRF Interface Board IFB-300 Front Panel \cite{MRFEVENTSYSTEMDC}.
   }
   \label{fig:ifb-300}
 \end{figure}
 
-The MTCA-EVR-300U is identical to the MTCA-EVR-300 except for the fact that it replaces the micro-SCSI connector for 2 Universal I/O slots.
+The MTCA-EVR-300U is identical to the MTCA-EVR-300 except for the fact that it replaces the micro-SCSI connector for 2 Universal I/O module slots.\\
 
 
 
-\clearpage
-\chapter{System Environment}
-Before describing the engineering procedure for an E3 integration of the MRF MTCA-EVR-300(U) board, it is mandatory to have proper system environment that consists of specific hardware and software lists. Here we will show the hardware and software lists, their block diagrams, and their setup in the ICS lab at ESS. The information shown in this chapter is used in the ICS Lab at ESS.
+%\clearpage
+\chapter{System environment}
+Before describing the engineering procedure for an E3 integration of the MRF MTCA-EVR-300(U) board, it is mandatory to have proper system environment that consists of specific hardware and software. Here we will show the hardware and software lists and their set up in the ICS lab at ESS. The information shown in this chapter is used in the ICS lab at ESS.\\
 
 
 \section{Hardware}
-Table~\ref{table:hwlist} shows the hardware list. The form factor and version of EVG can be changeable. It is assumed that the proper working EVG system is ready.
+Table~\ref{table:hwlist} shows the hardware list. It is possible to use a different form factor for the EVM than what is shown; for more information check the specific engineering manual. It is assumed that a working EVM system is ready.
+
 \begin{table}[!hb]
   \centering
   \begin{tabular}{l|l}
     \toprule
-    Hardware                          & Info               \\\midrule
-    MRF MTCA-EVR-300U                 & \texttt{ZZB614}    \\\midrule
-    NAT-MCH-PHYS                      & \texttt{AAA573}    \\\midrule
-    Concurrent Technologies AMC CPU   & \texttt{ZZB276}    \\\midrule
-    Schroff MTCA crate 3U             & \texttt{AAA596}    \\\midrule
-    NAT MTCA Power Module 600W        & \texttt{AAA590}    \\\midrule
-    MRF cPCI-EVG-230                  & \texttt{ZZB790}    \\\midrule
-    Ethernet, LEMO and optical cables & LC, Optical 850 nm \\\midrule
-    Oscilloscope                      & \texttt{ZZB406}    \\\bottomrule
+    Hardware                        & Info                            \\\midrule
+    MRF mTCA-EVM-300                &                                 \\\midrule
+    MRF mTCA-EVR-300(U)             &                                 \\\midrule
+    $\mu$TCA crate                  & Incl. PM, MCH                   \\\midrule
+    Concurrent Technologies AMC CPU &                                 \\\midrule
+    Optical cables                  & LC, optical 850 nm              \\\midrule
+    Oscilloscope                    & Incl. cables and LEMO connector \\\bottomrule
   \end{tabular}
   \caption[]{Hardware List.}
   \label{table:hwlist}
 \end{table}
 
 % Figure~\ref{fig:diagram} shows the physical hardware setup and
-Figure~\ref{fig:mtca-hw-setup} shows the MTCA-EVR-300 setup in the lab. From left to right, the power supply (different model than shown in Table~\ref{table:hwlist}), MCH, CPU, MTCA-EVR-300 and Struck SIS8300 (not used in this document).
+Figure~\ref{fig:mtca-hw-setup} shows the MTCA-EVR-300 set up in the lab. From left to right, the power supply, MTCA Carrier Hub (MCH), Central Processing Unit (CPU), MTCA-EVR-300 and Struck SIS8300 (not used in this document).\\
+
 \begin{figure}[!b]
   \centering
   \includegraphics[width=0.8\textwidth]{./pictures/mtca-hw-setup.eps}
@@ -165,40 +171,41 @@ Figure~\ref{fig:mtca-hw-setup} shows the MTCA-EVR-300 setup in the lab. From lef
 \end{figure}
 
 
-\clearpage
+%\clearpage
 \section{Software}
-Table~\ref{table:swlist} shows the Software list and its environment. It is mandatory to check the kernel version, and the mrf kernel module version. Since the mrfioc2 is dependent upon devlib2 E3 internally, an end-user is unnecessary to check its version explicitly.
+Table~\ref{table:swlist} shows the software list and its environment.
+
 \begin{table}[!htb]
   \centering
   \begin{tabular}{l|l}
     \toprule
-    Item               & Version Info.                                                      \\\midrule
-    CentOS Linux       & \texttt{7.6.1810}                                                  \\\midrule
-    Kernel             & \texttt{3.10.0-957.1.3.el7.x86\_64}                                \\\midrule
-    mrf kernel module  & version : \texttt{1} / srcversion \texttt{E3290AD048B5B57D2EAA55E} \\\midrule
-    E3 require         & \texttt{3.0.4}                                                     \\\midrule
-    EPICS Base         & \texttt{3.15.5}                                                    \\\midrule
-    mrfioc2            & E3 module ver. \texttt{2.2.0-rc4}                                  \\\midrule
-    devlib2            & E3 module ver. \texttt{2.9.0}                                      \\\bottomrule
+    Item               & Version Info.                                                       \\\midrule
+    CentOS Linux       & \texttt{7.7.1908}                                                  \\\midrule
+    Kernel             & \texttt{3.10.0-1062.9.1.el7.x86\_64}                               \\\midrule
+    mrf kernel module  & Version: \texttt{1} / srcversion \texttt{E3290AD048B5B57D2EAA55E}  \\\midrule
+    EPICS base         & \texttt{7.0.3.1}                                                   \\\midrule
+    e3-req             & \texttt{3.1.2}                                                     \\\midrule
+    mrfioc2            & E3 module ver. \texttt{2.2.0-rc8}                                  \\\midrule
+    devLib2            & E3 module ver. \texttt{2.9.0}                                      \\\bottomrule
   \end{tabular}
   \caption[]{Software and its version information.}
   \label{table:swlist}
 \end{table}
 
 
-\section{EVR Firmware}
-Table~\ref{table:fwinfo} shows EVR FPGA Firmware Version Register.
+\section{EVR firmware}
+Table~\ref{table:fwinfo} shows the EVR field-programmable gate array (FPGA) Firmware Version Register.
 
 \begin{table}[!htb]
   \centering
   \begin{tabular}{p{0.3\linewidth}|c|l}
     \toprule
-    EVR FPGA Firmware Version Register              & \multicolumn{2}{c}{\texttt{0x18070207}}             \\\midrule
-    Board Type        & EVR                         &  \texttt{0x}\underline{\textbf{1}}\texttt{8070207}  \\\midrule
-    Form Factor       & mTCA.4                      &  \texttt{0x1}\underline{\textbf{8}}\texttt{070207}  \\\midrule
-    EVR Subrelease ID & 7                           &  \texttt{0x18}\underline{\textbf{07}}\texttt{0207}  \\\midrule
-    EVR Firmware ID   & Delay Compensation Firmware &  \texttt{0x1807}\underline{\textbf{02}}\texttt{07}  \\\midrule
-    EVR Revision ID   & 7                           &  \texttt{0x180702}\underline{\textbf{07}}           \\\bottomrule
+    EVR FPGA Firmware Version Register              & \multicolumn{2}{c}{\texttt{0x180e0207}}             \\\midrule
+    Board Type        & EVR                         &  \texttt{0x}\underline{\textbf{1}}\texttt{80e0207}  \\\midrule
+    Form Factor       & mTCA.4                      &  \texttt{0x1}\underline{\textbf{8}}\texttt{0e0207}  \\\midrule
+    EVR Subrelease ID & 0xe                         &  \texttt{0x18}\underline{\textbf{0e}}\texttt{0207}  \\\midrule
+    EVR Firmware ID   & Delay Compensation Firmware &  \texttt{0x180e}\underline{\textbf{02}}\texttt{07}  \\\midrule
+    EVR Revision ID   & 7                           &  \texttt{0x180e02}\underline{\textbf{07}}           \\\bottomrule
   \end{tabular}
   \caption[]{EVR FPGA Firmware Version Register in Reference \citep[see][p66]{MRFEVENTSYSTEMDC}.}
   \label{table:fwinfo}
@@ -206,36 +213,38 @@ Table~\ref{table:fwinfo} shows EVR FPGA Firmware Version Register.
 
 
 
-\clearpage
-\chapter{Engineering Procedure}
-This chapter provides the minimal information to configure the EVR board properly.
+%\clearpage
+\chapter{Engineering procedure}
+This chapter provides the minimal information to configure the EVR board properly.\\
 
 
-\section{System Installation}
-Figure~\ref{fig:mtca-hw-setup} shows the glimpse of what system might be like in a Lab. \textbf{Note that the cable between the mTCA-EVR-300 and IFB-300 (not shown in the figure) should be connected, disconnected, or both only when powered down}. Please see the detail information in Reference \citep[][p54]{MRFEVENTSYSTEMDC}.
+\section{System installation}
+Figure~\ref{fig:mtca-hw-setup} shows the glimpse of what system might be like in a lab. \textbf{Note that the cable between the mTCA-EVR-300 and IFB-300 (not shown in the figure) should be connected or disconnected only when the system is powered down}. Please see more detailed information in \citep[][p54]{MRFEVENTSYSTEMDC}.\\
 
-It is assumed that the MTCA-EVR-300(U) is installed in a crate with a CPU running CentOS 7 with E3. For more information on E3, please check {\footnote{\url{https://github.com/icshwi/e3training}}.
+It is assumed that the MTCA-EVR-300(U) is installed in a crate with a CPU running CentOS 7 with E3. For more information on E3, please check {\footnote{\url{https://github.com/icshwi/e3training}}.\\
 
 
-\section{mTCA-EVR-300(U) Board Identification}
+\section{mTCA-EVR-300(U) board identification}
 
 \subsection{Fixing PCI IDs}
-The PCI ID list does not include the MRF products. It can be updated as follows:
+The PCI ID list does not include by default the MRF products. It can be updated as follows:
 \begin{itemize}
 \item Cloning the sort of ESS customized PCI.IDS db:
 \begin{lstlisting}[style=termstyle]
-timinguser@icslab-ts03: ics_gitsrc$ git clone https://github.com/jeonghanlee/pciids
+iocuser@cslab-ccpu-crate07: ~$ git clone https://github.com/jeonghanlee/pciids
 \end{lstlisting}
 \item Replace the pci.ids file:
 \begin{lstlisting}[style=termstyle]
-timinguser@icslab-ts03: pciids (master)$ bash replace-pciids.bash
+iocuser@cslab-ccpu-crate07: ~$ cd pciids/
+iocuser@cslab-ccpu-crate07: pciids (master)$ bash replace-pciids.bash
 centos was determined.
-[sudo] password for timinguser:
+[sudo] password for iocuser:
+iocuser@cslab-ccpu-crate07: pciids (master)$
 \end{lstlisting}
 \item Check MRF products by the vendor's id (1a3e):
 \begin{lstlisting}[style=termstyle]
-timinguser@icslab-ts03: pciids (master)$ lspci -nmmn | grep -E "\<(1a3e)"
-"0b:00.0 "Signal processing controller [1180]" "Xilinx Corporation [10ee]" "XILINX PCI DEVICE [7011]" "Micro-Research Finland Oy [1a3e]" "MTCA Event Receiver 300 [132c]"
+iocuser@cslab-ccpu-crate07: pciids (master)$ lspci -nmmn | grep -E "\<(1a3e)"
+0a:00.0 "Signal processing controller [1180]" "Xilinx Corporation [10ee]" "XILINX PCI DEVICE [7011]" "Micro-Research Finland Oy [1a3e]" "MTCA Event Receiver 300 [132c]"
 \end{lstlisting}
 \end{itemize}
 
@@ -244,75 +253,76 @@ The MTCA-EVR-300(U) needs a kernel module to work. It can be installed by simply
 \begin{itemize}
 \item Go to your e3-mrfioc2 sources directory:
 \begin{lstlisting}[style=termstyle]
-timinguser@icslab-ts03: ~$ cd e3/e3-mrfioc2
+iocuser@cslab-ccpu-crate07: ~$ cd e3/e3-mrfioc2
 \end{lstlisting}
 \item Install the kernel module:
 \begin{lstlisting}[style=termstyle]
-timinguser@icslab-ts03: e3-mrfioc2 (master)$ make dkms_add
-/epics/base-3.15.5/bin/linux-x86_64/msi -M name="mrfioc2" -M  version="2.2.0-rc4" -M kmod_name="mrf" /home/timinguser/e3/e3-mrfioc2/dkms/dkms_with_msi.conf.in > /home/timinguser/e3/e3-mrfioc2/dkms/dkms_with_msi.conf
-sudo install -d /usr/src/mrfioc2-2.2.0-rc4
-sudo cp -r /home/timinguser/e3/e3-mrfioc2/mrfioc2/mrmShared/linux/* /usr/src/mrfioc2-2.2.0-rc4/
-sudo /usr/sbin/dkms add -m mrfioc2 -v 2.2.0-rc4
+iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ make dkms_add
+/epics/base-7.0.3.1/bin/linux-x86_64/msi -M name="mrfioc2" -M  version="2.2.0-rc8" -M kmod_name="mrf" /home/iocuser/e3/e3-mrfioc2/dkms/dkms_with_msi.conf.in > /home/iocuser/e3/e3-mrfioc2/dkms/dkms_with_msi.conf
+/usr/bin/sudo -E install -d /usr/src/mrfioc2-2.2.0-rc8
+[sudo] password for iocuser:
+/usr/bin/sudo -E cp -r /home/iocuser/e3/e3-mrfioc2/mrfioc2/mrmShared/linux/* /usr/src/mrfioc2-2.2.0-rc8/
+/usr/bin/sudo -E /usr/sbin/dkms add -m mrfioc2 -v 2.2.0-rc8
 
-Creating symlink /var/lib/dkms/mrfioc2/2.2.0-rc4/source ->
-                 /usr/src/mrfioc2-2.2.0-rc4
+Creating symlink /var/lib/dkms/mrfioc2/2.2.0-rc8/source ->
+                 /usr/src/mrfioc2-2.2.0-rc8
 
 DKMS: add completed.
-timinguser@icslab-ts03: e3-mrfioc2 (master)$ make dkms_build
-sudo /usr/sbin/dkms build -m mrfioc2 -v 2.2.0-rc4
+iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ make dkms_build
+/usr/bin/sudo -E /usr/sbin/dkms build -m mrfioc2 -v 2.2.0-rc8
 
 Kernel preparation unnecessary for this kernel.  Skipping...
 
 Building module:
 cleaning build area...
-make -j4 KERNELRELEASE=3.10.0-957.1.3.el7.x86_64 -C /lib/modules/3.10.0-957.1.3.el7.x86_64/build M=/var/lib/dkms/mrfioc2/2.2.0-rc4/build modules...
+make -j4 KERNELRELEASE=3.10.0-1062.9.1.el7.x86_64 -C /lib/modules/3.10.0-1062.9.1.el7.x86_64/build M=/var/lib/dkms/mrfioc2/2.2.0-rc8/build modules...
 cleaning build area...
 
 DKMS: build completed.
-timinguser@icslab-ts03: e3-mrfioc2 (master)$ make dkms_install
-sudo /usr/sbin/dkms install -m mrfioc2 -v 2.2.0-rc4
+iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ make dkms_install
+/usr/bin/sudo -E /usr/sbin/dkms install -m mrfioc2 -v 2.2.0-rc8
 
 mrf.ko.xz:
 Running module version sanity check.
  - Original module
    - No original module exists within this kernel
  - Installation
-   - Installing to /lib/modules/3.10.0-957.1.3.el7.x86_64/extra/
+   - Installing to /lib/modules/3.10.0-1062.9.1.el7.x86_64/extra/
 Adding any weak-modules
 
 depmod...
 
 DKMS: install completed.
-timinguser@icslab-ts03: e3-mrfioc2 (master)$ make setup
+iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ make setup
 KERNEL=="uio*", ATTR{name}=="mrf-pci", MODE="0666"
 mrf
 rmmod mrf
 rmmod parport
 rmmod uio
-insmod /lib/modules/3.10.0-957.1.3.el7.x86_64/kernel/drivers/parport/parport.ko.xz
-insmod /lib/modules/3.10.0-957.1.3.el7.x86_64/kernel/drivers/uio/uio.ko.xz
-insmod /lib/modules/3.10.0-957.1.3.el7.x86_64/extra/mrf.ko.xz
+insmod /lib/modules/3.10.0-1062.9.1.el7.x86_64/kernel/drivers/parport/parport.ko.xz
+insmod /lib/modules/3.10.0-1062.9.1.el7.x86_64/kernel/drivers/uio/uio.ko.xz
+insmod /lib/modules/3.10.0-1062.9.1.el7.x86_64/extra/mrf.ko.xz
 
 
 It is OK to see "E3/RULES_DKMS:37: recipe for target 'setup' failed"
 ---------------------------------------------------------------------
-crw-rw-rw-. 1 root root 241, 0 Dec 13 10:11 /dev/uio0
-crw-rw-rw-. 1 root root 241, 1 Dec 13 10:11 /dev/uio1
+crw-rw-rw- 1 root root 245, 0 Feb 04 15:37 /dev/uio0
+crw-rw-rw- 1 root root 245, 1 Feb 04 15:37 /dev/uio1
 ---------------------------------------------------------------------
 \end{lstlisting}
 \item Check kernel module information:
 \begin{lstlisting}[style=termstyle]
-timinguser@icslab-ts03: pciids (master)$ lsmod |grep mrf
+iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ lsmod |grep mrf
 mrf                    18137  0
-uio                    19338  1 mrf
 parport                46395  1 mrf
-timinguser@icslab-ts03: pciids (master)$ modinfo mrf
-filename:       /lib/modules/3.10.0-957.1.3.el7.x86_64/extra/mrf.ko.xz
+uio                    19338  1 mrf
+iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ modinfo mrf
+filename:       /lib/modules/3.10.0-1062.9.1.el7.x86_64/extra/mrf.ko.xz
 author:         Michael Davidsaver <mdavidsaver@gmail.com>
 version:        1
 license:        GPL v2
 retpoline:      Y
-rhelversion:    7.6
+rhelversion:    7.7
 srcversion:     E3290AD048B5B57D2EAA55E
 alias:          pci:v000010EEd00007011sv00001A3Esd0000232Cbc*sc*i*
 alias:          pci:v000010EEd00007011sv00001A3Esd0000132Cbc*sc*i*
@@ -326,32 +336,33 @@ alias:          pci:v000010B5d00009030sv00001A3Esd000020E6bc*sc*i*
 alias:          pci:v000010B5d00009030sv00001A3Esd000020DCbc*sc*i*
 alias:          pci:v000010B5d00009030sv00001A3Esd000010E6bc*sc*i*
 depends:        parport,uio
-vermagic:       3.10.0-957.1.3.el7.x86_64 SMP mod_unload modversions
+vermagic:       3.10.0-1062.9.1.el7.x86_64 SMP mod_unload modversions
 parm:           cable:Name of JTAG parallel port cable to emulate (charp)
 parm:           interfaceversion:User space interface version (int)
 parm:           use_msi:Use MSI if present (default 1, yes) (uint)
+
 \end{lstlisting}
 %Check that the source version is the same as shown; it should be if these steps are followed as shown. Otherwise please inform ICS.
 \end{itemize}
 
-\subsection{PCI Addressing}
-Each PCI device is identified by a domain, a bus, a device, and a function number in Linux. Therefore, in order to initialize the MRF MTCA-EVR-300(U) board in E3, one needs the following information: a bus number, a device number, and a function number. These numbers are the parameters of a \texttt{mrmEvrSetupPCI} function.
+\subsection{PCI addressing}
+Each PCI device is identified by a domain, a bus, a device, and a function number in Linux. Therefore, in order to initialize the MRF MTCA-EVR-300(U) board in E3, one needs the following information: a bus number, a device number, and a function number. These numbers are the parameters of a \texttt{mrmEvrSetupPCI} function.\\
 
 One can use \texttt{lspci} to find them as follows:
 \begin{lstlisting}[style=termstyle]
-timinguser@icslab-ts03: ~$ lspci
-...
-0b:00.0 Signal processing controller: Xilinx Corporation XILINX PCI DEVICE
-...
-timinguser@icslab-ts03: ~$ lspci -s 0b:00.0 -vv
-0b:00.0 Signal processing controller: Xilinx Corporation XILINX PCI DEVICE
+iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ lspci
+[...]]
+0a:00.0 Signal processing controller: Xilinx Corporation XILINX PCI DEVICE
+[...]
+iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ lspci -s 0a:00.0 -vv
+0a:00.0 Signal processing controller: Xilinx Corporation XILINX PCI DEVICE
 	Subsystem: Micro-Research Finland Oy MTCA Event Receiver 300
-	Physical Slot: 6
+	Physical Slot: 11
 	Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr- Stepping- SERR- FastB2B- DisINTx+
 	Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort- <MAbort- >SERR- <PERR- INTx-
 	Latency: 0, Cache Line Size: 64 bytes
-	Interrupt: pin A routed to IRQ 70
-	Region 0: Memory at c0600000 (32-bit, non-prefetchable) [size=256K]
+	Interrupt: pin A routed to IRQ 46
+	Region 0: Memory at c0800000 (32-bit, non-prefetchable) [size=256K]
 	Capabilities: <access denied>
 	Kernel driver in use: mrf-pci
 	Kernel modules: mrf
@@ -360,15 +371,15 @@ timinguser@icslab-ts03: ~$ lspci -s 0b:00.0 -vv
 
 And one should identify four number as follows:
 \begin{lstlisting}[style=termstyle]
-timinguser@icslab-ts03: ~$ lspci -s 0b:00.0 -t
--+-[0000:0b]---00.0
+iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ lspci -s 0a:00.0 -t
+-+-[0000:0a]---00.0
  \-[0000:00]-
 \end{lstlisting}
-, where \texttt{-+-[0000:0b]---00.0} can be translated to \texttt{-+-}[domain:bus]\texttt{---}device.function. Thus in the above case, three numbers are shown in Table~\ref{table:pciidnumber}.\begin{table}[!htb]
+, where \texttt{-+-[0000:0a]---00.0} can be translated to \texttt{-+-}[domain:bus]\texttt{---}device.function. Thus in the above case, three numbers are shown in Table~\ref{table:pciidnumber}.\begin{table}[!htb]
   \centering
   \begin{tabular}{l|l}
     \toprule
-    bus      & 0x0b \\\midrule
+    bus      & 0x0a \\\midrule
     device   & 0x00 \\\midrule
     function & 0x00 \\\bottomrule
   \end{tabular}
@@ -377,324 +388,346 @@ timinguser@icslab-ts03: ~$ lspci -s 0b:00.0 -t
 \end{table}
 
 
-\clearpage
-\section{EPICS IOC Setup under E3}
-In order to start the EPICS IOC for the MRF MTCA-EVR-300(U) under E3, one should consider the following things: 1) the EPICS database file, and 2) the EPICS start-up script. The working directory, where an user can create, e.g., in the ICS Lab,
-\begin{lstlisting}[style=termstyle, label={list:pwd}, caption={Working Directory in the ICS lab.} ]
-/home/timinguser/e3/e3-mrfioc2/cmds
+%\clearpage
+\section{EPICS IOC set up under E3}
+In order to start the EPICS Input/Output Controller (IOC) for the MRF MTCA-EVR-300(U) under E3, one should consider two things: 1) the EPICS database file, and 2) the EPICS start-up script. Let us set as the working directory,
+\begin{lstlisting}[style=termstyle, label={list:pwd}, caption={Working directory in the ICS lab.} ]
+/home/iocuser/e3/e3-mrfioc2/cmds
 \end{lstlisting}
 
-\subsection{EPICS Database File}
-The database file in E3 is located in the following location:
+\subsection{EPICS database file}
+The database files in E3 are located under the following directory:
 \begin{lstlisting}[style=termstyle]
-/epics/base-3.15.5/require/3.0.4/siteMods/mrfioc2/2.2.0-rc4/db/evr-mtca-300-ess.db
-/epics/base-3.15.5/require/3.0.4/siteMods/mrfioc2/2.2.0-rc4/db/evr-mtca-300u-ess.db
+/epics/base-7.0.3.1/require/3.1.2/siteMods/mrfioc2/2.2.0-rc8/db/evr-mtca-300-ess.db
+/epics/base-7.0.3.1/require/3.1.2/siteMods/mrfioc2/2.2.0-rc8/db/evr-mtca-300u-ess.db
 \end{lstlisting}
 
-\subsection{Start-Up Script}
-Listing~\ref{list:emmtcaevr300.cmd} shows the IOC start-up script which has the MRF MTCA-EVR-300(U) Identification Numbers, as explained in the previous step.
-
+\subsection{Start-up script}
+Listing~\ref{list:emmtcaevr300.cmd} shows the IOC start-up script configured for the MRF MTCA-EVR-300(U) present in our system with the Identification Numbers obtained in previous steps.
 \begin{lstlisting}[
     style=termstyle,
+    numbers=left,
     label={list:emmtcaevr300.cmd},
     caption={Start-up script \texttt{emmtcaevr300.cmd}. Line \ref{pciid0} should be matched to Table~\ref{table:pciidnumber} as \texttt{mrmEvrSetupPCI(\$(DEV1), "bus:device.function")}.}
   ]
-require mrfioc2,2.2.0-rc4
+require mrfioc2,2.2.0-rc8
 
 epicsEnvSet("IOC", "EMMTCAEVR300")
 epicsEnvSet("DEV1", "EVR0")
 
+epicsEnvSet("MainEvtCODE" "14")
+epicsEnvSet("HeartBeatEvtCODE"   "122")
 epicsEnvSet("ESSEvtClockRate"  "88.0525")
 
-mrmEvrSetupPCI("$(DEV1)",  "0b:00.0") (*@\label{pciid0}@*)
-dbLoadRecords("evr-mtca-300u-ess.db","EVR=$(DEV1), SYS=$(IOC), D=$(DEV1), FEVT=$(ESSEvtClockRate)")
+mrmEvrSetupPCI("$(DEV1)",  "0a:00.0")(*@\label{pciid0}@*)
+dbLoadRecords("evr-mtca-300u-ess.db","EVR=$(DEV1), SYS=$(IOC), D=$(DEV1), FEVT=$(ESSEvtClockRate), EVNT1HZ=$(MainEvtCODE)")
 
-# needed with software timestamp source w/o RT thread scheduling
 var evrMrmTimeNSOverflowThreshold 100000
 
 
 iocInit()
 
-# Set delay compensation to 70 ns, needed to avoid timestamp issue
-dbpf $(IOC)-$(DEV1):DC-Tgt-SP 70
 \end{lstlisting}
 
 \subsection{EPICS IOC}
 All the EPICS parameters should be run from an E3 session. To start E3, type:
 \begin{lstlisting}[style=termstyle]
-timinguser@icslab-ts03: cmds (master)$ source /epics/base-3.15.5/require/3.0.4/bin/setE3Env.bash
-\end{lstlisting}
-All the IOCs and related EPICS commands (caget, caput, camonitor, etc.) should be run from an E3 session.
+iocuser@cslab-ccpu-crate07: cmds (master)$ source /epics/base-7.0.3.1/require/3.1.2/bin/setE3Env.bash
 
-Under E3, the EPICS IOC can be started via the command \texttt{iocsh.bash emmtcaevr300.cmd}. The output should look like as follows:
+Set the ESS EPICS Environment as follows:
+THIS Source NAME    : setE3Env.bash
+THIS Source PATH    : /epics/base-7.0.3.1/require/3.1.2/bin
+EPICS_BASE          : /epics/base-7.0.3.1
+EPICS_HOST_ARCH     : linux-x86_64
+E3_REQUIRE_LOCATION : /epics/base-7.0.3.1/require/3.1.2
+PATH                : /epics/base-7.0.3.1/require/3.1.2/bin:/epics/base-7.0.3.1/bin/linux-x86_64:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/iocuser/.local/bin:/home/iocuser/bin
+LD_LIBRARY_PATH     : /epics/base-7.0.3.1/lib/linux-x86_64:/epics/base-7.0.3.1/require/3.1.2/lib/linux-x86_64:/epics/base-7.0.3.1/require/3.1.2/siteLibs/linux-x86_64
+
+Enjoy E3!
+\end{lstlisting}
+All the IOCs and related EPICS commands (caget, caput, camonitor, etc.) should be run from an E3 session.\\
+
+Under E3, the EPICS IOC can be started with the command \texttt{iocsh.bash emmtcaevr300.cmd}. The output should look like as follows:
 \begin{lstlisting}[style=termstyle]
-timinguser@icslab-ts03: cmds (master)$ iocsh.bash emmtcaevr300.cmd
+iocuser@cslab-ccpu-crate07: cmds (master)$ iocsh.bash emmtcaevr300.cmd
+registerChannelProviderLocal firstTime true
 #
-# Start at "2018-W50-Dec13-1424-03-CET"
+# ------>-----> snip ----->------>
 #
-# Version information:
-# European Spallation Source ERIC : iocsh.bash (v0.3.5-58bef31.PID-1619)
-#
-# --->--> snip -->-->
 # Please Use Version and other environment variables
 # in order to report or debug this shell
 #
+# The IOC is started at "2020-W06-Feb04-1644-58-CET"
+#
+# Version information:
+# European Spallation Source ERIC : iocsh.bash (0.5.1-81d1214.PID-24674)
+#
 # HOSTDISPLAY=""
 # WINDOWID=""
-# PWD="/home/timinguser/e3/e3-mrfioc2/cmds"
-# USER="timinguser"
-# LOGNAME="timinguser"
+# PWD="/home/iocuser/e3/e3-mrfioc2/cmds"
+# USER="iocuser"
+# LOGNAME="iocuser"
 # EPICS_HOST_ARCH="linux-x86_64"
-# EPICS_BASE="/epics/base-3.15.5"
+# EPICS_BASE="/epics/base-7.0.3.1"
 # E3_REQUIRE_NAME="require"
-# E3_REQUIRE_VERSION="3.0.4"
-# E3_REQUIRE_LOCATION="/epics/base-3.15.5/require/3.0.4"
-# E3_REQUIRE_BIN="/epics/base-3.15.5/require/3.0.4/bin"
-# E3_REQUIRE_DB="/epics/base-3.15.5/require/3.0.4/db"
-# E3_REQUIRE_DBD="/epics/base-3.15.5/require/3.0.4/dbd"
-# E3_REQUIRE_INC="/epics/base-3.15.5/require/3.0.4/include"
-# E3_REQUIRE_LIB="/epics/base-3.15.5/require/3.0.4/lib"
-# E3_SITEAPPS_PATH="/epics/base-3.15.5/require/3.0.4/siteApps"
-# E3_SITELIBS_PATH="/epics/base-3.15.5/require/3.0.4/siteLibs"
-# E3_SITEMODS_PATH="/epics/base-3.15.5/require/3.0.4/siteMods"
-# EPICS_DRIVER_PATH="/epics/base-3.15.5/require/3.0.4/siteMods:/epics/base-3.15.5/require/3.0.4/siteApps"
+# E3_REQUIRE_VERSION="3.1.2"
+# E3_REQUIRE_LOCATION="/epics/base-7.0.3.1/require/3.1.2"
+# E3_REQUIRE_BIN="/epics/base-7.0.3.1/require/3.1.2/bin"
+# E3_REQUIRE_DB="/epics/base-7.0.3.1/require/3.1.2/db"
+# E3_REQUIRE_DBD="/epics/base-7.0.3.1/require/3.1.2/dbd"
+# E3_REQUIRE_INC="/epics/base-7.0.3.1/require/3.1.2/include"
+# E3_REQUIRE_LIB="/epics/base-7.0.3.1/require/3.1.2/lib"
+# E3_SITEAPPS_PATH="/epics/base-7.0.3.1/require/3.1.2/siteApps"
+# E3_SITELIBS_PATH="/epics/base-7.0.3.1/require/3.1.2/siteLibs"
+# E3_SITEMODS_PATH="/epics/base-7.0.3.1/require/3.1.2/siteMods"
+# EPICS_DRIVER_PATH="/epics/base-7.0.3.1/require/3.1.2/siteMods:/epics/base-7.0.3.1/require/3.1.2/siteApps"
 # EPICS_CA_AUTO_ADDR_LIST=""
 # EPICS_CA_ADDR_LIST=""
-# PATH="/epics/base-3.15.5/require/3.0.4/bin:/epics/base-3.15.5/bin/linux-x86_64:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/timinguser/.local/bin:/home/timinguser/bin"
-# LD_LIBRARY_PATH="/epics/base-3.15.5/lib/linux-x86_64:/epics/base-3.15.5/require/3.0.4/lib/linux-x86_64:/epics/base-3.15.5/require/3.0.4/siteLibs/linux-x86_64"
-# --->--> snip -->-->
+# PATH="/epics/base-7.0.3.1/require/3.1.2/bin:/epics/base-7.0.3.1/bin/linux-x86_64:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/home/iocuser/.local/bin:/home/iocuser/bin"
+# LD_LIBRARY_PATH="/epics/base-7.0.3.1/lib/linux-x86_64:/epics/base-7.0.3.1/require/3.1.2/lib/linux-x86_64:/epics/base-7.0.3.1/require/3.1.2/siteLibs/linux-x86_64"
+#
+# ------>-----> snip ----->------>
 #
 # Set REQUIRE_IOC for its internal PVs
-epicsEnvSet REQUIRE_IOC "REQMOD-58BEF31:ICSLAB--1638"
+epicsEnvSet REQUIRE_IOC "REQMOD:81d1214-cslab-c-24674"
+#
+# Enable an exit subroutine.
+dbLoadRecords "/epics/base-7.0.3.1/db/softIocExit.db" "IOC=REQMOD:81d1214-cslab-c-24674"
 #
 # Set E3_IOCSH_TOP for the absolute path where iocsh.bash is executed.
-epicsEnvSet E3_IOCSH_TOP "/home/timinguser/e3/e3-mrfioc2/cmds"
+epicsEnvSet E3_IOCSH_TOP "/home/iocuser/e3/e3-mrfioc2/cmds"
 #
+# Load require module, which has the version 3.1.2
 #
-# Load require module, which has the version 3.0.4
-#
-dlload /epics/base-3.15.5/require/3.0.4/lib/linux-x86_64/librequire.so
-dbLoadDatabase /epics/base-3.15.5/require/3.0.4/dbd/require.dbd
+dlload /epics/base-7.0.3.1/require/3.1.2/lib/linux-x86_64/librequire.so
+dbLoadDatabase /epics/base-7.0.3.1/require/3.1.2/dbd/require.dbd
 require_registerRecordDeviceDriver
 Loading module info records for require
 #
 # Set E3_CMD_TOP for the absolute path where emmtcaevr300.cmd exists
-epicsEnvSet E3_CMD_TOP "/home/timinguser/e3/e3-mrfioc2/cmds"
+epicsEnvSet E3_CMD_TOP "/home/iocuser/e3/e3-mrfioc2/cmds"
 #
 iocshLoad 'emmtcaevr300.cmd',''
-require mrfioc2,2.2.0-rc4
-Module mrfioc2 version 2.2.0-rc4 found in /epics/base-3.15.5/require/3.0.4/siteMods/mrfioc2/2.2.0-rc4/
+require mrfioc2,2.2.0-rc8
+Module mrfioc2 version 2.2.0-rc8 found in /epics/base-7.0.3.1/require/3.1.2/siteMods/mrfioc2/2.2.0-rc8/
 Module mrfioc2 depends on devlib2 2.9.0
-Module devlib2 version 2.9.0 found in /epics/base-3.15.5/require/3.0.4/siteMods/devlib2/2.9.0/
-Loading library /epics/base-3.15.5/require/3.0.4/siteMods/devlib2/2.9.0/lib/linux-x86_64/libdevlib2.so
+Module devlib2 version 2.9.0 found in /epics/base-7.0.3.1/require/3.1.2/siteMods/devlib2/2.9.0/
+Loading library /epics/base-7.0.3.1/require/3.1.2/siteMods/devlib2/2.9.0/lib/linux-x86_64/libdevlib2.so
 Loaded devlib2 version 2.9.0
-Loading dbd file /epics/base-3.15.5/require/3.0.4/siteMods/devlib2/2.9.0/dbd/devlib2.dbd
+Loading dbd file /epics/base-7.0.3.1/require/3.1.2/siteMods/devlib2/2.9.0/dbd/devlib2.dbd
 Calling function devlib2_registerRecordDeviceDriver
 Loading module info records for devlib2
-Loading library /epics/base-3.15.5/require/3.0.4/siteMods/mrfioc2/2.2.0-rc4/lib/linux-x86_64/libmrfioc2.so
-Loaded mrfioc2 version 2.2.0-rc4
-Loading dbd file /epics/base-3.15.5/require/3.0.4/siteMods/mrfioc2/2.2.0-rc4/dbd/mrfioc2.dbd
+Loading library /epics/base-7.0.3.1/require/3.1.2/siteMods/mrfioc2/2.2.0-rc8/lib/linux-x86_64/libmrfioc2.so
+Loaded mrfioc2 version 2.2.0-rc8
+Loading dbd file /epics/base-7.0.3.1/require/3.1.2/siteMods/mrfioc2/2.2.0-rc8/dbd/mrfioc2.dbd
 Calling function mrfioc2_registerRecordDeviceDriver
 Loading module info records for mrfioc2
 epicsEnvSet("IOC", "EMMTCAEVR300")
 epicsEnvSet("DEV1", "EVR0")
-#epicsEnvSet("MainEvtCODE" "14")
-#epicsEnvSet("HeartBeatEvtCODE"   "122")
+epicsEnvSet("MainEvtCODE" "14")
+epicsEnvSet("HeartBeatEvtCODE"   "122")
 epicsEnvSet("ESSEvtClockRate"  "88.0525")
-mrmEvrSetupPCI("EVR0",  "0b:00.0")
+mrmEvrSetupPCI("EVR0",  "0a:00.0")
 Notice: devPCIFindSpec() expect B:D.F in hex
-Device EVR0  b:0.0 slot=6
-Using IRQ 70
-FWVersion 0x18070207
+Device EVR0  a:0.0 slot=11
+Using IRQ 46
+FWVersion 0x180e0207
 Found version 519
 Found SFP EEPROM
 Sequencer capability detected
-mTCA: Out FP:4 FPUNIV:18 RB:0 IFP:2 GPIO:2
+mTCA: Out FP:4 FPUNIV:18 RB:0 IFP:32 GPIO:2
 EVR FIFO task start
 Enabling interrupts
-dbLoadRecords("evr-mtca-300u-ess.db","EVR=EVR0, SYS=EMMTCAEVR300, D=EVR0, FEVT=88.0525")
-# needed with software timestamp source w/o RT thread scheduling
+dbLoadRecords("evr-mtca-300u-ess.db","EVR=EVR0, SYS=EMMTCAEVR300, D=EVR0, FEVT=88.0525, EVNT1HZ=14")
 var evrMrmTimeNSOverflowThreshold 100000
 iocInit()
 Starting iocInit
 ############################################################################
-## EPICS R3.15.5-E3-3.15.5-patch
-## EPICS Base built Dec  4 2018
+## EPICS R7.0.3.1-E3-7.0.3.1-patch
+## EPICS Base built Jan 28 2020
 ############################################################################
 Set EVR clock 88052500.000000
 iocRun: All initialization complete
-# Set delay compensation to 70 ns, needed to avoid timestamp issue
-dbpf EMMTCAEVR300-EVR0:DC-Tgt-SP 70
-DBR_DOUBLE:         70
 # Set the IOC Prompt String One
-epicsEnvSet IOCSH_PS1 "58bef31.icslab-.1634 > "
+epicsEnvSet IOCSH_PS1 "81d1214-cslab-c-24674 > "
 #
-58bef31.icslab-.1634 >
+81d1214-cslab-c-24674 >
 \end{lstlisting}
 
 In addition, the PCI information is available within the running IOC via \texttt{devPCIShow} as follows:
 \begin{lstlisting}
-58bef31.icslab-.1634 > devPCIShow
+81d1214-cslab-c-24674 > devPCIShow
 \end{lstlisting}
 Look for the line with your configuration information, in our case is:
 \begin{lstlisting}
-PCI 0000:0b:00.0 IRQ 70
+PCI 0000:0a:00.0 IRQ 46
   vendor:device 10ee:7011 rev 00
 \end{lstlisting}
-Where the vendor id 10ee is Xilinx Corporation.
-And show the PCI information with (the second parameter is the verbosity level):
+Here the vendor id \texttt{10ee} is \texttt{Xilinx Corporation}.\\
+
+The PCI information can be shown with (the second parameter is the verbosity level):
 \begin{lstlisting}
-58bef31.icslab-.1634 > devPCIShow 9 0x10ee
-...
-PCI 0000:0b:00.0 IRQ 70
+81d1214-cslab-c-24674 > devPCIShow 9 0x10ee
+PCI 0000:0a:00.0 IRQ 46
   vendor:device 10ee:7011 rev 00
   subved:subdev 1a3e:132c
   class 118000 generic signal processing controller
-  slot: 6
+  slot: 11
   driver mrf-pci
   BAR 0 32-bit MMIO    256 kB
-...
 \end{lstlisting}
 
 \subsection{Checking automatic configuration after reboot}
 Reboot and check that the module is loaded and the IOC correctly starts:
 \begin{lstlisting}[style=termstyle]
-timinguser@icslab-ts03: ~$ lsmod |grep mrf
+iocuser@cslab-ccpu-crate07: ~$ lsmod |grep mrf
 mrf                    18137  0
-uio                    19338  1 mrf
 parport                46395  1 mrf
+uio                    19338  1 mrf
 \end{lstlisting}
-Also try restarting the IOC as before, the output should be the same.
 
 
 
-\newpage
-\chapter{System In-Situ Verification and Configuration Procedure}
-This chapter provides the minimal system verification procedure. If one wants to do more step-by-step procedure which may be useful when testing the function of hardware and software, please see Reference~\citep[see][p14]{EVR-USER-GUIDE}. It also explains how to configure the EVR according to one's needs.
+%\newpage
+\chapter{System in-situ verification and configuration procedure}
+This chapter provides the minimal system verification procedure. If it is desired to perform a more detailed testing please see Reference~\citep[see][p14]{EVR-USER-GUIDE}. It also explains how to configure the EVR in deeper detail.
 
 \begin{table}[!htb]
   \centering
   \begin{tabular}{c|p{0.4\linewidth}|p{0.42\linewidth}}
     \toprule
     Step & Goal                                       & Info.                                                  \\\midrule
-    1    & Check the EVR \& EVG connection            & Link status, link clock, and heartbeat timeout counter \\\midrule
+    1    & Check the EVR \& EVM connection            & Link status, link clock, and heartbeat timeout counter \\\midrule
     2    & Monitor receiving and acknowledging events & Event counter and receiving event frequency            \\\midrule
     3    & Generate trigger signals from EVR          & Various trigger signals with an oscilloscope           \\\midrule
-    4    & Configure hardware timestamps              & Timestamps from the EVG                                \\\midrule
-    5    & Use the EVR in standalone mode             & Use the EVR without an EVG                             \\\midrule
+    4    & Configure hardware timestamps              & Timestamps from the EVM                                \\\midrule
+    5    & Use the EVR in standalone mode             & Use the EVR without an EVM                             \\\midrule
     6    & Generate events from the inputs            & Use the inputs                                         \\\midrule
     7    & Share the event clock                      & Through the backplane clock lines                      \\\bottomrule
   \end{tabular}
-  \caption[]{System In-Situ Verification Procedure}
+  \caption[]{System in-situ verification procedure}
   \label{table:checklist}
 \end{table}
 
 
-\section{Step 1 : Check the EVR and EVG connection}
-This assumes that the EVR is connected to a properly configured EVG. Short comments on each command or a series of commands are shown before the corresponding command.
+\section{Step 1: Check the EVR and EVM connection}
+This assumes that the EVR is connected to a properly configured EVM. Short comments on each command or a series of commands are shown before the corresponding command.
 \begin{lstlisting}[style=termstyle]
 #
-# We can check the EVG and EVR link status and the link clock setting,
-# and can also see the link down counter as well.
+# We can check the EVM and EVR link status and the link clock setting,
+# and can also see the link counter
 #
-timinguser@icslab-ts03: ~$ caget EMMTCAEVR300-EVR0:Link-Sts
+iocuser@cslab-ccpu-crate07: ~$ caget EMMTCAEVR300-EVR0:Link-Sts
 EMMTCAEVR300-EVR0:Link-Sts     OK
-timinguser@icslab-ts03: ~$ caget EMMTCAEVR300-EVR0:Link-Clk-I
+iocuser@cslab-ccpu-crate07: ~$ caget EMMTCAEVR300-EVR0:Link-Clk-I
 EMMTCAEVR300-EVR0:Link-Clk-I   88.0519
 #
-# Change the wrong clock setting on EVR, then we expect that the link status will be Fail.
+# Change the clock setting on the EVR, and check the link status turn to Fail
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:Link-Clk-SP 100
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:Link-Clk-SP 100
 Old : EMMTCAEVR300-EVR0:Link-Clk-SP  88.0525
 New : EMMTCAEVR300-EVR0:Link-Clk-SP  100
-timinguser@icslab-ts03: ~$ caget EMMTCAEVR300-EVR0:Link-Sts
+iocuser@cslab-ccpu-crate07: ~$ caget EMMTCAEVR300-EVR0:Link-Sts
 EMMTCAEVR300-EVR0:Link-Sts     Fail
-timinguser@icslab-ts03: ~$ caget EMMTCAEVR300-EVR0:Link-Clk-I
+iocuser@cslab-ccpu-crate07: ~$ caget EMMTCAEVR300-EVR0:Link-Clk-I
 EMMTCAEVR300-EVR0:Link-Clk-I   100
 #
-# Revert it back to the proper clock setting, and the link status will be OK.
+# Revert it back to the proper clock setting, and the link status will be OK
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:Link-Clk-SP 88.0525
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:Link-Clk-SP 88.0525
 Old : EMMTCAEVR300-EVR0:Link-Clk-SP  100
 New : EMMTCAEVR300-EVR0:Link-Clk-SP  88.0525
-timinguser@icslab-ts03: ~$ caget EMMTCAEVR300-EVR0:Link-Sts
+iocuser@cslab-ccpu-crate07: ~$ caget EMMTCAEVR300-EVR0:Link-Sts
 EMMTCAEVR300-EVR0:Link-Sts     OK
-timinguser@icslab-ts03: ~$ caget EMMTCAEVR300-EVR0:Link-Clk-I
+iocuser@cslab-ccpu-crate07: ~$ caget EMMTCAEVR300-EVR0:Link-Clk-I
 EMMTCAEVR300-EVR0:Link-Clk-I   88.0519
 #
-# The link heartbeat counter is 35
+# The link heartbeat counter is 35, depending on the time spent on Fail status
 #
-timinguser@icslab-ts03: ~$ camonitor EMMTCAEVR300-EVR0:Cnt-LinkTimo-I
-EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2019-01-03 14:59:19.909288 35
+iocuser@cslab-ccpu-crate07: ~$ camonitor EMMTCAEVR300-EVR0:Cnt-LinkTimo-I
+EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2020-02-05 14:59:19.909288 35
 #
-# Open another terminal, to change the wrong link clock.
+# Open another terminal to change the link clock
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:Link-Clk-SP 100
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:Link-Clk-SP 100
 Old : EMMTCAEVR300-EVR0:Link-Clk-SP  88.0525
 New : EMMTCAEVR300-EVR0:Link-Clk-SP  100
 #
-# So, the heartbeat counter should be increasing as follows:
+# In the original terminal the heartbeat counter should be increasing as follows:
 #
-EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2019-01-03 15:07:40.035069 36
-EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2019-01-03 15:07:41.316697 37
-EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2019-01-03 15:07:42.597370 38
-EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2019-01-03 15:07:43.877849 39
-EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2019-01-03 15:07:45.158539 40
+EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2020-02-05 15:07:40.035069 36
+EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2020-02-05 15:07:41.316697 37
+EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2020-02-05 15:07:42.597370 38
+EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2020-02-05 15:07:43.877849 39
+EMMTCAEVR300-EVR0:Cnt-LinkTimo-I 2020-02-05 15:07:45.158539 40
 #
-# The counter will be stopped after the proper value is given.
+# The counter will be stopped after the proper value is set again
+#
 # In the second terminal:
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:Link-Clk-SP 88.0525
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:Link-Clk-SP 88.0525
 Old : EMMTCAEVR300-EVR0:Link-Clk-SP  100
 New : EMMTCAEVR300-EVR0:Link-Clk-SP  88.0525
 #
-# Also check that the EVG is sending a timestamp.
+# Check that the EVM is sending a timestamp
 #
-timinguser@icslab-ts03: ~$ caget EMMTCAEVR300-EVR0:Time-Valid-Sts
+iocuser@cslab-ccpu-crate07: ~$ caget EMMTCAEVR300-EVR0:Time-Valid-Sts
 EMMTCAEVR300-EVR0:Time-Valid-Sts Valid
 \end{lstlisting}
 
 
-\section{Step 2 : Monitor receiving and acknowledging events}
-This assumes that the EVG is sending event 14 at 14 Hz. Short comments on each command or a series of commands are shown before the corresponding command.
+\section{Step 2: Monitor receiving and acknowledging events}
+This assumes that the EVM is sending event 14 at 14 Hz. Short comments on each command or a series of commands are shown before the corresponding command.
 \begin{lstlisting}[style=termstylenumber]
 #
-# Monitor the event counter E (14) and check the time difference between counters, e.g., 20616 and 20617, is 0.071429s, i.e., 14 Hz.
+# Set the EVR to log event 14 with event counter E
 #
-timinguser@icslab-ts03: ~$ camonitor EMMTCAEVR300-EVR0:EvtECnt-I
-EMMTCAEVR300-EVR0:EvtECnt-I    2019-01-03 15:15:29.614903 20616
-EMMTCAEVR300-EVR0:EvtECnt-I    2019-01-03 15:15:29.686332 20617
-EMMTCAEVR300-EVR0:EvtECnt-I    2019-01-03 15:15:29.757761 20618
-EMMTCAEVR300-EVR0:EvtECnt-I    2019-01-03 15:15:29.829190 20619
-EMMTCAEVR300-EVR0:EvtECnt-I    2019-01-03 15:15:29.900619 20620
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:EvtE-SP.OUT "@OBJ=EVR0,Code=14"
+Old : EMMTCAEVR300-EVR0:EvtE-SP.OUT        @OBJ=EVR0,Code=255
+New : EMMTCAEVR300-EVR0:EvtE-SP.OUT        @OBJ=EVR0,Code=14
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:EvtE-SP 14
+Old : EMMTCAEVR300-EVR0:EvtE-SP            255
+New : EMMTCAEVR300-EVR0:EvtE-SP            14
+#
+# Monitor the event counter E (14) and check the time difference between counts,
+# e.g., 20616 and 20617, is 0.071429s, i.e., 14 Hz
+#
+iocuser@cslab-ccpu-crate07: ~$ camonitor EMMTCAEVR300-EVR0:EvtECnt-I
+EMMTCAEVR300-EVR0:EvtECnt-I    2020-02-05 15:15:29.614903 20616
+EMMTCAEVR300-EVR0:EvtECnt-I    2020-02-05 15:15:29.686332 20617
+EMMTCAEVR300-EVR0:EvtECnt-I    2020-02-05 15:15:29.757761 20618
+EMMTCAEVR300-EVR0:EvtECnt-I    2020-02-05 15:15:29.829190 20619
+EMMTCAEVR300-EVR0:EvtECnt-I    2020-02-05 15:15:29.900619 20620
 \end{lstlisting}
 
 
-\section{Step 3 : Generate trigger signals from EVR}
-An EVR is composed of several logical sub-units, and one of the logical sub-units is the pulse generator (or delay generator). Each pulse generator has an associated Delay and Width \cite{EVR-USER-GUIDE}. In the following procedure, two pulse generators are mapped to the \path{OutFP0} and \path{OutFP1} of a MTCA-EVR-300U, which are connected to the channel 1 and 2 of the oscilloscope respectively in order to see whether output signals are generated according to Delay's and Width's changes. This assumes that the EVG is sending event 14 at 14 Hz. Short comments on each command or a series of commands are shown before the corresponding command.
+\section{Step 3: Generate trigger signals from EVR}
+An EVR is composed of several logical sub-units, one of them is the pulse generator (or delay generator). Each pulse generator has an associated delay and width \cite{EVR-USER-GUIDE}. In the following procedure, two pulse generators are mapped to \path{OutFP0} and \path{OutFP1} of the MTCA-EVR-300U, which are connected to channels 1 and 2 of the oscilloscope respectively in order to see the effect of changing the delay and width on the output signals. This assumes that the EVM is sending event 14 at 14 Hz. Short comments on each command or a series of commands are shown before the corresponding command.
 
 \subsection{\texttt{OutFP0} output}
 \begin{lstlisting}[style=termstyle]
 #
 # Set OutFP0 to trigger on pulse generator 0
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:OutFP0-Src-SP 0
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:OutFP0-Src-SP 0
 Old : EMMTCAEVR300-EVR0:OutFP0-Src-SP 63
 New : EMMTCAEVR300-EVR0:OutFP0-Src-SP 0
 #
 # Set pulse generator 0 to trigger on event 14
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:DlyGen0-Evt-Trig0-SP 14
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:DlyGen0-Evt-Trig0-SP 14
 Old : EMMTCAEVR300-EVR0:DlyGen0-Evt-Trig0-SP 0
 New : EMMTCAEVR300-EVR0:DlyGen0-Evt-Trig0-SP 14
 #
 # Set the width of pulse generator 0. 10 000 is translated to 10 ms.
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:DlyGen0-Width-SP 10000
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:DlyGen0-Width-SP 10000
 Old : EMMTCAEVR300-EVR0:DlyGen0-Width-SP 0
 New : EMMTCAEVR300-EVR0:DlyGen0-Width-SP 10000
 \end{lstlisting}
-Figure~\ref{fig:14Hz} shows the output of \texttt{OutFP0} in an oscilloscope.
+
+Figure~\ref{fig:14Hz} shows the output of \texttt{OutFP0} in an oscilloscope.\\
+
 \begin{figure}[!ht]
   \centering
     \includegraphics[width=0.8\textwidth]{./pictures/img_1965.eps}
@@ -702,16 +735,17 @@ Figure~\ref{fig:14Hz} shows the output of \texttt{OutFP0} in an oscilloscope.
   \label{fig:14Hz}
 \end{figure}
 
-\subsection{Width Time of Pulse Generator}
+\subsection{Width of pulse generator}
 \begin{lstlisting}[style=termstyle]
 #
 # Change the width of pulse generator 0 from 10 ms to 50 ms
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:DlyGen0-Width-SP 50000
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:DlyGen0-Width-SP 50000
 Old : EMMTCAEVR300-EVR0:DlyGen0-Width-SP 10000
 New : EMMTCAEVR300-EVR0:DlyGen0-Width-SP 50000
 \end{lstlisting}
-and the output is shown in Figure~\ref{fig:50ms}.
+and the output is shown in Figure~\ref{fig:50ms}.\\
+
 \begin{figure}[!ht]
   \centering
     \includegraphics[width=0.78\textwidth]{./pictures/img_1966.eps}
@@ -719,52 +753,54 @@ and the output is shown in Figure~\ref{fig:50ms}.
   \label{fig:50ms}
 \end{figure}
 
-And one can also check them via \path{EMMTCAEVR300-EVR0:DlyGen0-Width-RB} as follows:
+It is possible to check the changes via \path{EMMTCAEVR300-EVR0:DlyGen0-Width-RB} as follows:
 \begin{lstlisting}[style=termstyle]
 #
-# Change the width time to 50 ms, 40 ms, and 80 ms in another terminal, and
-# check that the Read Back (RB) value is changing.
+# Change the width to 50 ms, 40 ms and 80 ms in another terminal, and
+# check that the Read Back (RB) value is changing
 #
-timinguser@icslab-ts03: ~$ camonitor EMMTCAEVR300-EVR0:DlyGen0-Width-RB
-EMMTCAEVR300-EVR0:DlyGen0-Width-RB 2019-01-03 16:01:48.506108 50000
-EMMTCAEVR300-EVR0:DlyGen0-Width-RB 2019-01-03 16:03:18.294459 40000
-EMMTCAEVR300-EVR0:DlyGen0-Width-RB 2019-01-03 16:03:21.788930 80000
+iocuser@cslab-ccpu-crate07: ~$ camonitor EMMTCAEVR300-EVR0:DlyGen0-Width-RB
+EMMTCAEVR300-EVR0:DlyGen0-Width-RB 2020-02-05 16:01:48.506108 50000
+EMMTCAEVR300-EVR0:DlyGen0-Width-RB 2020-02-05 16:03:18.294459 40000
+EMMTCAEVR300-EVR0:DlyGen0-Width-RB 2020-02-05 16:03:21.788930 80000
 \end{lstlisting}
 
-\subsection{Delay Time of Pulse Generator}
+\subsection{Delay of pulse generator}
 \begin{lstlisting}[style=termstyle]
 #
-# Set the width time - 20 ms - of pulse generator 0
+# Set the width - 20 ms - of pulse generator 0
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:DlyGen0-Width-SP 20000
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:DlyGen0-Width-SP 20000
 Old : EMMTCAEVR300-EVR0:DlyGen0-Width-SP 80000
 New : EMMTCAEVR300-EVR0:DlyGen0-Width-SP 20000
 #
 # Set OutFP1 to trigger on pulse generator 1
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:OutFP1-Src-SP 1
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:OutFP1-Src-SP 1
 Old : EMMTCAEVR300-EVR0:OutFP1-Src-SP 63
 New : EMMTCAEVR300-EVR0:OutFP1-Src-SP 1
 #
 # Set pulse generator 1 to trigger on event 14
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:DlyGen1-Evt-Trig0-SP 14
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:DlyGen1-Evt-Trig0-SP 14
 Old : EMMTCAEVR300-EVR0:DlyGen1-Evt-Trig0-SP 0
 New : EMMTCAEVR300-EVR0:DlyGen1-Evt-Trig0-SP 14
 #
-# Set the width time - 20 ms - of pulse generator 1
+# Set the width - 20 ms - of pulse generator 1
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:DlyGen1-Width-SP 20000
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:DlyGen1-Width-SP 20000
 Old : EMMTCAEVR300-EVR0:DlyGen1-Width-SP 0
 New : EMMTCAEVR300-EVR0:DlyGen1-Width-SP 20000
 #
-# Set the delay time - 30 ms - of pulse generator 1
+# Set the delay - 30 ms - of pulse generator 1
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:DlyGen1-Delay-SP 30000
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:DlyGen1-Delay-SP 30000
 Old : EMMTCAEVR300-EVR0:DlyGen1-Delay-SP 0
 New : EMMTCAEVR300-EVR0:DlyGen1-Delay-SP 30000
 \end{lstlisting}
-Figure~\ref{fig:delay} shows the result.
+
+Figure~\ref{fig:delay} shows the result.\\
+
 \begin{figure}[!htb]
   \centering
     \includegraphics[width=0.78\textwidth]{./pictures/img_1982.eps}
@@ -772,52 +808,52 @@ Figure~\ref{fig:delay} shows the result.
   \label{fig:delay}
 \end{figure}
 
-The configuration of the outputs and pulse generators can be added to the startup script after \path{iocInit()} replacing \path{caput} by \path{dbpf}.
+The configuration of the outputs and pulse generators can be added to the startup script after \path{iocInit()} replacing \path{caput} by \path{dbpf}.\\
 
 
-\section{Step 4 : Configure hardware timestamps}
+\section{Step 4: Configure hardware timestamps}
 This section provides the minimal information to configure an IOC to get its timestamps from the timing system. More information about timestamping can be found in the document ESS-0085848 (ICS Engineering Manual for Timestamping). Short comments on each command or a series of commands are shown before the corresponding command.
 \begin{lstlisting}[style=termstyle]
 #
 # Set up the Time-I record to process on arrival of event 14
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:Time-I.EVNT 14
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:Time-I.EVNT 14
 Old : EMMTCAEVR300-EVR0:Time-I.EVNT  125
 New : EMMTCAEVR300-EVR0:Time-I.EVNT  14
 #
 # Set up the Time-I record to use the hardware timestamp of event 14
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:Time-I.INP "@OBJ=EVR0, Code=14"
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:Time-I.INP "@OBJ=EVR0, Code=14"
 Old : EMMTCAEVR300-EVR0:Time-I.INP   @OBJ=EVR0, Code=125
 New : EMMTCAEVR300-EVR0:Time-I.INP   @OBJ=EVR0, Code=14
 #
 # Set up your records to use the timestamp from the Time-I record
 #
-timinguser@icslab-ts03: ~$ caput examplerecord.TSEL EMMTCAEVR300-EVR0:Time-I.TIME
+iocuser@cslab-ccpu-crate07: ~$ caput examplerecord.TSEL EMMTCAEVR300-EVR0:Time-I.TIME
 Old : examplerecord.TSEL
 New : examplerecord.TSEL             EMMTCAEVR300-EVR0:Time-I.TIME NPP NMS
 #
 # Check that your records have the same timestamp as event 14
 #
-timinguser@icslab-ts03: ~$ caget -a examplerecord EMMTCAEVR300-EVR0:EvtECnt-I
+iocuser@cslab-ccpu-crate07: ~$ caget -a examplerecord EMMTCAEVR300-EVR0:EvtECnt-I
 examplerecord                  2019-01-04 11:21:17.183434 1171
 EMMTCAEVR300-EVR0:EvtECnt-I    2019-01-04 11:21:17.183434 3385
 \end{lstlisting}
 
 \subsection{Configure the exact tick period}
-The timing system stores internally the timestamps as ticks, that then EPICS translates to wall-clock time. To do this the IOC should be configured with the actual tick period. By default it assumes that the event link frequency is being generated by the EVG fractional synthesizer. If the EVG takes the event frequency from an external source through its inputs, the exact frequency has to be set in the EVR IOC.
+The timing system stores internally the timestamps as ticks, that then EPICS translates to wall-clock time. To do this the IOC should be configured with the actual tick period. By default it assumes that the event link frequency is being generated by the EVM fractional synthesizer. If the EVM takes the event frequency from an external source through its inputs, the exact frequency has to be set in the EVR IOC.
 \begin{lstlisting}[style=termstyle]
 #
 # Set the exact event frequency
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:Time-Clock-SP 88.0525
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:Time-Clock-SP 88.0525
 Old : EMMTCAEVR300-EVR0:Time-Clock-SP 0
 New : EMMTCAEVR300-EVR0:Time-Clock-SP 88.0525
 \end{lstlisting}
 
 
-\section{Step 5 : Use the EVR in standalone mode}
-The EVR can work on its own without a connection to an EVG, but with reduced functionality. Here it is shown how to configure the EVR to work in this way. Some of the settings need to be included in the startup script shown in Listing~\ref{list:emmtcaevr300.cmd}, after \path{iocInit()}, so it is advised to include all the configuration in that file. Short comments on each command or a series of commands are shown before the corresponding command.
+\section{Step 5: Use the EVR in standalone mode}
+The EVR can work on its own without a connection to an EVM, but with reduced functionality. Here it is shown how to configure the EVR to work in this way. Some of the settings need to be included in the startup script shown in Listing~\ref{list:emmtcaevr300.cmd}, after \path{iocInit()}, so it is advised to include all the configuration in that file. Short comments on each command or a series of commands are shown before the corresponding command.
 \begin{lstlisting}[style=termstyle]
 ### Get current time from system clock, this will be used for the timestamps ###
 dbpf $(IOC)-$(DEV1):TimeSrc-Sel "Sys. Clock"
@@ -842,13 +878,13 @@ dbpf $(IOC)-$(DEV1):SoftSeq0-Enable-Cmd 1
 system("/bin/sh ./configure_sequencer_14Hz.sh $(IOC) $(DEV1)")
 \end{lstlisting}
 
-The file \texttt{configure\_sequencer\_14Hz.sh} shown in Listing~\ref{list:configuresequencer14Hzsh} should be located in the same directory as \texttt{emmtcaevr300.cmd}; it specifies what events and with what delay after the sequencer is triggered (what is known as sequencer timestamps) the events should be sent:
+The file \texttt{configure\_sequencer\_14Hz.sh} shown in Listing~\ref{list:configuresequencer14Hzsh} should be located in the same directory as \texttt{emmtcaevr300.cmd}; it specifies what events and with what delay after the sequencer is triggered (what is known as sequencer timestamps) should be sent:
 \begin{lstlisting}[
     style=termstyle,
     label={list:configuresequencer14Hzsh},
     caption={Sequencer population file \texttt{configure\_sequencer\_14Hz.sh}.}
   ]
-### Bash script to configure the EVG/EVR sequencer
+### Bash script to configure the EVM/EVR sequencer
 ### All values in us, as configured with $1-$2:SoftSeq0-TsResolution-Sel
 
 ### Set up the sequence content, events and timestamps
@@ -863,38 +899,39 @@ caput -a $1-$2:SoftSeq0-Timestamp-SP 2 0 1
 # Commit the sequence to HW
 caput $1-$2:SoftSeq0-Commit-Cmd 1
 \end{lstlisting}
-For more information, please check ESS-0508483 (ICS Engineering Manual for MRF cPCI-EVG-230), the EVR sequencer acts in exactly the same way as the EVG sequencer, but the EVR only has one sequencer.
+
+For more information, please check ESS-0331569 (ICS Engineering Manual for MRF mTCA-EVM-300), the EVR sequencer acts in exactly the same way as the EVM sequencer, but the EVR only has one sequencer.
 
 
-\section{Step 6 : Generate events from the inputs}
+\section{Step 6: Generate events from the inputs}
 The MTCA-EVR-300(U) has two inputs that can be used to trigger events, which can be timestamped or used to trigger processing or sequencers. Short comments on each command or a series of commands are shown before the corresponding command.
 \begin{lstlisting}[style=termstyle]
 #
 # Set FPIN0 to generate an event on the rising edge of the input signal
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:In0-Trig-Ext-Sel "Edge"
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:In0-Trig-Ext-Sel "Edge"
 Old : EMMTCAEVR300-EVR0:In0-Trig-Ext-Sel Off
 New : EMMTCAEVR300-EVR0:In0-Trig-Ext-Sel Edge
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:In0-Edge-Sel "Active Rising"
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:In0-Edge-Sel "Active Rising"
 Old : EMMTCAEVR300-EVR0:In0-Edge-Sel Active Rising
 New : EMMTCAEVR300-EVR0:In0-Edge-Sel Active Rising
 #
 # Select the event number to be generated
 #
-timinguser@icslab-ts03: ~$ caput EMMTCAEVR300-EVR0:In0-Code-Ext-SP 10
+iocuser@cslab-ccpu-crate07: ~$ caput EMMTCAEVR300-EVR0:In0-Code-Ext-SP 10
 Old : EMMTCAEVR300-EVR0:In0-Code-Ext-SP 0
 New : EMMTCAEVR300-EVR0:In0-Code-Ext-SP 10
 \end{lstlisting}
 
 
-\section{Step 7 : Share the event clock}
-The MTCA-EVR-300(U) can share the event clock with the rest of the AMCs in the uTCA crate. This process is explained in the document ESS-0508492 (ICS Engineering Manual for $\mu$TCA Backplane Clock Distribution).
+\section{Step 7: Share the event clock}
+The MTCA-EVR-300(U) can share the event clock with the rest of the AMCs in the $\mu$TCA crate. This process is explained in the document ESS-0508492 (ICS Engineering Manual for $\mu$TCA Backplane Clock Distribution).
 
 
 
-\clearpage
+%\clearpage
 \chapter{Troubleshooting}
-This chapter has trial and error while installing and configuring the MRF MTCA-EVR-300(U).
+This chapter shows some errors that can happen when installing and configuring the MRF MTCA-EVR-300(U).
 
 
 \section{PCI error}
@@ -911,13 +948,64 @@ PCI error: Failed to map BARs 0 for EC 30
 
 \clearpage
 
-\backmatter
+
+%\backmatter
+
+\chapter*{Glossary}\label{sec:glossary}
+\addcontentsline{toc}{chapter}{\nameref{sec:glossary}}
+\begin{table}[!htb]
+%  \footnotesize
+%  \centering
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Term} & Definition                                          \\\midrule
+%    AMC           & Advanced Mezzanine Card                             \\
+    CPU           & Central Processing Unit                             \\
+%    CU            & Cooling unit                                        \\
+    E3            & ESS EPICS environment                               \\
+    EPICS         & Experimental Physics and Industrial Control System  \\
+    ESS           & European Spallation Source                          \\
+    EVM           & Event Master                                        \\
+    EVR           & Event Receiver                                      \\
+%    FW            & Firmware                                            \\
+    FPGA          & Field-Programmable Gate Array                       \\
+    ICS           & Integrated Control System                           \\
+    I/O           & Input/Output                                        \\
+    IOC           & Input/Output Controller                             \\
+    MCH           & MTCA Carrier Hub                                    \\
+    MRF           & MicroResearch Finland                               \\
+    MTCA          & Micro Telecommunications Computing Architecture     \\
+%    PM            & Power module                                        \\
+%    RF            & Radio-frequency                                     \\
+    RTM           & Rear Transition Module                              \\
+    SFP           & Small Form-factor Pluggable                         \\
+    \bottomrule
+  \end{tabular}
+%  \caption[]{Document revision history.}
+  \label{table:glossary}
+\end{table}
+
 %\bibliographystyle{unsrt}
 %\bibliographystyle{plainnat}
 %\bibliographystyle{abbrvnat}
 \bibliographystyle{unsrtnat}
 %\bibliographystyle{chicago}
-%\bibliography{./ess_refs}
 \bibliography{em_mtcaevr300}
+
+\chapter*{Document revision history}\label{sec:docrevhist}
+\addcontentsline{toc}{chapter}{\nameref{sec:docrevhist}}
+\begin{table}[!tbh]
+  \footnotesize
+  \centering
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Revision} & \textbf{Reason for and description of change} & \textbf{Author}       & \textbf{Date} \\\midrule
+    1                 & First release                                 & Javier Cereijo Garcia & \today        \\
+    \bottomrule
+  \end{tabular}
+%  \caption[]{Document revision history.}
+  \label{table:docrevhist}
+\end{table}
+
 
 \end{document}

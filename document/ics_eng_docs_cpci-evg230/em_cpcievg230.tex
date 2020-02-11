@@ -7,60 +7,69 @@
  % , draft
 ]{memoir}
 
-
-
 \usepackage{essdocs}
 \usepackage[numbers]{natbib}
 \usepackage[autostyle]{csquotes}
+
+\usepackage{draftwatermark}
+
+\SetWatermarkText{\textbf{Obsolete}}
+\SetWatermarkScale{4.5}
+\SetWatermarkLightness{0.93}
 
 \setsecnumdepth{subsection}
 
 
 \begin{document}
 %\frontmatter
-%% ESS Document Description
-%%
-\essdocdesc{Engineering Manual}
+% ESS Document Description
+%
+\essdoctype{Engineering Manual}
 
-%% ESS Document Number
-%%
+% ESS Document Number
+%
 \essdocnum{ESS-0508483}
 
-%% Date
-%%
+% Date
+%
 \date{\today}
 
-%% ESS Document Revision Number
-%%
-\essdocrev{0.2}
+% ESS Document Revision Number
+%
+\essdocrev{1}
 
-%% ESS Document State
-%%
-\essdocstate{Early Draft}
+% ESS Document State
+%
+\essdocstate{Obsolete}
 
-%% ESS Document Classification
-%%
-\essdocclass{ESS Use Only}
+% ESS Document Classification
+%
+\essdocclass{Internal}
 
-%% Document Title
-%%
+% Document Title
+%
 \title{ICS Engineering Manual}
 \subtitle{for MRF cPCI-EVG-230}
-%% Document Author(s), if more than one author,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-\author{Javier Cereijo Garcia \newline Jeong Han Lee }
+% Document Author(s), if more than one author,
+% use \newline instead of \\ or \linebreak in order to seperate them
+\author{Javier Cereijo Garcia \newline Jeong Han Lee}
+\authorrole{Timing System Engineer \newline Senior Controls Engineer}
 
-%% Document Reviewer(s) if more than one reviewer,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-%\reviewer{Timo Korhonen (Chief Engineer) \newline Timo Korhonen (Chief Engineer)}
-\reviewer{TBD}
-%% Document Owner(s) if more than one owner,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-\owner{ICS}
+% Document Reviewer(s) if more than one reviewer,
+% use \newline instead of \\ or \linebreak in order to seperate them
+%\reviewer{-}
+%\reviewerrole{-}
 
-%% Document Approver(s) if more than one approver,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-\approver{ICS}
+% Document Owner(s) if more than one owner,
+% use \newline instead of \\ or \linebreak in order to seperate them
+\owner{Javier Cereijo Garcia}
+\ownerrole{Timing System Engineer}
+
+% Document Approver(s) if more than one approver,
+% use \newline instead of \\ or \linebreak in order to seperate them
+%\approver{-}
+%\approverrole{-}
+
 
 \showtrimson
 
@@ -72,23 +81,23 @@
 %\mainmatter
 
 
-%%% Actual Document Start at below
+% Actual Document Start at below
 \chapter{Overview}
-At European Spallation Source (ESS), Integrated Control System (ICS) uses the Micro Research Finland (MRF) Timing System{\footnote{\url{http://www.mrf.fi/}}} as its timing system of the ESS site. The consistent and up-to-date engineering manual is essential for the ESS Timing system.
+At European Spallation Source (ESS), Integrated Control System (ICS) uses the MicroResearch Finland (MRF) Timing System{\footnote{\url{http://www.mrf.fi/}}} as its timing system of the ESS site. The consistent and up-to-date engineering manual is essential for the ESS Timing system.
 
 \section{Scope}
 \begin{itemize}
-\item This document identifies one of the MRF Timing Event Generators (EVG) that needs to be configured for an ESS subsystem that needs synchronous frequencies, trigger signals and sequences of events \cite{MRFEVENTGENERATOR}.
+\item This document identifies one of the MRF Timing Event Generators (EVGs) that needs to be configured for an ESS subsystem that needs synchronous frequencies, trigger signals and sequences of events \cite{MRFEVENTGENERATOR}.
 \item This document provides the generic description of the MRF cPCI-EVG-230. In addition, it affords the minimal, essential, and generic information for the system configuration.
 \item The purpose of this document is to describe the engineering procedure and troubleshooting about how the MRF cPCI-EVG-230 board will be integrated in cooperation with the new ESS EPICS environment (E3).
 \item This document attempts to maintain consistency with existing ESS Timing system hardware as far as possible.
 \end{itemize}
-\textbf{Note that this is a very early draft document and should be updated as development progresses.}
+%\textbf{Note that this is a very early draft document and should be updated as development progresses.}
 
-\section{Target Audience}
-This document is targeted to ICS engineers and technical stakeholders of the ESS timing system. It is assumed that the target audience has a technical background in the MRF Timing System, the EPICS development, and a Linux environment.
+\section{Target audience}
+This document is targeted to ICS engineers and technical stakeholders of the ESS timing system. It is assumed that the target audience has a technical background in the MRF Timing System, the Experimental Physics and Industrial Control System (EPICS) development, and a Linux environment.
 
-\chapter{System Description}
+\chapter{System description}
 MRF Event Generator Modular Register Map Firmware document \citep[see][p4]{MRFEVENTGENERATOR} explained Event Generators and wrote :
 \blockquote{\textit{The Event Generator is responsible of creating and sending out timing events to an array of Event Receivers.
 High configurability makes it feasible to build a whole timing system with a single Event Generator without external counters etc.
@@ -112,7 +121,7 @@ Figure~\ref{fig:cpci-evg230} shows the cPCI-EVG-230 card with rough physical dim
 
 \begin{figure}[!htb]
   \centering
-  \includegraphics[width=0.99\textwidth]{./pictures/mrf_cpci_evg230}
+  \includegraphics[width=0.99\textwidth]{./pictures/mrf_cpci_evg230.png}
   \caption{
     MRF cPCI-EVG-230.
   }
@@ -120,13 +129,13 @@ Figure~\ref{fig:cpci-evg230} shows the cPCI-EVG-230 card with rough physical dim
 \end{figure}
 
 
-The cPCI-EVG-230  has a SFP transceiver as an output to EVR/fan-out, one trigger input, one RF input and two universal I/O slots. Universal I/O modules are small mezzanines (25.6 mm x 50 mm) which are installed in these slots to provide different types of inputs, for example to trigger events.
+The cPCI-EVG-230  has a SFP transceiver as an output to an Event Receiver (EVR) / fan-out, one trigger input, one RF input and two universal I/O slots. Universal I/O modules are small mezzanines (25.6 mm x 50 mm) which are installed in these slots to provide different types of inputs, for example to trigger events.
 
 
 \clearpage
 
-\chapter{System Environment}
-Before describing the engineering procedure for an E3 integration of the MRF cPCI-EVG-230 board, it is mandatory to have proper system environment that consists of specific hardware and software lists. Here we will show the hardware and software lists, their block diagrams, and their setup in the ICS lab at ESS. The information shown in this chapter is used in the ICS Lab at ESS.
+\chapter{System environment}
+Before describing the engineering procedure for an E3 integration of the MRF cPCI-EVG-230 board, it is mandatory to have proper system environment that consists of specific hardware and software lists. Here we will show the hardware and software lists, their block diagrams, and their setup in the ICS lab at ESS. The information shown in this chapter is used in the ICS lab at ESS.
 
 
 \section{Hardware}
@@ -153,7 +162,7 @@ Table~\ref{table:hwlist} shows the hardware list and its environment. The form f
 Figure~\ref{fig:hw-setup} shows the cPCI-EVG-230 in the crate, next to the CPU.
 \begin{figure}[!b]
   \centering
-  \includegraphics[width=0.8\textwidth]{./pictures/evgoncrate}
+  \includegraphics[width=0.8\textwidth]{./pictures/evgoncrate.png}
   \caption{Hardware Setup in the ICS lab.}
   \label{fig:hw-setup}
 \end{figure}
@@ -169,7 +178,7 @@ Table~\ref{table:swlist} shows the Software list and its environment. It is mand
     Item               & Version Info.                                                      \\\midrule
     CentOS Linux       & \texttt{7.4.1708}                                                  \\\midrule
     Kernel             & \texttt{3.10.0-693.17.1.el7.x86\_64}                               \\\midrule
-    mrf kernel module  & version : \texttt{1} / srcversion \texttt{A998B22F1425D7388F5F7A7} \\\midrule
+    mrf kernel module  & Version: \texttt{1} / srcversion \texttt{A998B22F1425D7388F5F7A7}  \\\midrule
     E3                 & \texttt{2.5.4}                                                     \\\midrule
     EPICS Base         & \texttt{3.15.5}                                                    \\\midrule
     mrfioc2            & E3 module ver. \texttt{2.2.0}                                      \\\midrule
@@ -179,7 +188,7 @@ Table~\ref{table:swlist} shows the Software list and its environment. It is mand
   \label{table:swlist}
 \end{table}
 
-\section{EVG Firmware}
+\section{EVG firmware}
 Table~\ref{table:fwinfo} shows EVG FPGA Firmware Version Register.
 
 \begin{table}[!htb]
@@ -197,15 +206,15 @@ Table~\ref{table:fwinfo} shows EVG FPGA Firmware Version Register.
 
 
 \clearpage
-\chapter{Engineering Procedure}
+\chapter{Engineering procedure}
 This chapter provides the minimal information to configure the EVG board properly.
 
-\section{System Installation}
-Figure~\ref{fig:hw-setup} shows the glimpse of what system might be like in a Lab. The optical cable to EVR/fan-out is not shown.
+\section{System installation}
+Figure~\ref{fig:hw-setup} shows the glimpse of what system might be like in a lab. The optical cable to EVR/fan-out is not shown.
 
 \section{cPCI-EVG-230 Board Identification}
 
-\subsection{Kernel Module}
+\subsection{Kernel module}
 It is essential to load the mrf kernel module and to check its information as follows:
 \begin{lstlisting}[style=termstyle]
 timinguser@icslab-ts01: ~$ modinfo mrf
@@ -232,9 +241,9 @@ parm:           interfaceversion:User space interface version (int)
 parm:           use_msi:Use MSI if present (default 1, yes) (uint)
 \end{lstlisting}
 
-It is mandatory to check the access permission of an IOC user for the device file, e.g., \path{/dev/uio0} to allow the IOC process to open it. In case ones target system is NOT running \texttt{UDEV}, please consult the EVR user guide~\cite{EVR-USER-GUIDE}\footnote{Although this guide is intended for the EVR, the kernel module is the same for EVR and EVG}. And for building and loading the MRF kernel module and for changing the device file permission, please see Reference~\citep[see][p12,13]{EVR-USER-GUIDE}. It is inadvisable to change the file permission by using \texttt{chmod}.
+It is mandatory to check the access permission of an Input/Output Controller (IOC) user for the device file, e.g., \path{/dev/uio0} to allow the IOC process to open it. In case ones target system is NOT running \texttt{UDEV}, please consult the EVR user guide~\cite{EVR-USER-GUIDE}\footnote{Although this guide is intended for the EVR, the kernel module is the same for EVR and EVG}. And for building and loading the MRF kernel module and for changing the device file permission, please see Reference~\citep[see][p12,13]{EVR-USER-GUIDE}. It is inadvisable to change the file permission by using \texttt{chmod}.
 
-\subsection{PCI Addressing}
+\subsection{PCI addressing}
 Each PCI device is identified by a domain, a bus, a device, and a function number in Linux. Therefore, in order to initialize the MRF cPCI-EVG-230 board in E3, one needs the following information: a bus number, a device number, and a function number. These numbers are the parameters of a \texttt{mrmEvgSetupPCI} function.
 
 One can use \texttt{lspci} to find them as follows:
@@ -278,20 +287,20 @@ timinguser@icslab-ts01: ~$ lspci -s 16:0e -t
 
 
 \clearpage
-\section{EPICS IOC Setup under E3}
+\section{EPICS IOC set up under E3}
 In order to start the EPICS IOC for the MRF cPCI-EVG-230 under E3, one should consider the following things: 1) the EPICS database file, and 2) the EPICS start-up script. The working directory, where an user can create, e.g., in the ICS Lab,
 \begin{lstlisting}[style=termstyle, label={list:pwd}, caption={Working Directory in the ICS lab.} ]
 /home/timinguser/ics_gitsrc/e3/e3-mrfioc2/cmds
 \end{lstlisting}
 
-\subsection{EPICS Database File}
+\subsection{EPICS database file}
 The database file in E3 is located in the following location:
 \begin{lstlisting}[style=termstyle]
 /epics/modules/mrfioc2/2.2.0/R3.15.5/db/cpci-evg230-ess.db
 \end{lstlisting}
 
 
-\subsection{Start-Up Script}
+\subsection{Start-up script}
 Listing~\ref{list:emcpcievg230.cmd} shows the IOC start-up script which has the MRF cPCI-EVG-230 Identification Numbers, shown in Table~\ref{table:pciidnumber}. Note that the start-up script is located in the directory in Listing~\ref{list:pwd}.
 
 \begin{lstlisting}[
@@ -442,7 +451,7 @@ PCI 0000:16:0e.0 IRQ 18
 \end{lstlisting}
 
 \newpage
-\chapter{System In-Situ Configuration}
+\chapter{System in-situ configuration}
 This chapter how to configure the EVG according to one's needs.
 \begin{table}[!htb]
   \centering
@@ -460,7 +469,7 @@ This chapter how to configure the EVG according to one's needs.
 \end{table}
 
 
-\section{Step 0 : Select the event frequency}
+\section{Step 0: Select the event frequency}
 One can check and select the event frequency with these commands after loading the E3 environment. Short comments on each command or a series of commands are shown before the corresponding command.
 \begin{lstlisting}[style=termstyle]
 #
@@ -469,7 +478,7 @@ One can check and select the event frequency with these commands after loading t
 timinguser@icslab-ts01: ~$ caget EMCPCIEVG230-EVG0:EvtClk-Frequency-RB
 EMCPCIEVG230-EVG0:EvtClk-Frequency-RB 88.0519
 \end{lstlisting}
-The ESS frequency (88.0525 MHz) was selected in line \ref{essfreq} of the startup script in Listing~\ref{list:emcpcievg230.cmd}. A slightly different frequency is shown because of the capabilities of the internal frequency synthesizer. In operations the EVG will get the event frequency from the master RF oscillator.
+The ESS frequency (88.0525 MHz) was selected in line \ref{essfreq} of the startup script in Listing~\ref{list:emcpcievg230.cmd}. A slightly different frequency is shown because of the capabilities of the internal frequency synthesizer. In operations the EVG will get the event frequency from the master radio-frequency (RF) oscillator.
 \begin{lstlisting}[style=termstyle]
 #
 # Change the event frequency to 100 MHz
@@ -492,7 +501,7 @@ timinguser@icslab-ts01: ~$ caget EMCPCIEVG230-EVG0:EvtClk-Frequency-RB
 EMCPCIEVG230-EVG0:EvtClk-Frequency-RB 88.0519
 \end{lstlisting}
 
-\section{Step 1 : Emit a software triggered event}
+\section{Step 1: Emit a software triggered event}
 In this step the connection to an EVR will be checked. In addition to the EVG, the EVR (correctly installed) and an optical cable between both are needed. In this example the EVR is installed in a different crate than the EVG. The start-up script file for the EVG is the same as shown in Listing~\ref{list:emcpcievg230.cmd}.
 
 Following are the steps necessary to emit the event and check that it is received in the EVR. Short comments on each command or a series of commands are shown before the corresponding command.
@@ -535,7 +544,7 @@ EMCPCIEVG230-EVR0:EvtACnt-I    <undefined> 3
 EMCPCIEVG230-EVR0:EvtACnt-I    <undefined> 4
 \end{lstlisting}
 
-\subsection{Step 1.1 : Configure the EVG to send the timestamp}
+\subsection{Step 1.1: Configure the EVG to send the timestamp}
 Only one more line is needed in the EVG startup script to send the timestamp from the EVG to the EVRs. One must add the following line after \path{iocInit()} in Listing~\ref{list:emcpcievg230.cmd}:
 \begin{lstlisting}[style=termstyle]
 dbpf "$(IOC)-$(DEV1):1ppsInp-Sel" "Sys Clk"
@@ -570,7 +579,7 @@ EMCPCIEVG230-EVR0:EvtACnt-I    2018-07-20 11:36:13.941891 4
 \end{lstlisting}
 
 
-\section{Step 2 : Emit a periodic event}
+\section{Step 2: Emit a periodic event}
 The EVG can be set to emit periodically an event by using a multiplexed counter (Mxc). Short comments on each command or a series of commands are shown before the corresponding command. In this example the Mxc7 is used to create the heartbeat event (event number 122) at a frequency of 1 Hz.
 \begin{lstlisting}[style=termstyle]
 #
@@ -597,7 +606,7 @@ One can check the arrival of event 122 (or heartbeat event) in the EVR by monito
 The heartbeat event, or any other event at any desired frequency, can be set automatically at startup by including in the startup script the same commands after \path{iocInit()} in Listing~\ref{list:emcpcievg230.cmd}, and replacing \path{caput} by \path{dbpf}.
 
 
-\section{Step 3 : Emit a sequence}
+\section{Step 3: Emit a sequence}
 In this section it is shown how to configure a sequencer to emit a sequence of events. Short comments on each command or a series of commands are shown before the corresponding command.
 \begin{lstlisting}[style=termstyle]
 #
@@ -713,7 +722,7 @@ system("/bin/sh ./configuresequence.sh")
 \end{lstlisting}
 
 
-\section{Step 4 : Emit an event triggered from an external source}
+\section{Step 4: Emit an event triggered from an external source}
 In this step the event emission is triggered from an external input. It will be necessary to install an I/O module to the cPCI-EVG-230 board. The start-up script file for the EVG is the same one as shown in Listing~\ref{list:emcpcievg230.cmd}.
 
 Short comments on each command or a series of commands are shown before the corresponding command.
@@ -809,8 +818,36 @@ caput -a $1-$2:SoftSeq0-Timestamp-SP 2 0 1
 caput $1-$2:SoftSeq0-Commit-Cmd 1
 \end{lstlisting}
 
+
 \clearpage
-\backmatter
+
+
+%\backmatter
+
+\chapter*{Glossary}\label{sec:glossary}
+\addcontentsline{toc}{chapter}{\nameref{sec:glossary}}
+\begin{table}[!htb]
+%  \footnotesize
+%  \centering
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Term} & Definition                                          \\\midrule
+    E3            & ESS EPICS environment                               \\
+    EPICS         & Experimental Physics and Industrial Control System  \\
+    ESS           & European Spallation Source                          \\
+    EVG           & Event Generator                                     \\
+    EVR           & Event Receiver                                      \\
+    ICS           & Integrated Control System                           \\
+    IOC           & Input/Output Controller                             \\
+    MRF           & MicroResearch Finland                               \\
+    Mxc           & Multiplexed counter                                 \\
+    RF            & Radio-frequency                                     \\
+    \bottomrule
+  \end{tabular}
+%  \caption[]{Document revision history.}
+  \label{table:glossary}
+\end{table}
+
 %\bibliographystyle{unsrt}
 %\bibliographystyle{plainnat}
 %\bibliographystyle{abbrvnat}
@@ -818,27 +855,44 @@ caput $1-$2:SoftSeq0-Commit-Cmd 1
 %\bibliographystyle{chicago}
 \bibliography{./ess_refs}
 
+\chapter*{Document revision history}\label{sec:docrevhist}
+\addcontentsline{toc}{chapter}{\nameref{sec:docrevhist}}
+\begin{table}[!htb]
+  \footnotesize
+  \centering
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Revision} & \textbf{Reason for and description of change} & \textbf{Author}       & \textbf{Date} \\\midrule
+%    1                 & First release                                 & Javier Cereijo Garcia & \today        \\
+    1                 & First release                                 & Javier Cereijo Garcia & January 8, 2019   \\
+    \bottomrule
+  \end{tabular}
+%  \caption[]{Document revision history.}
+  \label{table:docrevhist}
+\end{table}
+
+
 \end{document}
 
 
 
-%% The output of \verb|lspci| for the PCIe-EVR-300 is:
-%% \begin{lstlisting}
-%% $ lspci -s 05:00 -vv
-%% 05:00.0 Signal processing controller: Lattice Semiconductor Corporation Device
-%%         ec30 (rev 01)
-%%     Subsystem: Device 1a3e:172c
-%%     Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
-%%         Stepping- SERR- FastB2B- DisINTx-
-%%     Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort-
-%%         <MAbort- >SERR- <PERR- INTx-
-%%     Latency: 0, Cache Line Size: 64 bytes
-%%     Interrupt: pin A routed to IRQ 16
-%%     Region 0: Memory at c0400000 (32-bit, non-prefetchable) [size=1M]
-%%     Capabilities: <access denied>
-%%     Kernel driver in use: mrf-pci
+% The output of \verb|lspci| for the PCIe-EVR-300 is:
+% \begin{lstlisting}
+% $ lspci -s 05:00 -vv
+% 05:00.0 Signal processing controller: Lattice Semiconductor Corporation Device
+%         ec30 (rev 01)
+%     Subsystem: Device 1a3e:172c
+%     Control: I/O+ Mem+ BusMaster+ SpecCycle- MemWINV- VGASnoop- ParErr-
+%         Stepping- SERR- FastB2B- DisINTx-
+%     Status: Cap+ 66MHz- UDF- FastB2B- ParErr- DEVSEL=fast >TAbort- <TAbort-
+%         <MAbort- >SERR- <PERR- INTx-
+%     Latency: 0, Cache Line Size: 64 bytes
+%     Interrupt: pin A routed to IRQ 16
+%     Region 0: Memory at c0400000 (32-bit, non-prefetchable) [size=1M]
+%     Capabilities: <access denied>
+%     Kernel driver in use: mrf-pci
 
-%% $ lspci -s 05:00 -t
-%% -+-[0000:05]---00.0
-%%  \-[0000:00]-
-%% \end{lstlisting}
+% $ lspci -s 05:00 -t
+% -+-[0000:05]---00.0
+%  \-[0000:00]-
+% \end{lstlisting}

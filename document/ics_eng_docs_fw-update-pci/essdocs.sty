@@ -62,9 +62,9 @@
 % geometry setup for a binding offset
 
 
-%% Only for Draft 
+%% Only for Draft
 %% Fedora - nrich cannot handle this  option
-%% 
+%%
 %% Thursday, July 11 19:51:21 KST 2013, jhlee
 %% \RequirePackage{draftwatermark}
 %% \SetWatermarkScale{5.0}
@@ -86,7 +86,7 @@
 
 
 % includegraphics default image width option
-\setkeys{Gin}{width=0.99\textwidth} 
+\setkeys{Gin}{width=0.99\textwidth}
 
 % more space between rows in table 1.2 or 1.3 is recommended
 \renewcommand{\arraystretch}{1.2}
@@ -106,33 +106,40 @@
 %% %% memoir has \thelastpage and \thelastsheet
 %% %%
 \makepagestyle{pstyle}
-\makeevenhead{pstyle}{
-  \noindent
-  {\miniscule
-    \begin{tabular}{ll}
-      Description     & \@essdocdesc \\
-      Document number & \@essdocnum \\
-      Date            & \@date \\
-      Revision        & \@essdocrev \\
-      State           & \@essdocstate \\
-      Classification  & \@essdocclass
-    \end{tabular}
-  }
-}{}{}
+
 \makeoddhead{pstyle}{
   \noindent
   {\miniscule
     \begin{tabular}{ l l }
-      Description     & \@essdocdesc \\
+      Document Type   & \@essdoctype \\
       Document number & \@essdocnum \\
-      Date            & \@date \\
-      Revision        & \@essdocrev \\
-      State           & \@essdocstate \\
-      Classification  & \@essdocclass
+      Revision        & \@essdocrev
     \end{tabular}
   }
-}{}{}
-\makeevenfoot{pstyle}{}{\thepage~(\thelastpage)}{}
+}{}{
+  \noindent
+  {\miniscule
+    \begin{tabular}{ l l }
+      Date                  & \@date \\
+      State                 & \@essdocstate \\
+      Confidentiality Level & \@essdocclass
+    \end{tabular}
+  }
+}
+%\makeoddhead{pstyle}{
+%  \noindent
+%  {\miniscule
+%    \begin{tabular}{ l l }
+%      Description     & \@essdoctype \\
+%      Document number & \@essdocnum \\
+%      Date            & \@date \\
+%      Revision        & \@essdocrev \\
+%      State           & \@essdocstate \\
+%      Classification  & \@essdocclass
+%    \end{tabular}
+%  }
+%}{}{}
+%\makeevenfoot{pstyle}{}{\thepage~(\thelastpage)}{}
 \makeoddfoot{pstyle}{}{\thepage~(\thelastpage)}{}
 \pagestyle{pstyle}
 
@@ -141,20 +148,24 @@
 %\makeheadrule{myheadings}{\textwidth}{
 %   \normalrulethickness
 %}
-%\renewcommand{\chaptermark}[1]% 
+%\renewcommand{\chaptermark}[1]%
 %             {\markboth{\thechapter. \ #1}{} }
-%% \renewcommand{\sectionmark}[1]% 
+%% \renewcommand{\sectionmark}[1]%
 %%              {\markright{ \thesection. \ #1}{} }
 %% \newcommand \headerfont  {\fontsize{10pt}{10pt} \fontfamily{ppl} \selectfont}
              %% \newcommand \thepagefont {\fontsize{10pt}{10pt} \bfseries }
-             
+
 
 %% ESS specified commands
-             
+
+\def\authorrole#1{\def\@authorrole{#1}}
 \def\reviewer#1{\def\@reviewer{#1}}
+\def\reviewerrole#1{\def\@reviewerrole{#1}}
 \def\owner#1{\def\@owner{#1}}
+\def\ownerrole#1{\def\@ownerrole{#1}}
 \def\approver#1{\def\@approver{#1}}
-\def\essdocdesc#1{\def\@essdocdesc{#1}}
+\def\approverrole#1{\def\@approverrole{#1}}
+\def\essdoctype#1{\def\@essdoctype{#1}}
 \def\essdocnum#1{\def\@essdocnum{#1}}
 \def\essdocrev#1{\def\@essdocrev{#1}}
 \def\essdocstate#1{\def\@essdocstate{#1}}
@@ -174,13 +185,13 @@
     \flushright
         {\miniscule
           \begin{tabular}{ll}
-            Description     & \@essdocdesc \\
-            Document number & \@essdocnum \\
-            Date            & \@date \\
-            Revision        & \@essdocrev \\
-            State           & \@essdocstate \\
-            Classification  & \@essdocclass\\
-            Page            & \thepage~(\thelastpage)
+            Document Type         & \@essdoctype \\
+            Document number       & \@essdocnum \\
+            Date                  & \@date \\
+            Revision              & \@essdocrev \\
+            State                 & \@essdocstate \\
+            Confidentiality Level & \@essdocclass\\
+            Page                  & \thepage~(\thelastpage)
           \end{tabular}
         }
   \end{minipage}
@@ -194,19 +205,20 @@
   \rule[0.5ex]{\linewidth}{1pt}\vspace*{-\baselineskip}\vspace{3.2pt}
   \rule[0.5ex]{\linewidth}{2pt}\\
   \vskip 8em%
-  \vfill
+  %\vfill
   \begin{center}
-    \begin{tabular}{l|p{0.7\linewidth}}
-      \toprule
-      &  Name (Role/Title) \\
-      \toprule
-      Author   & \@author    \\\midrule
-      Reviewer & \@reviewer  \\\midrule
-      Owner    & \@owner     \\\midrule
-      Approver & \@approver  \\\bottomrule
+    \begin{tabular}{|l|p{0.3\linewidth}|p{0.45\linewidth}|}
+      \cline{2-3}%\toprule
+      \multicolumn{1}{l|}{} & \textbf{Name} & \textbf{Role/Title} \\
+      \hline%\toprule
+%      \textbf{Owner}    & \@owner    & \@ownerrole \\\hline%\midrule
+      \ifx\@owner\undefined\else\textbf{Owner}       & \@owner    & \ifx\@ownerrole\undefined\else\@ownerrole\fi \\\hline\fi
+      \textbf{Author}                                & \@author   & \ifx\@authorrole\undefined\else\@authorrole\fi \\\hline
+      \ifx\@reviewer\undefined\else\textbf{Reviewer} & \@reviewer & \ifx\@reviewerrole\undefined\else\@reviewerrole\fi \\\hline\fi
+      \ifx\@approver\undefined\else\textbf{Approver} & \@approver & \ifx\@approverrole\undefined\else\@approverrole\fi \\\hline\fi
     \end{tabular}
   \end{center}
-  \vfill
+%  \vfill
   \endgroup
 }
 
@@ -251,8 +263,8 @@
 \definecolor{codegray}{rgb}{0.5,0.5,0.5}
 \definecolor{codepurple}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
- 
-%%%% This is for 
+
+%%%% This is for
 \lstdefinestyle{termstyle}{
   backgroundcolor=\color{backcolour}
   , commentstyle=\color{codegreen}
@@ -270,7 +282,7 @@
 %  , numbersep=5pt                       % How far are line-numbers from code
   , showspaces=false                    % Dont make spaces visible
   , showtabs=false                      % Dont make tabls visible
-  , tabsize=3                           %  showspaces=false,                
+  , tabsize=3                           %  showspaces=false,
 %  showstringspaces=false,
   , morekeywords={root@,Link-Clk-SP }
 %  morekeywords={emacs, aptitude, cp, wget}
@@ -294,7 +306,7 @@
 %  , numbersep=5pt                       % How far are line-numbers from code
   , showspaces=false                    % Dont make spaces visible
   , showtabs=false                      % Dont make tabls visible
-  , tabsize=3                           %  showspaces=false,                
+  , tabsize=3                           %  showspaces=false,
 %  showstringspaces=false,
   , morekeywords={124.916}
 %  morekeywords={emacs, aptitude, cp, wget}
@@ -302,4 +314,3 @@
 
 \lstset{style=termstyle}
 \lstset{escapeinside={(*@}{@*)}}
-

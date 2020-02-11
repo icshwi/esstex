@@ -11,57 +11,59 @@
 \usepackage[numbers]{natbib}
 \usepackage[autostyle]{csquotes}
 
-%% \usepackage{epstopdf}
-%% \usepackage[pdf]{pstricks}
-%% \usepackage{graphicx}
-
 \setsecnumdepth{subsection}
+
 
 \begin{document}
 %\frontmatter
-%% ESS Document Description
-%%
-\essdocdesc{Engineering Manual}
+% ESS Document Description
+%
+\essdoctype{Engineering Manual}
 
-%% ESS Document Number
-%%
+% ESS Document Number
+%
 \essdocnum{ESS-0870816}
 
-%% Date
-%%
+% Date
+%
 \date{\today}
 
-%% ESS Document Revision Number
-%%
-\essdocrev{0.3}
+% ESS Document Revision Number
+%
+\essdocrev{1}
 
-%% ESS Document State
-%%
-\essdocstate{Early Draft}
+% ESS Document State
+%
+\essdocstate{Released}
 
-%% ESS Document Classification
-%%
-\essdocclass{ESS Use Only}
+% ESS Document Classification
+%
+\essdocclass{Internal}
 
-%% Document Title
-%%
+% Document Title
+%
 \title{ICS Engineering Manual}
 \subtitle{for Firmware update of PCI-based MRF products}
-%% Document Author(s), if more than one author,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-\author{Javier Cereijo Garcia \newline Jeong Han Lee }
+% Document Author(s), if more than one author,
+% use \newline instead of \\ or \linebreak in order to seperate them
+\author{Javier Cereijo Garcia \newline Jeong Han Lee}
+\authorrole{Timing System Engineer \newline Senior Controls Engineer}
 
-%% Document Reviewer(s) if more than one reviewer,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-%\reviewer{Timo Korhonen (Chief Engineer) \newline Timo Korhonen (Chief Engineer)}
-\reviewer{TBD}
-%% Document Owner(s) if more than one owner,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-\owner{ICS}
+% Document Reviewer(s) if more than one reviewer,
+% use \newline instead of \\ or \linebreak in order to seperate them
+%\reviewer{-}
+%\reviewerrole{-}
 
-%% Document Approver(s) if more than one approver,
-%% use \newline instead of \\ or \linebreak in order to seperate them
-\approver{ICS}
+% Document Owner(s) if more than one owner,
+% use \newline instead of \\ or \linebreak in order to seperate them
+\owner{Javier Cereijo Garcia}
+\ownerrole{Timing System Engineer}
+
+% Document Approver(s) if more than one approver,
+% use \newline instead of \\ or \linebreak in order to seperate them
+%\approver{-}
+%\approverrole{-}
+
 
 \showtrimson
 
@@ -73,54 +75,55 @@
 %\mainmatter
 
 
-%%% Actual Document Start at below
+% Actual Document Start at below
 \chapter{Overview}
-At European Spallation Source (ESS), Integrated Control System (ICS) uses the Micro Research Finland (MRF) Timing System{\footnote{\url{http://www.mrf.fi/}}} as its timing system of the ESS site. The consistent and up-to-date engineering manual is essential for the ESS Timing system.
+At European Spallation Source (ESS), Integrated Control System (ICS) uses the MicroResearch Finland (MRF) Timing System{\footnote{\url{http://www.mrf.fi/}}} as its timing system of the ESS site. The consistent and up-to-date engineering manual is essential for the ESS timing system.\\
 
 \section{Scope}
 \begin{itemize}
 \item This document explains how to perform a Firmware (FW) update of PCI-based MRF products used at ESS.
-\item This document identifies two possible ways of performing such update: using the mrfioc2 EPICS module, or using the vendor's own driver.
-\item This document attempts to maintain consistency with existing ESS Timing system hardware as far as possible.
+\item This document identifies two possible ways of performing such update: using the \texttt{mrfioc2} EPICS module, or using the vendor's own driver.
+\item This document attempts to maintain consistency with existing ESS timing system hardware as far as possible.
 \end{itemize}
-\textbf{Note that this is a very early draft document and should be updated as development progresses.}
+%\textbf{Note that this is a very early draft document and should be updated as development progresses.}
 
-\section{Target Audience}
-This document is targeted to ICS engineers and technical stakeholders of the ESS timing system. It is assumed that the target audience has a technical background in the MRF Timing System, the EPICS development, and a Linux environment.
+\section{Target audience}
+This document is targeted to ICS engineers and technical stakeholders of the ESS timing system. It is assumed that the target audience has a technical background in the MRF Timing System, the Experimental Physics and Industrial Control System (EPICS) development, and a Linux environment.\\
 
-\chapter{System Description}
-MRF Technical Reference \citep[see][p5]{MRFEVENTSYSTEMDC} explained the timing system and wrote :
+\chapter{System description}
+MRF Technical Reference \citep[see][p5]{MRFEVENTSYSTEMDC} describes the timing system as:
 \blockquote{\textit{The MRF Timing System provides a complete timing distribution system including timing signal generation with only a few components.\\The system is capable of generating and synchronous frequencies, trigger signals and sequences of events, etc. synchronous to an externally provided master clock reference and mains voltage phase signal. Support for timestamps makes the system a global timebase and allows attaching timestamps to collected data and performed actions.}}
 
 ICS uses and will use the following different types of MRF products:
 \begin{itemize}
 \item MTCA-EVR-300
 \item PCIe-EVR-300DC
+\item MTCA-EVM-300
 \end{itemize}
 
-The scope of this document is to explain how to update the FW of both, but other products may also be updated using the same procedure (not tested).
+The scope of this document is to explain how to update the FW of all of them, but other products may also be updated using the same procedure (not tested).\\
 
 
-\clearpage
+%\clearpage
 
-\chapter{System Environment}
-Before describing the engineering procedure for the FW update, it is mandatory to have proper system environment that consists of specific hardware and software lists.
-
+\chapter{System environment}
+Before describing the engineering procedure for the FW update, it is mandatory to have a proper system environment that consists of specific hardware and software. The information shown in this chapter is used in the ICS lab at ESS.\\
 
 \section{Hardware}
-Table~\ref{table:hwlist} shows the hardware list and its environment. Here, \texttt{TAG} is used as the prefix of the ICS internal inventory system in order to track it down.
+Table~\ref{table:hwlist} shows the hardware list and its environment. It is possible to use different form factors than what is shown in the examples; for more information check the specific engineering manual.\\
+
 \begin{table}[!hb]
   \centering
-  \begin{tabular}{l|l|l}
+  \begin{tabular}{l|l}
     \toprule
-    Hardware                        & Info                                        & Serial Number \\\midrule
-    MRF PCIe-EVR-300DC              & \texttt{ICS TAG-476}                        & M263060       \\\midrule
-    Workstation                     &                                             &               \\\midrule
-    MRF MTCA-EVR-300                & \texttt{ICS TAG-255}                        & L534006       \\\midrule
-    NAT-MCH-PHYS                    & \texttt{ICS TAG-704}                        & 1135210809    \\\midrule
-    Concurrent Technologies AMC CPU & \texttt{ICS TAG-734}                        & M29597/010    \\\midrule
-    Schroff MTCA 3U crate           & \texttt{ICS TAG-793}                        & 1401701204AA  \\\midrule
-    NAT MTCA power supply unit      & \texttt{ICS TAG-743}                        & 121114 0269   \\\bottomrule
+    Hardware                        & Info               \\\midrule
+    MRF mTCA-EVM-300                &                    \\\midrule
+    MRF PCIe-EVR-300DC              &                    \\\midrule
+    MRF mTCA-EVR-300                &                    \\\midrule
+    $\mu$TCA crate                  & Incl. PM, MCH      \\\midrule
+    Concurrent Technologies AMC CPU &                    \\\midrule
+    Adlink Industrial PC            &                    \\\midrule
+    Optical cables                  & LC, optical 850 nm \\\bottomrule
   \end{tabular}
   \caption[]{Hardware List and its Environment.}
   \label{table:hwlist}
@@ -128,18 +131,19 @@ Table~\ref{table:hwlist} shows the hardware list and its environment. Here, \tex
 
 % \clearpage
 \section{Software}
-Table~\ref{table:swlist} shows the Software list and its environment. It is mandatory to check the kernel version, and the mrf kernel module version. Since the mrfioc2 is dependent upon devlib2 E3 internally, an end-user is unnecessary to check its version explicitly.
+Table~\ref{table:swlist} shows the software list and its environment.\\
+
 \begin{table}[!htb]
   \centering
   \begin{tabular}{l|l}
     \toprule
     Item               & Version Info.                                                      \\\midrule
-    CentOS Linux       & \texttt{CentOS 7.6.1810}                                           \\\midrule
-    Kernel             & \texttt{3.10.0-957.5.1.el7.x86\_64}                                 \\\midrule
-    mrf kernel module  & version : \texttt{1} / srcversion \texttt{E3290AD048B5B57D2EAA55E} \\\midrule
-    E3 Require         & \texttt{3.0.5}                                                     \\\midrule
-    EPICS Base         & \texttt{3.15.5}                                                    \\\midrule
-    mrfioc2            & E3 module ver. \texttt{2.2.0-rc5}                                  \\\midrule
+    CentOS Linux       & \texttt{7.7.1908}                                                  \\\midrule
+    Kernel             & \texttt{3.10.0-1062.9.1.el7.x86\_64}                               \\\midrule
+    mrf kernel module  & Version: \texttt{1} / srcversion \texttt{E3290AD048B5B57D2EAA55E}  \\\midrule
+    EPICS base         & \texttt{7.0.3.1}                                                   \\\midrule
+    e3-req             & \texttt{3.1.2}                                                     \\\midrule
+    mrfioc2            & E3 module ver. \texttt{2.2.0-rc7}                                  \\\midrule
     devLib2            & E3 module ver. \texttt{2.9.0}                                      \\\bottomrule
   \end{tabular}
   \caption[]{Software and its version information.}
@@ -147,32 +151,31 @@ Table~\ref{table:swlist} shows the Software list and its environment. It is mand
 \end{table}
 
 
-\clearpage
-\chapter{Engineering Procedure}
-This chapter provides the instructions on how to perform the FW update.
+%\clearpage
 
+\chapter{Engineering procedure}
+This chapter provides the instructions on how to perform the FW update.\\
 
-\section{FW update using mrfioc2}
-\textbf{This is the preferred method}, which we tested with MTCA EVR 300 and PCIE EVR 300DC. Since this method uses the mrfioc2 module, it is assumed that the E3 is installed and loaded in the current session{\footnote{To install and load E3 check \url{https://github.com/icshwi/e3} and \url{https://github.com/icshwi/e3training}.}}. It is also necessary to have the mrf kernel module loaded and to register the EVR with the IOC. To do so you need to know the PCI parameters, which can be retrieved as is explained in the engineering manual corresponding to your specific form factor \cite{empcieeevr300dc, emmtcaevr300}.
+\section{FW update using \texttt{mrfioc2}}
+\textbf{This is the preferred method}, which we have tested with the MTCA-EVR-300(U), PCIE-EVR-300DC and MTCA-EVM-300. Since this method uses the \texttt{mrfioc2} module, it is assumed that the ESS EPICS environment (E3) is installed and loaded in the current session{\footnote{To install and load E3 check \url{https://github.com/icshwi/e3} and \url{https://github.com/icshwi/e3training}.}}. It is also necessary to have the \texttt{mrf} kernel module loaded and to register the EVR with the Input/Out Controller (IOC). To do this you need to know the PCI parameters, which can be retrieved as is explained in the engineering manual corresponding to your specific form factor \cite{empcieeevr300dc, emmtcaevr300, emmtcaevm300}.\\
 
-Then run the following IOC from the directory containing your bit file using your PCI parameters with \texttt{iocsh.bash fwupdate.cmd}, which is in \texttt{e3-mrfioc/cmds}:
+Then run the following IOC start-up script from the directory containing your bitfile using your PCI and \texttt{require} parameters with \texttt{iocsh.bash fwupdate.cmd}, which is in \texttt{e3-mrfioc/cmds}:
 \begin{lstlisting}[
   style=termstyle,
   numbers=left,
   label={list:fwupdate.cmd},
-  caption={Start-up script \texttt{fwupdate.cmd}. Line \ref{require} and Line \ref{pciid0} should be modified according to the installed require version and its corresponding MRF hardware. One can get them easily via \texttt{bash tools/get\_pciaddr.bash pcieevr300} and \texttt{make dep}. }
+  caption={Start-up script \texttt{fwupdate.cmd}. Line \ref{require} and Line \ref{pciid0} should be modified according to the installed require version and its corresponding MRF hardware. One can get them easily via \texttt{bash /tools/get\_pciaddr.bash pcieevr300} and \texttt{make dep} within the \texttt{e3-mrfioc2} directory. }
 ]
-require mrfioc2,2.2.0-rc5 (*@\label{require}@*)
+require mrfioc2,2.2.0-rc7 (*@\label{require}@*)
 epicsEnvSet("DEV1", "EVR1")
-mrmEvrSetupPCI("$(DEV1)",  "01:00.0") (*@\label{pciid0}@*)
+mrmEvrSetupPCI("$(DEV1)",  "0a:00.0") (*@\label{pciid0}@*)
 iocInit()
 \end{lstlisting}
 
-Before upgrading, it is suggested to backup the existing firmware. All Xilinx bit files for a particular device typically have the same size, so you can use the size of the new FW to estimate the size of the old one.
+Before upgrading, it is suggested to backup the existing FW. All Xilinx bit files for a particular device typically have the same size, so you can use the size of the new FW to estimate the size of the old one.\\
 
-In this example of a PCIe-EVR-300DC with the 207.0 firmware, the exact size is 3011417 bytes, which is arbitrarily rounded up to 3MB. Create the backup bit file running from inside the IOC:
+In this example of a PCIe-EVR-300DC with the 207.0 FW, the exact size is 3011417 bytes, which is arbitrarily rounded up to 3MB. Create the backup bit file running from inside the IOC:
 \begin{lstlisting}[style=termstyle]
-  
 > flashread("EVR1:FLASH", 0, 0x300000, "PCIe-EVR-300DC.207.0.backup.bit")
 | 3080192
 | 3014656
@@ -185,8 +188,7 @@ Done
 epics>
 \end{lstlisting}
 
-Now write the new FW file, named \texttt{PCIe-EVR-300DC-17080207.bit} in this example, that should be located in the current directory. One can check this via \texttt{> system("ls *.bit")}.
-
+Now write the new FW file, named \texttt{PCIe-EVR-300DC-17080207.bit} in this example, that should be located in the current directory. One can check this via \texttt{> system("ls *.bit")}:
 \begin{lstlisting}[style=termstyle]
 >  flashwrite("EVR1:FLASH", 0, "PCIe-EVR-300DC-17080207.bit")
 | 0/3011417
@@ -203,86 +205,111 @@ Done
 >
 \end{lstlisting}
 
-If the update process is interrupted, \textbf{DO NOT POWER CYCLE!} and Re-run the update process in order to be completed. After the write completes successfully, please do power cycle the MRF EVR card to load the new bit file. For more information you can check \citep[section Firmware Update, PCIe-EVR-300DC, mTCA-EVR-300]{EVRUSAGEGUIDE}.
+If the update process is interrupted, \textbf{DO NOT POWER CYCLE!} and re-run the update process in order to be completed. After the write completes successfully, power cycle the MRF EVR card to load the new bit file. For more information you can check \citep[section Firmware Update, PCIe-EVR-300DC, mTCA-EVR-300]{EVRUSAGEGUIDE}.\\
 
 
 \subsection{Troubleshooting}
-If the mrfioc2 module was built for a different kernel version that the one the system has, it is possible that the FW update fails while printing a successful message. One can check the kernel module version via \texttt{modinfo mrf}. In this case, if the update is interrupted and the board is power cycled, or if you have any other problem that causes an incorrect bit file being flashed, bring the board to ICS for manual flashing of the board. 
+If the \texttt{mrfioc2} module was built for a different kernel version that the one the system has, it is possible that the FW update fails while printing a successful message. One can check the kernel module version via \texttt{modinfo mrf}. In this case, if the update is interrupted and the board is power cycled, or if you have any other problem that causes an incorrect bit file being flashed, bring the board to ICS for manual flashing.\\
 
 
-\clearpage
+%\clearpage
 \section{FW update using the vendor's own driver}
-It's better to do it with the previous method. This one is only possible if we can write and compile on the machine, for example with a physical development machine, and we can log in as the root user.
+It's better to update the FW with the previous method. This other option is only possible if we can write and compile on the machine, for example with a physical development machine, and we can log in as the root user. For this method you will need to download the driver from \url{https://github.com/jpietari/mrf-linux-driver}.\\
 
-This method was only tested on MTCA, not PCIe.
+First make sure that you power cycle the crate, and that no \texttt{mrf} kernel module is loaded. You can check this with \texttt{lsmod |grep mrf}. If the module is loaded unload it with \texttt{sudo rmmod mrf}. Then clone the driver to the machine with the board you want to update. In this example we work in the \texttt{/home/iocuser/FWupdate} directory. The bitfile we are flashing is \texttt{mTCA-EVR-300DC-18050207.bit} found in the same directory.\\
 
-For this method you will need to ask ICS for the vendor's driver.
-
-First make sure that you powercycle the crate, and that no mrf kernel module is loaded. You can check this with \texttt{lsmod |grep mrf}. If the module is loaded unload it with \texttt{sudo rmmod mrf}. Then copy the driver to the machine with the board you want to update. In this example we work in the \texttt{/home/iocuser/FWupdate} directory. The bitfile we are flashing is \texttt{mTCA-EVR-300DC-18050207.bit} found in the same directory.
-
-Uncompress the driver and build it:
+Build the driver:
 \begin{lstlisting}[style=termstyle]
-[iocuser@icslab-ts02 FWupdate]$ tar -zxvf mrf_pci_driver.tar.gz
+iocuser@cslab-ccpu-crate07: mrf-linux-driver (master)$ make
 [...]
-[iocuser@icslab-ts02 FWupdate]$ cd mrf_pci_driver/
-[iocuser@icslab-ts02 mrf_pci_driver]$ make
-[...]
+make[1]: Leaving directory `/usr/src/kernels/3.10.0-1062.9.1.el7.x86_64'
 \end{lstlisting}
+
 Log in as root user and install and load the modules:
 \begin{lstlisting}[style=termstyle]
-[iocuser@icslab-ts02 mrf_pci_driver]$ sudo su
+iocuser@cslab-ccpu-crate07: mrf-linux-driver (master)$ sudo su
 [sudo] password for iocuser:
-[root@icslab-ts02 mrf_pci_driver]# make modules_install
-make -C /lib/modules/3.10.0-229.7.2.el7.x86_64/build M=/home/iocuser/FWupdate/mrf_pci_driver modules_install
-make[1]: Entering directory `/usr/src/kernels/3.10.0-229.7.2.el7.x86_64'
-  INSTALL /home/iocuser/FWupdate/mrf_pci_driver/pci_mrfevg.ko
+[root@cslab-ccpu-crate07 mrf-linux-driver]# make modules_install
+make -C /lib/modules/3.10.0-1062.9.1.el7.x86_64/build M=/home/iocuser/FWupdate/mrf-linux-driver modules_install
+make[1]: Entering directory `/usr/src/kernels/3.10.0-1062.9.1.el7.x86_64'
+  INSTALL /home/iocuser/FWupdate/mrf-linux-driver/pci_mrfevg.ko
 Can't read private key
-  INSTALL /home/iocuser/FWupdate/mrf_pci_driver/pci_mrfevr.ko
+  INSTALL /home/iocuser/FWupdate/mrf-linux-driver/pci_mrfevr.ko
 Can't read private key
-  DEPMOD  3.10.0-229.7.2.el7.x86_64
-make[1]: Leaving directory `/usr/src/kernels/3.10.0-229.7.2.el7.x86_64'
-[root@icslab-ts02 mrf_pci_driver]# depmod -a
-[root@icslab-ts02 mrf_pci_driver]# sh module_load
+  DEPMOD  3.10.0-1062.9.1.el7.x86_64
+make[1]: Leaving directory `/usr/src/kernels/3.10.0-1062.9.1.el7.x86_64'
+[root@cslab-ccpu-crate07 mrf-linux-driver]# depmod -a
+[root@cslab-ccpu-crate07 mrf-linux-driver]# sh module_load
 Found 0 Event Generators.
-Creating device nodes...
 Found 1 Event Receivers.
-Creating device nodes...
-Creating nodes /dev/era[0-3] for major 247chgrp: invalid group: ‘mrf’
 \end{lstlisting}
+
 Flash the bitfile to the EVR:
 \begin{lstlisting}[style=termstyle]
-[root@icslab-ts02 mrf_pci_driver]# dd if=mTCA-EVR-300DC-18050207.bit of=/dev/era1
+[root@cslab-ccpu-crate07 mrf-linux-driver]# dd if=mTCA-EVR-300DC-18050207.bit of=/dev/era1
 5881+1 records in
 5881+1 records out
 3011417 bytes (3.0 MB) copied, 11.2043 s, 269 kB/s
-[root@icslab-ts02 mrf_pci_driver]#
+[root@cslab-ccpu-crate07 mrf-linux-driver]#
 \end{lstlisting}
-This will take some time. When it's finished powercycle the board to load the new FW.
 
-For more information you can check \citep{MRFKERNELDRIVER}.
+This will take some time. When it's finished power cycle the board to load the new FW.\\
+
+For more information you can check \citep{MRFKERNELDRIVER}.\\
 
 \subsection{Troubleshooting}
-If the update is interrupted and the board is power cycled, or you have any other problem that causes an incorrect bit file being flashed, bring the board to ICS and explained what has happened.
-
-
-
-% TODO also show more sources: Jukka's doc, Michael's doc
-
-
-
-
-
+If the update is interrupted and the board is power cycled, or you have any other problem that causes an incorrect bit file being flashed, bring the board to ICS for manual flashing.\\
 
 
 \clearpage
 
-\backmatter
+
+%\backmatter
+
+\chapter*{Glossary}\label{sec:glossary}
+\addcontentsline{toc}{chapter}{\nameref{sec:glossary}}
+\begin{table}[!htb]
+%  \footnotesize
+%  \centering
+  \begin{tabular}{ll}
+    \toprule
+    \textbf{Term} & Definition                                          \\\midrule
+    E3            & ESS EPICS environment                               \\
+    EPICS         & Experimental Physics and Industrial Control System  \\
+    ESS           & European Spallation Source                          \\
+    EVM           & Event Master                                        \\
+    EVR           & Event Receiver                                      \\
+    FW            & Firmware                                            \\
+    ICS           & Integrated Control System                           \\
+    IOC           & Input/Output Controller                             \\
+    MRF           & MicroResearch Finland                               \\
+    \bottomrule
+  \end{tabular}
+%  \caption[]{Document revision history.}
+  \label{table:glossary}
+\end{table}
+
 %\bibliographystyle{unsrt}
 %\bibliographystyle{plainnat}
 %\bibliographystyle{abbrvnat}
 \bibliographystyle{unsrtnat}
 %\bibliographystyle{chicago}
-%\bibliography{./ess_refs}
-\bibliography{em_fw-update-pci}
+\bibliography{./em_fw-update-pci}
+
+\chapter*{Document revision history}\label{sec:docrevhist}
+\addcontentsline{toc}{chapter}{\nameref{sec:docrevhist}}
+\begin{table}[!htb]
+  \footnotesize
+  \centering
+  \begin{tabular}{llll}
+    \toprule
+    \textbf{Revision} & \textbf{Reason for and description of change} & \textbf{Author}       & \textbf{Date} \\\midrule
+    1                 & First release                                 & Javier Cereijo Garcia & \today        \\
+    \bottomrule
+  \end{tabular}
+%  \caption[]{Document revision history.}
+  \label{table:docrevhist}
+\end{table}
+
 
 \end{document}

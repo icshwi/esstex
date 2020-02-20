@@ -91,7 +91,7 @@ At European Spallation Source (ESS), Integrated Control System (ICS) uses the Mi
 
 
 \section{Target audience}
-This document is targeted to ICS engineers and technical stakeholders of the ESS timing system. It is assumed that the target audience has a technical background in the MRF Timing System, the Experimental Physics and Industrial Control System (EPICS) development, and a Linux environment.\\
+This document is targeted to ICS engineers and technical stakeholders of the ESS timing system. It is assumed that the target audience has a technical background in the MRF timing system, the Experimental Physics and Industrial Control System (EPICS) development, and a Linux environment.\\
 
 
 
@@ -121,7 +121,7 @@ Figure~\ref{fig:mtca-evr300} shows the rough physical dimensions of $181\times 1
 \end{figure}
 
 
-The MTCA-EVR-300  has a small form-factor pluggable (SFP) transceiver as an input from an Event Master (EVM) and several outputs: 4 front panel outputs, 16 front universal outputs (through the IFB-300 extension board) and 40 rear outputs. The initial 32 rear outputs map to the Rear Transition Module (RTM) connector, the last 8 rear outputs map to the Micro Telecommunications Computing Architecture (MTCA) backplane. The 16 front universal outputs are implemented through a micro-SCSI type connector for an interface board IFB-300. The IFB-300 has eight Universal Input/Output (I/O) slots, each of them accommodating 2 outputs/inputs, shown in Figure~\ref{fig:ifb-300}. With different type of MRF Universal I/O modules, each slot can be used as an unique trigger or event signal source.\\
+The MTCA-EVR-300 has a small form-factor pluggable (SFP) transceiver as an input from an Event Master (EVM) and several outputs: 4 front panel outputs, 16 front universal outputs (through the IFB-300 extension board) and 40 rear outputs. The initial 32 rear outputs map to the Rear Transition Module (RTM) connector, the last 8 rear outputs map to the Micro Telecommunications Computing Architecture (MTCA) backplane. The 16 front universal outputs are implemented through a micro-SCSI type connector for an interface board IFB-300. The IFB-300 has 8 Universal Input/Output (I/O) slots, each of them accommodating 2 outputs/inputs, shown in Figure~\ref{fig:ifb-300}. With different types of MRF Universal I/O modules, each slot can be used as an unique trigger or event signal source.\\
 
 \begin{figure}[!htb]
   \centering
@@ -138,7 +138,7 @@ The MTCA-EVR-300U is identical to the MTCA-EVR-300 except for the fact that it r
 
 %\clearpage
 \chapter{System environment}
-Before describing the engineering procedure for an E3 integration of the MRF MTCA-EVR-300(U) board, it is mandatory to have proper system environment that consists of specific hardware and software. Here we will show the hardware and software lists and their set up in the ICS lab at ESS. The information shown in this chapter is used in the ICS lab at ESS.\\
+Before describing the engineering procedure for the E3 integration of the MRF MTCA-EVR-300(U) board, it is mandatory to have a proper system environment that consists of specific hardware and software. Here we will show the hardware and software lists and their set up in the ICS lab at ESS. The information shown in this chapter is used in the ICS lab at ESS.\\
 
 
 \section{Hardware}
@@ -166,7 +166,7 @@ Figure~\ref{fig:mtca-hw-setup} shows the MTCA-EVR-300 set up in the lab. From le
 \begin{figure}[!b]
   \centering
   \includegraphics[width=0.8\textwidth]{./pictures/mtca-hw-setup.eps}
-  \caption{Hardware Setup in the ICS lab.}
+  \caption{Hardware set up in the ICS lab.}
   \label{fig:mtca-hw-setup}
 \end{figure}
 
@@ -219,7 +219,7 @@ This chapter provides the minimal information to configure the EVR board properl
 
 
 \section{System installation}
-Figure~\ref{fig:mtca-hw-setup} shows the glimpse of what system might be like in a lab. \textbf{Note that the cable between the mTCA-EVR-300 and IFB-300 (not shown in the figure) should be connected or disconnected only when the system is powered down}. Please see more detailed information in \citep[][p54]{MRFEVENTSYSTEMDC}.\\
+Figure~\ref{fig:mtca-hw-setup} shows a glimpse of what the system might look like in the lab. \textbf{Note that the cable between the mTCA-EVR-300 and the IFB-300 (not shown in the figure) should be connected or disconnected only when the system is powered down}. Please see more detailed information in \citep[][p54]{MRFEVENTSYSTEMDC}.\\
 
 It is assumed that the MTCA-EVR-300(U) is installed in a crate with a CPU running CentOS 7 with E3. For more information on E3, please check {\footnote{\url{https://github.com/icshwi/e3training}}.\\
 
@@ -229,7 +229,7 @@ It is assumed that the MTCA-EVR-300(U) is installed in a crate with a CPU runnin
 \subsection{Fixing PCI IDs}
 The PCI ID list does not include by default the MRF products. It can be updated as follows:
 \begin{itemize}
-\item Cloning the sort of ESS customized PCI.IDS db:
+\item Clone the customized PCI.IDS database with the MRF products:
 \begin{lstlisting}[style=termstyle]
 iocuser@cslab-ccpu-crate07: ~$ git clone https://github.com/jeonghanlee/pciids
 \end{lstlisting}
@@ -351,7 +351,7 @@ Each PCI device is identified by a domain, a bus, a device, and a function numbe
 One can use \texttt{lspci} to find them as follows:
 \begin{lstlisting}[style=termstyle]
 iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ lspci
-[...]]
+[...]
 0a:00.0 Signal processing controller: Xilinx Corporation XILINX PCI DEVICE
 [...]
 iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ lspci -s 0a:00.0 -vv
@@ -375,7 +375,7 @@ iocuser@cslab-ccpu-crate07: e3-mrfioc2 (master)$ lspci -s 0a:00.0 -t
 -+-[0000:0a]---00.0
  \-[0000:00]-
 \end{lstlisting}
-, where \texttt{-+-[0000:0a]---00.0} can be translated to \texttt{-+-}[domain:bus]\texttt{---}device.function. Thus in the above case, three numbers are shown in Table~\ref{table:pciidnumber}.\begin{table}[!htb]
+, where \texttt{-+-[0000:0a]---00.0} can be translated to \texttt{-+-}[domain:bus]\texttt{---}device.function. Thus for the case above the numbers are shown in Table~\ref{table:pciidnumber}.\begin{table}[!htb]
   \centering
   \begin{tabular}{l|l}
     \toprule
@@ -701,8 +701,8 @@ EMMTCAEVR300-EVR0:EvtECnt-I    2020-02-05 15:15:29.900619 20620
 \end{lstlisting}
 
 
-\section{Step 3: Generate trigger signals from EVR}
-An EVR is composed of several logical sub-units, one of them is the pulse generator (or delay generator). Each pulse generator has an associated delay and width \cite{EVR-USER-GUIDE}. In the following procedure, two pulse generators are mapped to \path{OutFP0} and \path{OutFP1} of the MTCA-EVR-300U, which are connected to channels 1 and 2 of the oscilloscope respectively in order to see the effect of changing the delay and width on the output signals. This assumes that the EVM is sending event 14 at 14 Hz. Short comments on each command or a series of commands are shown before the corresponding command.
+\section{Step 3: Generate trigger signals from the EVR}
+An EVR is composed of several logical sub-units, one of them is the pulse generator (or delay generator). Each pulse generator has an associated delay and width \cite{EVR-USER-GUIDE}. In the following procedure, two pulse generators are mapped to \path{OutFP0} and \path{OutFP1} of the MTCA-EVR-300U, which are connected to channels 1 and 2 of the oscilloscope respectively in order to see the effect of changing the delay and width on the output signals. This assumes that the EVM is sending event 14 at 14 Hz. Short comments on each command or a series of commands are shown before the corresponding command.\\
 
 \subsection{\texttt{OutFP0} output}
 \begin{lstlisting}[style=termstyle]
@@ -900,7 +900,7 @@ caput -a $1-$2:SoftSeq0-Timestamp-SP 2 0 1
 caput $1-$2:SoftSeq0-Commit-Cmd 1
 \end{lstlisting}
 
-For more information, please check ESS-0331569 (ICS Engineering Manual for MRF mTCA-EVM-300), the EVR sequencer acts in exactly the same way as the EVM sequencer, but the EVR only has one sequencer.
+For more information, please check ESS-0331569 (ICS Engineering Manual for MRF mTCA-EVM-300), the EVR sequencer acts in exactly the same way as the EVM sequencer, but the EVR only has one sequencer.\\
 
 
 \section{Step 6: Generate events from the inputs}
